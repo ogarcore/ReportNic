@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="icon" href="images/emergency.png">
+    <title>Registro</title>
+</head>
+<body>
+    <div class="background-image"></div>
+    <header class="header">
+        <img src="images/logo.png" alt="Logo" class="header__logo">
+        <h1 class="header__title">ReportNic.</h1>
+    </header>
+    <form class="form form--register">
+        <h2 class="form__title">Regístrate</h2>
+        <div class="form__main">
+            <label for="hospital" class="form__label">Seleccione su Hospital</label>
+            <select name="Hospital" id="hospital" class="form__select">
+                <option disabled selected>Elija una opción</option>
+                <option>Hospital Escuela "Oscar Danilo Rosales Argüello"</option>
+            </select>
+            <label for="tipo-hospital" class="form__label">Tipo de Hospital</label>
+            <select name="tipo-hospital" id="tipo-hospital" class="form__select">
+                <option disabled selected>Elija una opción</option>
+                <option>Público</option>
+                <option>Privado</opt-ion>
+            </select>
+            <label for="text" class="form__label">Usuario</label>
+            <input type="text" id="text" class="form__input" placeholder="Escriba su usuario">
+            <label for="password" class="form__label">Contraseña</label>
+            <input type="password" id="password" class="form__input" placeholder="Escriba su contraseña">
+            <div class="form__group">
+                <input type="checkbox" id="checkbox" class="form__checkbox">
+                <label for="checkbox" class="form__label form__label--checkbox">Recordar contraseña</label>
+            </div>
+            <input type="submit" class="form__button" value="Registrarse">
+        </div>
+        <p class="form__forgot-password">¿Olvidaste tu contraseña?</p>
+    </form>
+    <footer class="footer">
+        <p class="footer__text">Copyright © 2024 ReportNic. Todos los derechos reservados. La reproducción o distribución de este contenido sin permiso previo está prohibida.</p>
+    </footer>
+</body>
+</html>

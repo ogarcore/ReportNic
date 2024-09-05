@@ -1,0 +1,247 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Montserrat, sans-serif;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+.background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('images/fondoprincipal.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: blur(3px);
+    z-index: -1;
+}
+
+.prueba {
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+    z-index: -1;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 20px;
+}
+
+.logo--link {
+    text-decoration: none;
+    color: #fff;
+    cursor: pointer;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    width: 100px;
+    margin-top: 8px;
+}
+
+.header-menu {
+    display: flex;
+    align-items: center;
+}
+
+.header-menu ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.header-menu a {
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 8px;
+    border-radius: 5px;
+    margin-left: 5px;
+    text-decoration: none;
+}
+
+.header-menu a:hover {
+    background-color: #2196F3;
+}
+
+.profile-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    margin-left: 15px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    transition: border-color 0.3s ease;
+}
+
+.profile-menu.hover .profile-pic {
+    border-color: #2196F3;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background-color: #333;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    padding: 10px;
+    width: 150px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.profile-menu.active .dropdown-menu {
+    display: block;
+    opacity: 2;
+    transform: translateY(0);
+}
+
+.dropdown-menu a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 3px;
+}
+
+.dropdown-menu a:hover {
+    background-color: #2196F3;
+}
+
+#historial--link{
+    background: #1d549b;
+}
+
+/* Profile Container Centered */
+.profile-container {
+    background-color: #fff;
+    border-radius: 10px;
+    margin: auto;
+    margin-top: 20px; /* Ajuste para que no se superponga con el header */
+    box-shadow: 0 0 5px #777;
+    max-width: calc(100% - 550px); 
+    min-width: 750px;
+    width: calc(100% - 200px); /* Asegura que el contenedor esté centrado */
+    padding: 40px;
+    margin-left: calc(125px + 100px); /* Margen izquierdo del sidebar + mitad del espacio restante */
+}
+
+.profile-section {
+    margin-bottom: 30px;
+}
+
+.profile-section h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 2px solid #1d549b;
+    padding-bottom: 5px;
+}
+
+.profile-section p, .profile-section ul, .profile-section table {
+    font-size: 16px;
+    color: #555;
+}
+
+.profile-section ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.profile-section ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.profile-section table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.profile-section table th,
+.profile-section table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.profile-section table th {
+    background-color: #1d549b;
+    color: white;
+}
+
+.profile-section table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    color: #333;
+}
+
+button[type="submit"], button[type="button"] {
+    padding: 12px 20px;
+    background-color: #1d549b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+button[type="submit"]:hover, button[type="button"]:hover {
+    background-color: #004d40;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 15px 20px;
+    width: 100%;
+    bottom: 0;
+}

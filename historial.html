@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Alertas</title>
+    <link rel="stylesheet" href="historialstyle.css">
+    <link rel="stylesheet" href="fonts.css">
+</head>
+<body>
+    <header>
+        <div class="background-image"></div>
+        <div class="prueba"></div>
+        <a href="inicio.html" class="logo--link">
+            <div class="logo-container">
+                <img src="images/logoblanco.png" alt="Logo" class="logo">
+                <h1>ReportNic.</h1>
+            </div>
+        </a>
+        <nav class="header-menu">
+            <ul>
+                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="historial.html" id="historial--link">Historial</a></li>
+                <li><a href="configuracion.html">Configuración</a></li>
+                <li><a href="contacto.html">Contáctanos</a></li>
+            </ul>
+            <div class="profile-menu" id="profileMenu">
+                <img src="images/perfil.png" alt="Foto de perfil" class="profile-pic" id="profilePic">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="perfil.html">Ver Perfil</a>
+                    <a href="index.html">Cerrar Sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="profile-container">
+        <div class="profile-body">
+            <div class="profile-section">
+                <h2>Historial de Alertas</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Descripción</th>
+                            <th>Tipo de Emergencia</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>03/09/2024</td>
+                            <td>12:45 PM</td>
+                            <td>Accidente de tráfico</td>
+                            <td>Emergencia Médica</td>
+                            <td>Resuelta</td>
+                        </tr>
+                        <!-- Más filas de ejemplo -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="profile-section">
+                <h2>Búsqueda y Filtrado</h2>
+                <form action="#">
+                    <div class="form-group">
+                        <label for="search-date">Fecha:</label>
+                        <input type="date" id="search-date" name="search-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="emergency-type">Tipo de Emergencia:</label>
+                        <select id="emergency-type" name="emergency-type">
+                            <option value="all">Todos</option>
+                            <option value="medical">Emergencia Médica</option>
+                            <option value="fire">Incendio</option>
+                            <option value="rescue">Rescate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alert-status">Estado de la Alerta:</label>
+                        <select id="alert-status" name="alert-status">
+                            <option value="all">Todos</option>
+                            <option value="resolved">Resuelta</option>
+                            <option value="in-process">En Proceso</option>
+                            <option value="pending">Pendiente</option>
+                        </select>
+                    </div>
+                    <button type="submit">Buscar</button>
+                </form>
+            </div>
+
+            <div class="profile-section">
+                <h2>Exportar Historial</h2>
+                <button type="button" onclick="exportToCSV()">Exportar a CSV</button>
+                <button type="button" onclick="exportToPDF()">Exportar a PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2024 ReportNic. Todos los derechos reservados.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

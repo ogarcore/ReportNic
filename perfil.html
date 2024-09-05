@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <link rel="stylesheet" href="perfilstyle.css">
+    <link rel="stylesheet" href="fonts.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="background-image"></div>
+        <div class="prueba"></div>
+        <a href="inicio.html" class="logo--link">
+            <div class="logo-container">
+                <img src="images/logoblanco.png" alt="Logo" class="logo">
+                <h1>ReportNic.</h1>
+            </div>
+        </a>
+        <nav class="header-menu">
+            <ul>
+                <li><a href="inicio.html">Inicio</a></li>
+                <li><a href="historial.html" >Historial</a></li>
+                <li><a href="configuracion.html">Configuración</a></li>
+                <li><a href="contacto.html">Contáctanos</a></li>
+            </ul>
+            <div class="profile-menu" id="profileMenu">
+                <img src="images/perfil.png" alt="Foto de perfil" class="profile-pic" id="profilePic">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="perfil.html">Ver Perfil</a>
+                    <a href="index.html">Cerrar Sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-image">
+                <img src="https://via.placeholder.com/150" alt="Foto de Perfil">
+            </div>
+            <h1 class="profile-name">Nombre del Usuario</h1>
+            <p class="profile-role">Cargo: Personal de Emergencia</p>
+            <p class="institution">Institución: Hospital Central</p>
+        </div>
+
+        <div class="profile-body">
+            <div class="profile-section">
+                <h2>Información Personal</h2>
+                <p><strong>Nombre:</strong> Juan Pérez</p>
+                <p><strong>Cargo:</strong> Paramédico</p>
+            </div>
+
+            <div class="profile-section">
+                <h2>Detalles de la Institución</h2>
+                <p><strong>Hospital:</strong> Hospital Central</p>
+                <p><strong>Dirección:</strong> Calle 123, Ciudad, País</p>
+            </div>
+
+            <div class="profile-section">
+                <h2>Roles y Permisos</h2>
+                <p>Acceso completo a la sección de emergencias y alertas.</p>
+            </div>
+
+            <div class="profile-section">
+                <h2>Preferencias</h2>
+                <form action="#">
+                    <div class="form-group">
+                        <label for="language">Idioma:</label>
+                        <select id="language" name="language">
+                            <option value="es">Español</option>
+                            <option value="en">Inglés</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notifications">Notificaciones:</label>
+                        <select id="notifications" name="notifications">
+                            <option value="enabled">Habilitadas</option>
+                            <option value="disabled">Deshabilitadas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="theme">Tema:</label>
+                        <select id="theme" name="theme">
+                            <option value="light">Claro</option>
+                            <option value="dark">Oscuro</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+
+            <div class="profile-section">
+                <h2>Cambiar Contraseña</h2>
+                <form action="#">
+                    <div class="form-group">
+                        <label for="current-password">Contraseña Actual:</label>
+                        <input type="password" id="current-password" name="current-password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-password">Nueva Contraseña:</label>
+                        <input type="password" id="new-password" name="new-password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirmar Contraseña:</label>
+                        <input type="password" id="confirm-password" name="confirm-password" required>
+                    </div>
+
+                    <button type="submit">Cambiar Contraseña</button>
+                </form>
+            </div>
+
+            <div class="profile-section">
+                <h2>Historial de Sesiones</h2>
+                <ul>
+                    <li>01/09/2024 - Dispositivo: iPhone 12</li>
+                    <li>31/08/2024 - Dispositivo: Laptop Windows 10</li>
+                    <li>30/08/2024 - Dispositivo: Android Tablet</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2024 ReportNic. Todos los derechos reservados.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
