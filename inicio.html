@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReportNic</title>
     <link rel="stylesheet" href="inciostyle.css">
+    <link rel="stylesheet" href="headerstyle.css">
     <link rel="stylesheet" href="fonts.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 </head>
 <body>
     <header>
@@ -34,29 +34,63 @@
             </div>
         </nav>
     </header>
+    <div class="noti">
+        <div class="caja"></div>
+        <h2>Notificaciones</h2>
+        <div class="caja"></div>
+    </div>
     <div class="content">
-        <div class="text-section">
-            <div class="notification-bar">
-                <div class="notification-image">
-                    <img src="images/alarma.png" alt="Notificación">
+        <div class="section emergency-section">
+            <div class="title title--emer">Emergencia</div>
+            <div class="notifications-container emergen">
+                <div class="notification-box noti-box-emer" >
+                    <p class="notification-title ">Emergencia</p>
+                    <p class="notification-time">15:38pm</p>
+                    <p class="notification-description">Descripción corta de la emergencia...</p>
                 </div>
-                <p class="notification">Nueva Notificacion</p>
+                <div class="notification-box noti-box-emer" >
+                    <p class="notification-title ">Emergencia</p>
+                    <p class="notification-time">15:38pm</p>
+                    <p class="notification-description">Descripción corta de la emergencia...</p>
+                </div>
+                <div class="notification-box noti-box-emer" >
+                    <p class="notification-title ">Emergencia</p>
+                    <p class="notification-time">15:38pm</p>
+                    <p class="notification-description">Descripción corta de la emergencia...</p>
+                </div>
+                <div class="notification-box noti-box-emer" >
+                    <p class="notification-title ">Emergencia</p>
+                    <p class="notification-time">15:38pm</p>
+                    <p class="notification-description">Descripción corta de la emergencia...</p>
+                </div>
             </div>
-            <div class="texto">
-                <p class="left-text" onclick="showNotifications()">Emergencia</p>
-                <p class="right-text">Traslado</p>
-            </div>            
-            <div class="notifications-container">
-                <!-- Las notificaciones se agregarán aquí dinámicamente -->
-            </div>
+            
         </div>
-        <div class="map-section">
-            <div id="map">Maps</div>
-            <div class="estimated-arrival">El tiempo estimado de llegada al hospital es de 15 minutos.</div>
-            <button class="next-button">Siguiente</button>
+        <div class="section traslado-section">
+            <div class="title title--tras">Traslado</div>
+            <div class="notifications-container trasla">
+                <div class="notification-box noti-box-tras" >
+                    <p class="notification-title">Traslado</p>
+                    <p class="notification-time">18:08pm</p>
+                    <p class="notification-description">Descripción corta del traslado...</p>
+                </div>
+                <div class="notification-box noti-box-tras" >
+                    <p class="notification-title">Traslado</p>
+                    <p class="notification-time">18:08pm</p>
+                    <p class="notification-description">Descripción corta del traslado...</p>
+                </div>
+                <div class="notification-box noti-box-tras" >
+                    <p class="notification-title">Traslado</p>
+                    <p class="notification-time">18:08pm</p>
+                    <p class="notification-description">Descripción corta del traslado...</p>
+                </div>
+                <div class="notification-box noti-box-tras" >
+                    <p class="notification-title">Traslado</p>
+                    <p class="notification-time">18:08pm</p>
+                    <p class="notification-description">Descripción corta del traslado...</p>
+                </div>
         </div>
     </div>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

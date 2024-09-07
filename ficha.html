@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Paciente</title>
+    <link rel="stylesheet" href="fichastyle.css">
+    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Ficha de paciente -->
+        <div class="patient-box">
+            <h1>Ficha de Paciente</h1>
+            <div class="info-line">
+                <span class="date">Fecha: 04/09/2024</span>
+                <span class="time">Hora de Emergencia: 19:40 pm</span>
+            </div>
+            <div class="info-section">
+                <label>Nombre:</label>
+                <div class="fixed-input">Juan Carlos</div>
+            </div>
+            <div class="info-section">
+                <label>Apellidos:</label>
+                <div class="fixed-input">González Pérez</div>
+            </div>
+            <div class="info-section">
+                <label>Edad:</label>
+                <div class="fixed-input">45 años</div>
+            </div>
+            <div class="pressure-section">
+                <h2>Presión Arterial</h2>
+                <div class="pressure-values">
+                    <div class="pressure">
+                        <label>Sistólica:</label>
+                        <div class="pressure-box">120 mmHg</div>
+                    </div>
+                    <span class="divider">/</span>
+                    <div class="pressure">
+                        <label>Diastólica:</label>
+                        <div class="pressure-box">80 mmHg</div>
+                    </div>
+                </div>
+            </div>
+            <h3>Afectaciones:</h3>
+            <div class="fixed-input long-text">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+            </div>
+        </div>
+        
+        <!-- Mapa y llegada -->
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="estimated-arrival">Llegada Estimada: 10 min</div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
