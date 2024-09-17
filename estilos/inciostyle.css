@@ -1,0 +1,282 @@
+
+body{
+    overflow-y: scroll;
+}
+
+.noti{
+    display: flex;
+    justify-content: space-between;
+}
+
+.caja{
+    background-color: #1d1d1d;
+    height: 40px;
+    width: calc(100vh - 100px);
+    max-width: calc(100vh - 270px);
+    margin: 24px 15px 0;
+    border-radius:5px ;
+}
+
+h2{
+    margin: 0;
+    margin-left: 15px;
+    margin: auto;
+    padding: 0;
+    width: 300px;
+    text-align: center;
+    border-radius: 6px;
+    font-size: 34px;
+    padding: 20px;
+    background-color: #202020;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    height: calc(100vh - 90px);
+    padding: 20px;
+    padding-top: 8px;
+    box-sizing: border-box;
+    gap: 15px;
+}
+
+.emergency-section {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: #00000050;
+    padding: 20px;
+    margin: 15px;
+    border-radius: 6px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    background-color: #bd4545;
+}
+
+.notifications-container {
+    flex-grow: 1;
+    padding: 10px;
+    padding-left: 5px;
+    padding-top: 0;
+    overflow-y: auto;
+    max-height: 490px;
+}
+
+.notification-box {
+    color: #ffffff;
+    padding: 15px;
+    padding-bottom: 6px;
+    margin: 5px 10px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #cc3e34;
+}
+
+.notification-box:hover {
+    background-color: #b1332a;
+}
+
+.emergen::-webkit-scrollbar {
+    width: 8px;
+}
+
+.emergen::-webkit-scrollbar-thumb {
+    background-color: #a31e1e99;
+    border-radius: 10px;
+}
+
+.notifications-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(209, 209, 209, 0.2);
+}
+
+.notifications-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notification-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    margin-top: 0;
+}
+
+.notification-time {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #ffe;
+}
+
+.notification-description {
+    font-size: 16px;
+    color: #fff;
+}
+
+/* paciente */
+.patient-section {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px;
+    padding-top: 5px;
+    margin: 15px;
+    background-color: #ffffffdc;
+    border-radius: 6px;
+}
+
+/* Ficha del Paciente */
+.ficha-paciente__titulo {
+    background-color: #1d549b;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.ficha-paciente__linea-info{
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: 400;
+}
+
+.ficha-paciente{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.ficha-paciente__info-column{
+    width: 100%;
+}
+
+.ficha-paciente__etiqueta {
+    color: #333;
+    font-weight: bold;
+}
+
+.ficha-paciente__entrada-fija {
+    color: #333;
+    padding: 5px;
+    padding-bottom: 2px;
+    margin: 4px 5px 10px;
+    width: 100%;
+    max-width: 225px;
+    border-bottom: 2px solid #1d549b80;
+    text-align: left;
+}
+
+
+.ficha-paciente__seccion-presion{
+    width: 100%;
+}
+
+.ficha-paciente__titulo-presion {
+    width: 70%;
+    margin-top: 20px;
+    padding: 10px;
+    background: transparent;
+    margin-bottom: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.ficha-paciente__valores-presion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ficha-paciente__presion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ficha-paciente__cuadro-presion {
+    padding: 9px;
+    margin-top: 10px;
+    border-radius: 5px;
+    width: 100px;
+    text-align: center;
+    background-color: #a0c0e252;
+    border: 1px solid #b9d1e7;
+    color: #222;
+}
+
+.ficha-paciente__separador {
+    font-size: 24px;
+    margin-top: 35px;
+    color: #222;
+}
+
+.ficha-paciente__titulo-afectaciones {
+    margin-bottom: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 5px;
+    color: #222;
+}
+
+.ficha-paciente__entrada-larga {
+    color: #222;
+    background-color: #6f9dce60;
+    border: 1px solid #adcfeee7;
+    height: 200px;
+    padding: 10px;
+    padding-top:8px;
+    border-radius: 5px;
+    overflow: auto;
+    text-align: left;
+}
+
+/* Mapa */
+.mapa-contenedor {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    height: 300px;
+    width: 100%;
+    overflow: hidden;
+    gap: 10px;
+}
+
+#map {
+    height: 100%;
+    width: 60%;
+    border-radius: 10px;
+}
+
+.mapa-contenedor__llegada-estimada {
+    color: #111;
+    font-size:20px;
+    width: 38%;
+}
+
+.llegada{
+    text-align: center;
+    border-radius:5px;
+    margin-top: 30px;
+    margin-bottom: 0;
+}
+
+.tiempo{
+    text-align: center;
+    border-bottom: 2px solid #6f9dce;
+    margin-top: 20px;
+}
+

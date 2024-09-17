@@ -11,7 +11,7 @@ body {
     position: fixed;
     width: 100vw;
     height: 100vh;
-    background-image: url('images/fondo.jpg');
+    background-image: url('../images/fondo.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -81,12 +81,6 @@ body {
     margin: 0 auto 25px;
 }
 
-.form__link:hover,
-.form__forgot-password:hover {
-    color: #5e83ae;
-    cursor: pointer;
-}
-
 .form__main {
     display: flex;
     flex-direction: column;
@@ -105,8 +99,7 @@ body {
     margin: 0;
 }
 
-.form__input,
-.form__select {
+.form__input {
     padding: 8px;
     background: #eee;
     border: none;
@@ -118,8 +111,7 @@ body {
     transition: border-bottom 0.3s ease;
 }
 
-.form__input:focus,
-.form__select:focus{
+.form__input:focus{
     border-bottom: 1px solid #777;
 }
 

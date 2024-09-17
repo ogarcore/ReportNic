@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+
 function exportToCSV() {
     // Función para exportar a CSV
     alert("Exportando a CSV...");
@@ -39,6 +40,38 @@ function exportToPDF() {
     // Función para exportar a PDF
     alert("Exportando a PDF...");
 }
+
+// JavaScript para crear token y manejar usuarios
+
+// Mostrar/ocultar el apartado de token para usuarios móviles
+document.getElementById('user-type').addEventListener('change', function () {
+    const tokenSection = document.getElementById('token-section');
+    if (this.value === 'mobile') {
+        tokenSection.style.display = 'block';
+    } else {
+        tokenSection.style.display = 'none';
+    }
+});
+
+// Lógica para crear un token (simulación)
+document.getElementById('create-token-btn').addEventListener('click', function () {
+    alert('Token creado con éxito para el usuario móvil.');
+});
+
+// Funcionalidad para mostrar contraseñas
+document.querySelectorAll('.show-password-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const passwordField = this.previousElementSibling;
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            this.textContent = 'Ocultar';
+        } else {
+            passwordField.type = 'password';
+            this.textContent = 'Mostrar';
+        }
+    });
+});
+
 
 
 

@@ -89,17 +89,9 @@ p{
     text-decoration: underline;
 }
 
-.map-container {
-    margin-top: 20px;
-    border: 2px solid #1d549b;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
 .footer {
     color: #fff;
     text-align: center;
     padding: 15px 20px;
     width: 100%;
-    bottom: 0;
 }

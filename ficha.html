@@ -4,55 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha de Paciente</title>
-    <link rel="stylesheet" href="fichastyle.css">
-    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="estilos/fichastyle.css">
+    <link rel="stylesheet" href="estilos/fonts.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 </head>
 <body>
-    <div class="container">
+    <div class="fondo-imagen"></div>
+    <div class="capa-gradiente"></div>
+    <div class="contenedor">
         <!-- Ficha de paciente -->
-        <div class="patient-box">
-            <h1>Ficha de Paciente</h1>
-            <div class="info-line">
-                <span class="date">Fecha: 04/09/2024</span>
-                <span class="time">Hora de Emergencia: 19:40 pm</span>
+        <div class="ficha-paciente">
+            <h1 class="ficha-paciente__titulo">Ficha de Paciente</h1>
+            <div class="ficha-paciente__linea-info">
+                <span class="ficha-paciente__fecha">Fecha: 04/09/2024</span>
+                <span class="ficha-paciente__hora">Hora de Emergencia: 19:40 pm</span>
             </div>
-            <div class="info-section">
-                <label>Nombre:</label>
-                <div class="fixed-input">Juan Carlos</div>
+            <div class="ficha-paciente__seccion-info">
+                <label class="ficha-paciente__etiqueta">Nombre:</label>
+                <div class="ficha-paciente__entrada-fija">Juan Carlos</div>
             </div>
-            <div class="info-section">
-                <label>Apellidos:</label>
-                <div class="fixed-input">González Pérez</div>
+            <div class="ficha-paciente__seccion-info">
+                <label class="ficha-paciente__etiqueta">Apellidos:</label>
+                <div class="ficha-paciente__entrada-fija">González Pérez</div>
             </div>
-            <div class="info-section">
-                <label>Edad:</label>
-                <div class="fixed-input">45 años</div>
+            <div class="ficha-paciente__seccion-info">
+                <label class="ficha-paciente__etiqueta">Edad:</label>
+                <div class="ficha-paciente__entrada-fija">45 años</div>
             </div>
-            <div class="pressure-section">
-                <h2>Presión Arterial</h2>
-                <div class="pressure-values">
-                    <div class="pressure">
-                        <label>Sistólica:</label>
-                        <div class="pressure-box">120 mmHg</div>
+            <div class="ficha-paciente__seccion-presion">
+                <h2 class="ficha-paciente__titulo-presion">Presión Arterial</h2>
+                <div class="ficha-paciente__valores-presion">
+                    <div class="ficha-paciente__presion">
+                        <label class="ficha-paciente__etiqueta">Sistólica:</label>
+                        <div class="ficha-paciente__cuadro-presion">120 mmHg</div>
                     </div>
-                    <span class="divider">/</span>
-                    <div class="pressure">
-                        <label>Diastólica:</label>
-                        <div class="pressure-box">80 mmHg</div>
+                    <span class="ficha-paciente__separador">/</span>
+                    <div class="ficha-paciente__presion">
+                        <label class="ficha-paciente__etiqueta">Diastólica:</label>
+                        <div class="ficha-paciente__cuadro-presion">80 mmHg</div>
                     </div>
                 </div>
             </div>
-            <h3>Afectaciones:</h3>
-            <div class="fixed-input long-text">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+            <h3 class="ficha-paciente__titulo-afectaciones">Afectaciones:</h3>
+            <div class="ficha-paciente__entrada-fija ficha-paciente__entrada-larga">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam accusamus nemo sint earum pariatur. Debitis odio ut nemo perspiciatis quae architecto sunt sapiente, eum nesciunt commodi possimus, veritatis incidunt cum. Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero ad porro vitae recusandae! Laborum et, enim autem repellendus culpa eius dignissimos alias ratione, tenetur at quis, cupiditate quas sit voluptatem?
             </div>
         </div>
         
         <!-- Mapa y llegada -->
-        <div class="map-container">
+        <div class="mapa-contenedor">
             <div id="map"></div>
-            <div class="estimated-arrival">Llegada Estimada: 10 min</div>
+            <div class="mapa-contenedor__llegada-estimada">Llegada Estimada: 10 min</div>
         </div>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

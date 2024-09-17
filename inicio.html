@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ReportNic</title>
-    <link rel="stylesheet" href="inciostyle.css">
-    <link rel="stylesheet" href="headerstyle.css">
-    <link rel="stylesheet" href="fonts.css">
+    <link rel="stylesheet" href="estilos/inciostyle.css">
+    <link rel="stylesheet" href="estilos/headerstyle.css">
+    <link rel="stylesheet" href="estilos/fonts.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
 </head>
 <body>
     <header>
@@ -22,75 +23,115 @@
             <ul>
                 <li><a href="inicio.html">Inicio</a></li>
                 <li><a href="historial.html">Historial</a></li>
-                <li><a href="configuracion.html">Configuración</a></li>
                 <li><a href="contacto.html">Contáctanos</a></li>
             </ul>
             <div class="profile-menu" id="profileMenu">
                 <img src="images/perfil.png" alt="Foto de perfil" class="profile-pic" id="profilePic">
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="perfil.html">Ver Perfil</a>
+                    <a href="configuracion.html">Configuración</a>
                     <a href="index.html">Cerrar Sesión</a>
                 </div>
             </div>
         </nav>
     </header>
+
+    <!-- Sección de Notificaciones -->
     <div class="noti">
         <div class="caja"></div>
         <h2>Notificaciones</h2>
         <div class="caja"></div>
     </div>
+
+    <!-- Contenido Principal -->
     <div class="content">
-        <div class="section emergency-section">
+        <!-- Emergencias -->
+        <div class="emergency-section">
             <div class="title title--emer">Emergencia</div>
             <div class="notifications-container emergen">
-                <div class="notification-box noti-box-emer" >
+                <div class="notification-box " >
                     <p class="notification-title ">Emergencia</p>
                     <p class="notification-time">15:38pm</p>
                     <p class="notification-description">Descripción corta de la emergencia...</p>
                 </div>
-                <div class="notification-box noti-box-emer" >
+                <div class="notification-box " >
                     <p class="notification-title ">Emergencia</p>
                     <p class="notification-time">15:38pm</p>
                     <p class="notification-description">Descripción corta de la emergencia...</p>
                 </div>
-                <div class="notification-box noti-box-emer" >
+                <div class="notification-box " >
                     <p class="notification-title ">Emergencia</p>
                     <p class="notification-time">15:38pm</p>
                     <p class="notification-description">Descripción corta de la emergencia...</p>
                 </div>
-                <div class="notification-box noti-box-emer" >
+                <div class="notification-box " >
                     <p class="notification-title ">Emergencia</p>
                     <p class="notification-time">15:38pm</p>
                     <p class="notification-description">Descripción corta de la emergencia...</p>
+                </div>
+                <div class="notification-box " >
+                    <p class="notification-title ">Emergencia</p>
+                    <p class="notification-time">15:38pm</p>
+                    <p class="notification-description">Descripción corta de la emergencia...</p>
+                </div>
+                <!-- Repetir otras notificaciones si es necesario -->
+            </div>
+        </div>
+
+        <!-- Ficha de Paciente y Mapa -->
+        <div class="patient-section">
+            <h1 class="ficha-paciente__titulo">Ficha de Paciente</h1>
+            <div class="ficha-paciente__linea-info">
+                <span class="ficha-paciente__fecha">Fecha: 04/09/2024</span>
+                <span class="ficha-paciente__hora">Hora de Emergencia: 19:40 pm</span>
+            </div>
+            <div class="ficha-paciente">
+                <div class="ficha-paciente__info-column">
+                    <div class="ficha-paciente__seccion-info">
+                        <label class="ficha-paciente__etiqueta">Nombre:</label>
+                        <div class="ficha-paciente__entrada-fija">Juan Carlos</div>
+                    </div>
+                    <div class="ficha-paciente__seccion-info">
+                        <label class="ficha-paciente__etiqueta">Apellidos:</label>
+                        <div class="ficha-paciente__entrada-fija">Cantillano Ferrufino</div>
+                    </div>
+                    <div class="ficha-paciente__seccion-info">
+                        <label class="ficha-paciente__etiqueta">Edad:</label>
+                        <div class="ficha-paciente__entrada-fija">45 años</div>
+                    </div>
+                </div>
+                <div class="ficha-paciente__seccion-presion">
+                    <h2 class="ficha-paciente__titulo-presion">Presión Arterial</h2>
+                    <div class="ficha-paciente__valores-presion">
+                        <div class="ficha-paciente__presion">
+                            <label class="ficha-paciente__etiqueta">Sistólica</label>
+                            <div class="ficha-paciente__cuadro-presion">120 mmHg</div>
+                        </div>
+                        <span class="ficha-paciente__separador">/</span>
+                        <div class="ficha-paciente__presion">
+                            <label class="ficha-paciente__etiqueta">Diastólica</label>
+                            <div class="ficha-paciente__cuadro-presion">80 mmHg</div>
+                        </div>
+                    </div>
                 </div>
             </div>
             
+            <h3 class="ficha-paciente__titulo-afectaciones">Afectaciones:</h3>
+            <div class="ficha-paciente__entrada-larga">
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum deserunt facilis asperiores repellat doloribus distinctio cupiditate,
+            </div>
+
+            <!-- Mapa -->
+            <div class="mapa-contenedor">
+                <div id="map"></div>
+                <div class="mapa-contenedor__llegada-estimada">
+                    <p class="llegada">Llegada Estimada: </p>
+                    <p class="tiempo">10min.</p>
+                </div>
+            </div>
         </div>
-        <div class="section traslado-section">
-            <div class="title title--tras">Traslado</div>
-            <div class="notifications-container trasla">
-                <div class="notification-box noti-box-tras" >
-                    <p class="notification-title">Traslado</p>
-                    <p class="notification-time">18:08pm</p>
-                    <p class="notification-description">Descripción corta del traslado...</p>
-                </div>
-                <div class="notification-box noti-box-tras" >
-                    <p class="notification-title">Traslado</p>
-                    <p class="notification-time">18:08pm</p>
-                    <p class="notification-description">Descripción corta del traslado...</p>
-                </div>
-                <div class="notification-box noti-box-tras" >
-                    <p class="notification-title">Traslado</p>
-                    <p class="notification-time">18:08pm</p>
-                    <p class="notification-description">Descripción corta del traslado...</p>
-                </div>
-                <div class="notification-box noti-box-tras" >
-                    <p class="notification-title">Traslado</p>
-                    <p class="notification-time">18:08pm</p>
-                    <p class="notification-description">Descripción corta del traslado...</p>
-                </div>
-        </div>
-    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
