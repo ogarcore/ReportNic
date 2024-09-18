@@ -24,42 +24,6 @@
     padding-bottom: 5px;
 }
 
-.profile-section p, .profile-section ul, .profile-section table {
-    font-size: 16px;
-    color: #555;
-}
-
-.profile-section ul {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-.profile-section ul li {
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.profile-section table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.profile-section table th,
-.profile-section table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-.profile-section table th {
-    background-color: #1d549b;
-    color: white;
-}
-
-.profile-section table tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
 .form-group {
     margin-bottom: 20px;
 }

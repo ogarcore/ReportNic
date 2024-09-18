@@ -49,30 +49,8 @@
         <div class="emergency-section">
             <div class="title title--emer">Emergencia</div>
             <div class="notifications-container emergen">
-                <div class="notification-box " >
-                    <p class="notification-title ">Emergencia</p>
-                    <p class="notification-time">15:38pm</p>
-                    <p class="notification-description">Descripción corta de la emergencia...</p>
-                </div>
-                <div class="notification-box " >
-                    <p class="notification-title ">Emergencia</p>
-                    <p class="notification-time">15:38pm</p>
-                    <p class="notification-description">Descripción corta de la emergencia...</p>
-                </div>
-                <div class="notification-box " >
-                    <p class="notification-title ">Emergencia</p>
-                    <p class="notification-time">15:38pm</p>
-                    <p class="notification-description">Descripción corta de la emergencia...</p>
-                </div>
-                <div class="notification-box " >
-                    <p class="notification-title ">Emergencia</p>
-                    <p class="notification-time">15:38pm</p>
-                    <p class="notification-description">Descripción corta de la emergencia...</p>
-                </div>
-                <div class="notification-box " >
-                    <p class="notification-title ">Emergencia</p>
-                    <p class="notification-time">15:38pm</p>
-                    <p class="notification-description">Descripción corta de la emergencia...</p>
+                <div class="notification-section " >
+                        <div id="notifications"></div>
                 </div>
                 <!-- Repetir otras notificaciones si es necesario -->
             </div>
@@ -82,22 +60,28 @@
         <div class="patient-section">
             <h1 class="ficha-paciente__titulo">Ficha de Paciente</h1>
             <div class="ficha-paciente__linea-info">
-                <span class="ficha-paciente__fecha">Fecha: 04/09/2024</span>
-                <span class="ficha-paciente__hora">Hora de Emergencia: 19:40 pm</span>
+                <div>
+                    <label >Hora:</label>
+                    <span id="patient-time"></span>
+                </div>
+                <div>
+                    <label>Fecha: </label>
+                    <span id="patient-date"></span>
+                </div>
             </div>
             <div class="ficha-paciente">
                 <div class="ficha-paciente__info-column">
                     <div class="ficha-paciente__seccion-info">
-                        <label class="ficha-paciente__etiqueta">Nombre:</label>
-                        <div class="ficha-paciente__entrada-fija">Juan Carlos</div>
+                        <label class="ficha-paciente__etiqueta">Nombre: </label>
+                        <input type="text" id="patient-name" disabled>
                     </div>
                     <div class="ficha-paciente__seccion-info">
                         <label class="ficha-paciente__etiqueta">Apellidos:</label>
-                        <div class="ficha-paciente__entrada-fija">Cantillano Ferrufino</div>
+                        <input type="text" id="patient-lastname" disabled>
                     </div>
                     <div class="ficha-paciente__seccion-info">
                         <label class="ficha-paciente__etiqueta">Edad:</label>
-                        <div class="ficha-paciente__entrada-fija">45 años</div>
+                        <input type="text" id="patient-age" disabled>
                     </div>
                 </div>
                 <div class="ficha-paciente__seccion-presion">
@@ -105,12 +89,12 @@
                     <div class="ficha-paciente__valores-presion">
                         <div class="ficha-paciente__presion">
                             <label class="ficha-paciente__etiqueta">Sistólica</label>
-                            <div class="ficha-paciente__cuadro-presion">120 mmHg</div>
+                            <input type="text" id="patient-blood-pressure-systolic" disabled>
                         </div>
                         <span class="ficha-paciente__separador">/</span>
                         <div class="ficha-paciente__presion">
                             <label class="ficha-paciente__etiqueta">Diastólica</label>
-                            <div class="ficha-paciente__cuadro-presion">80 mmHg</div>
+                            <input type="text" id="patient-blood-pressure-diastolic" disabled>
                         </div>
                     </div>
                 </div>
@@ -118,7 +102,7 @@
             
             <h3 class="ficha-paciente__titulo-afectaciones">Afectaciones:</h3>
             <div class="ficha-paciente__entrada-larga">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum deserunt facilis asperiores repellat doloribus distinctio cupiditate,
+                <textarea type="text" id="patient-conditions" disabled></textarea>
             </div>
 
             <!-- Mapa -->
@@ -131,7 +115,8 @@
             </div>
         </div>
 
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="script.js" defer></script>
 </body>
 </html>

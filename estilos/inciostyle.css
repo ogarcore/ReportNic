@@ -37,7 +37,7 @@ h2{
     padding: 20px;
     padding-top: 8px;
     box-sizing: border-box;
-    gap: 15px;
+    gap: 12px;
 }
 
 .emergency-section {
@@ -70,9 +70,10 @@ h2{
     max-height: 490px;
 }
 
-.notification-box {
+.notification {
     color: #ffffff;
     padding: 15px;
+    padding-top: 5px;
     padding-bottom: 6px;
     margin: 5px 10px 10px;
     border-radius: 6px;
@@ -81,7 +82,18 @@ h2{
     background-color: #cc3e34;
 }
 
-.notification-box:hover {
+.notification p {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px; 
+}
+
+.notification h3{
+    margin-top:10px ;
+}
+
+.notification:hover {
     background-color: #b1332a;
 }
 
@@ -168,13 +180,17 @@ h2{
     font-weight: bold;
 }
 
-.ficha-paciente__entrada-fija {
+#patient-name,#patient-lastname,#patient-age{
     color: #333;
+    font-size: 16.5px;
+    font-family: Montserrat;
+    font-weight: 400;
     padding: 5px;
     padding-bottom: 2px;
     margin: 4px 5px 10px;
     width: 100%;
     max-width: 225px;
+    border: none ;
     border-bottom: 2px solid #1d549b80;
     text-align: left;
 }
@@ -207,7 +223,10 @@ h2{
     align-items: center;
 }
 
-.ficha-paciente__cuadro-presion {
+#patient-blood-pressure-systolic,#patient-blood-pressure-diastolic{
+    font-size: 16px;
+    font-family: Montserrat;
+    font-weight: 400;
     padding: 9px;
     margin-top: 10px;
     border-radius: 5px;
@@ -232,16 +251,40 @@ h2{
     color: #222;
 }
 
-.ficha-paciente__entrada-larga {
+
+#patient-conditions{
     color: #222;
+    font-size: 16px;
+    font-family: Montserrat;
+    font-weight: 400;
     background-color: #6f9dce60;
     border: 1px solid #adcfeee7;
-    height: 200px;
+    height: 100px;
+    width: 96%;
     padding: 10px;
     padding-top:8px;
     border-radius: 5px;
+    resize: none;
     overflow: auto;
-    text-align: left;
+}
+
+#patient-conditions::-webkit-scrollbar {
+    width: 10px;
+}
+
+#patient-conditions::-webkit-scrollbar-thumb {
+    background-color: #6f9dce; /* Color de la barra de desplazamiento */
+    border-radius: 10px; /* Bordes redondeados */
+    border: 2px solid #adcfeee7; /* Borde alrededor del scrollbar */
+}
+
+#patient-conditions::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(120, 175, 226); /* Color cuando se pasa el cursor */
+}
+
+#patient-conditions::-webkit-scrollbar-track {
+    background-color: #f0f4f8; /* Fondo del área del scrollbar */
+    border-radius: 10px;
 }
 
 /* Mapa */
