@@ -1,0 +1,45 @@
+body {
+    font-family: Montserrat, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+}
+
+h2 {
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+}
+
+.table-container {
+    width: 90%;
+    margin: 0 auto;
+    overflow-x: auto;
+    background-color: #fff;
+    margin-top: 25px;
+    padding: 10px 20px 20px;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    color: #222;
+}
+
+table, th, td {
+    border: 1px solid #bbb;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #1d549b;
+    color: white;
+}
+
+

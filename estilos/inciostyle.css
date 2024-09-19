@@ -37,7 +37,7 @@ h2{
     padding: 20px;
     padding-top: 8px;
     box-sizing: border-box;
-    gap: 12px;
+    gap: 10px;
 }
 
 .emergency-section {
@@ -70,7 +70,25 @@ h2{
     max-height: 490px;
 }
 
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px); /* Empieza un poco más arriba */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* Termina en la posición original */
+    }
+}
+
+.fadeInDown {
+    animation: fadeInDown 0.2s ease-out;
+}
+
+
+
 .notification {
+    position: relative;
     color: #ffffff;
     padding: 15px;
     padding-top: 5px;
@@ -80,13 +98,33 @@ h2{
     cursor: pointer;
     transition: background-color 0.3s ease;
     background-color: #cc3e34;
+    opacity: 0; /* Empieza invisible */
+    animation: fadeInDown 0.5s forwards;
+}
+
+.notification .close-btn {
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background-color: #d35d55;
+    border: none;
+    border-radius: 5px;
+    width: 35px;
+    height: 35px;
+    font-size: 25px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.notification .close-btn:hover {
+    color: #800000;
 }
 
 .notification p {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 300px; 
+    max-width: 340px; 
 }
 
 .notification h3{

@@ -39,7 +39,7 @@ body {
 
 .form {
     background: #eee;
-    width: 350px;
+    width: 370px;
     margin: auto;
     padding: 20px;
     border-radius: 8px;
@@ -61,14 +61,14 @@ body {
 }
 
 .title--login{
-    margin: 15px 0;
+    margin: 15px 0 10px;
 }
 
 .form__subtitle {
     font-size: 16px;
-    margin: 30px 0 10px;
+    margin: 5px 0 50px;
     text-align: center;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .form__link {
@@ -129,6 +129,13 @@ body {
 
 .form__input::placeholder {
     color: #666;
+}
+
+.form__error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+    display: none; /* Oculto por defecto */
 }
 
 .form__group {

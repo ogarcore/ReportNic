@@ -16,16 +16,19 @@
     </header>
     <form class="form form--login">
         <h2 class="form__title title--login">Inicio de Sesión</h2>
+        <p class="form__subtitle">Accede a tu panel de gestión de ReportNic.</p>
         <div class="form__main">
             <label for="text" class="form__label">Usuario</label>
             <input type="text" id="text" class="form__input" placeholder="Escriba su usuario">
             <label for="password" class="form__label">Contraseña</label>
             <input type="password" id="password" class="form__input" placeholder="Escriba su contraseña">
+            <div id="error-message" class="form__error"></div>
             <div class="form__group group--margin">
                 <input type="checkbox" id="checkbox" class="form__checkbox">
                 <label for="checkbox" class="form__label form__label--checkbox">Recordar contraseña</label>
             </div>
             <input type="submit" class="form__button" value="Iniciar Sesion">
+            <p class="form__forgot-password">¿Olvisate tu contraseña?</p>
         </div>
     </form>
     <footer class="footer footer--margin">
@@ -33,6 +36,7 @@
             Copyright © 2024 ReportNic. Todos los derechos reservados. La reproducción o distribución de este contenido sin permiso previo está prohibida.
         </p>
     </footer>
+    <script type="module" src="login.js"></script>
 </body>
 </html>
 

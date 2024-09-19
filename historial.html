@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial de Alertas</title>
+    <title>Historial de Notificaciones</title>
     <link rel="stylesheet" href="estilos/historialstyle.css">
     <link rel="stylesheet" href="estilos/headerstyle.css">
     <link rel="stylesheet" href="estilos/fonts.css">
@@ -21,7 +21,7 @@
         <nav class="header-menu">
             <ul>
                 <li><a href="inicio.html">Inicio</a></li>
-                <li><a href="historial.html" id="historial--link">Historial</a></li>
+                <li><a href="historial.html">Historial</a></li>
                 <li><a href="contacto.html">Contáctanos</a></li>
             </ul>
             <div class="profile-menu" id="profileMenu">
@@ -38,29 +38,19 @@
     <div class="profile-container">
         <div class="profile-body">
             <div class="profile-section">
-                <h2>Búsqueda y Filtrado</h2>
+                <h2>Búsqueda del Historial</h2>
                 <form action="#">
+                    <div class="form-group">
+                        <label for="search-name">Nombre:</label>
+                        <input type="text" id="search-name" name="search-name" placeholder="Ingrese el nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="search-lastname">Apellido:</label>
+                        <input type="text" id="search-lastname" name="search-lastname" placeholder="Ingrese el apellido">
+                    </div>
                     <div class="form-group">
                         <label for="search-date">Fecha:</label>
                         <input type="date" id="search-date" name="search-date">
-                    </div>
-                    <div class="form-group">
-                        <label for="emergency-type">Tipo de Emergencia:</label>
-                        <select id="emergency-type" name="emergency-type">
-                            <option value="all">Todos</option>
-                            <option value="medical">Emergencia Médica</option>
-                            <option value="fire">Incendio</option>
-                            <option value="rescue">Rescate</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="alert-status">Estado de la Alerta:</label>
-                        <select id="alert-status" name="alert-status">
-                            <option value="all">Todos</option>
-                            <option value="resolved">Resuelta</option>
-                            <option value="in-process">En Proceso</option>
-                            <option value="pending">Pendiente</option>
-                        </select>
                     </div>
                     <button type="submit">Buscar</button>
                 </form>
@@ -74,9 +64,8 @@
         </div>
     </div>
 
-    <footer class="footer">
-        <p>&copy; 2024 ReportNic. Todos los derechos reservados.</p>
-    </footer>
-    <script src="script.js"></script>
+
+    
+    <script type="module" src="historial.js" defer></script>
 </body>
 </html>
