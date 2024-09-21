@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-// Configuración de Firebase
+
 const firebaseConfig = {
     apiKey: "AIzaSyBPbr-ig4ukpRmtrtpiBQX5vZneMpLpv1Y",
     authDomain: "reportnic-pruebanoti.firebaseapp.com",
@@ -12,19 +12,19 @@ const firebaseConfig = {
     measurementId: "G-DSGS2P0DE8"
 };
 
-// Inicializar Firebase y Firestore
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Arreglo para almacenar las notificaciones
+
 let notifications = [];
 
-// Obtener las notificaciones ocultas de localStorage
+
 function getHiddenNotifications() {
     return JSON.parse(localStorage.getItem('hiddenNotifications')) || [];
 }
 
-// Guardar las notificaciones ocultas en localStorage
+
 function hideNotification(notificationId) {
     let hiddenNotifications = getHiddenNotifications();
     if (!hiddenNotifications.includes(notificationId)) {
@@ -33,7 +33,7 @@ function hideNotification(notificationId) {
     localStorage.setItem('hiddenNotifications', JSON.stringify(hiddenNotifications));
 }
 
-// Función para escuchar notificaciones en tiempo real (sin orderBy)
+
 function listenToNotifications() {
     const notifCollection = collection(db, "coleccion");
 
@@ -41,13 +41,13 @@ function listenToNotifications() {
         snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
                 const data = change.doc.data();
-                const timestamp = data.dateTime.toDate(); // Convertir el timestamp a objeto Date
-                const date = timestamp.toISOString().split('T')[0]; // Obtener solo la fecha
-                const time = timestamp.toTimeString().split(' ')[0]; // Obtener solo la hora
+                const timestamp = data.dateTime.toDate();
+                const date = timestamp.toISOString().split('T')[0]; 
+                const time = timestamp.toTimeString().split(' ')[0]; 
 
-                // Revisar si la notificación está oculta
+                
                 if (!getHiddenNotifications().includes(change.doc.id)) {
-                    // Agregar notificación en orden de llegada (FIFO)
+                    
                     notifications.push({
                         id: change.doc.id,
                         date,
@@ -60,43 +60,43 @@ function listenToNotifications() {
                         conditions: data.conditions
                     });
 
-                    renderNotifications();  // Renderizar las notificaciones
+                    renderNotifications(); 
                 }
             }
         });
     });
 }
 
-// Función para renderizar las notificaciones
-let lastNotificationIndex = -1; // Para controlar la última notificación
 
-// Función para renderizar las notificaciones
+let lastNotificationIndex = -1; 
+
+
 function renderNotifications() {
     const notificationsContainer = document.getElementById('notifications');
     
     notifications.forEach((notification, index) => {
         if (index > lastNotificationIndex) {
             const notificationDiv = document.createElement('div');
-            notificationDiv.classList.add('notification', 'fadeInDown'); // Clase de animación
+            notificationDiv.classList.add('notification', 'fadeInDown'); 
             notificationDiv.innerHTML = `
-                <h3>Emergencia</h3>
+                <h3>Emergencia en camino</h3>
                 <p>Hora: ${notification.time}</p>
                 <p>${notification.conditions}</p>
                 <button class="close-btn">&times;</button>
             `;
 
-            // Evento para cargar datos del paciente al hacer clic en la notificación
+            
             notificationDiv.addEventListener('click', () => loadPatientData(index));
 
-            // Evitar que el botón de cierre afecte el evento de selección de notificación
+            
             notificationDiv.querySelector('.close-btn').addEventListener('click', (e) => {
-                e.stopPropagation(); // Para evitar que se dispare el evento de clic en la notificación
+                e.stopPropagation(); 
                 
-                // Esperar la duración de la animación (0.5s en este caso) antes de eliminarla
+                
                 setTimeout(() => {
-                    hideNotification(notification.id); // Ocultar la notificación permanentemente
-                    notificationDiv.remove(); // Eliminar la notificación visualmente
-                    clearPatientData(); // Limpiar la ficha del paciente
+                    hideNotification(notification.id); 
+                    notificationDiv.remove(); 
+                    clearPatientData(); 
                 },);
             });
 
@@ -108,7 +108,7 @@ function renderNotifications() {
 }
 
 
-// Función para limpiar la ficha del paciente
+
 function clearPatientData() {
     document.getElementById('patient-time').textContent = '';
     document.getElementById('patient-date').textContent = '';
@@ -118,17 +118,17 @@ function clearPatientData() {
     document.getElementById('patient-blood-pressure-systolic').value = '';
     document.getElementById('patient-blood-pressure-diastolic').value = '';
     document.getElementById('patient-conditions').value = '';
-    isNotificationSelected = false; // Vuelve a activar la actualización del reloj
+    isNotificationSelected = false;
 }
 
-let isNotificationSelected = false; // Variable de control
+let isNotificationSelected = false; 
 
-// Función para cargar los datos del paciente al hacer clic en una notificación
+
 function loadPatientData(index) {
     const notification = notifications[index];
     isNotificationSelected = true;
 
-    // Establecer los valores de fecha y hora de la notificación seleccionada
+    
     document.getElementById('patient-time').textContent = notification.time;
     document.getElementById('patient-date').textContent = notification.date;
     
@@ -140,26 +140,26 @@ function loadPatientData(index) {
     document.getElementById('patient-conditions').value = notification.conditions;
 }
 
-// Función para actualizar la hora y fecha actuales cuando la ficha está vacía
+
 function updateTime() {
-    if (!isNotificationSelected) { // Solo actualizar si no se ha seleccionado una notificación
+    if (!isNotificationSelected) { 
         const now = new Date();
-        const timeString = now.toLocaleTimeString('es-ES', { hour12: false }); // Formato de 24 horas
+        const timeString = now.toLocaleTimeString('es-ES', { hour12: false }); 
         document.getElementById('patient-time').textContent = timeString;
         document.getElementById('patient-date').textContent = now.toLocaleDateString();
     }
 }
 
-// Llamar a la función para mostrar la hora actual al cargar la página
+
 updateTime();
 
-// Actualizar la hora cada segundo
+
 setInterval(updateTime, 1000);
 
-// Iniciar el listener de notificaciones al cargar la página
+
 window.onload = listenToNotifications;
 
-// Mapa
+
 document.addEventListener('DOMContentLoaded', function() {
     const coordenadasManagua = [12.126970, -86.303542]; 
     const map = L.map('map').setView(coordenadasManagua, 13); 
@@ -171,28 +171,3 @@ document.addEventListener('DOMContentLoaded', function() {
         .bindPopup(' Managua, Nicaragua.')
         .openPopup();
 });
-
-// Menú del perfil
-document.addEventListener("DOMContentLoaded", function() {
-    const profileMenu = document.getElementById("profileMenu");
-    const dropdownMenu = document.getElementById("dropdownMenu");
-
-    profileMenu.addEventListener("click", function(e) {
-        e.stopPropagation();
-        profileMenu.classList.toggle("active");
-    });
-
-    document.addEventListener("click", function(e) {
-        if (!profileMenu.contains(e.target)) {
-            profileMenu.classList.remove("active");
-        }
-    });
-});
-
-function exportToCSV() {
-    alert("Exportando a CSV...");
-}
-
-function exportToPDF() {
-    alert("Exportando a PDF...");
-}

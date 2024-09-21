@@ -1,19 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
     const resultadosTable = document.getElementById("resultados-table").querySelector("tbody");
-
-    // Obtener los resultados almacenados en el localStorage
     const searchResults = JSON.parse(localStorage.getItem("searchResults"));
 
     if (searchResults && searchResults.length > 0) {
         searchResults.forEach(result => {
-            // Crear una fila por cada documento
             const row = document.createElement("tr");
-
-            // Formatear la fecha y la hora
             const dateTime = new Date(result.dateTime.seconds * 1000);
             const formattedDateTime = `${dateTime.toLocaleDateString()} ${dateTime.toLocaleTimeString()}`;
-
-            // Agregar los datos a la fila
             row.innerHTML = `
                 <td>${result.firstName}</td>
                 <td>${result.lastName}</td>
@@ -23,14 +16,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${result.diastolic}</td>
                 <td>${formattedDateTime}</td>
             `;
-
-            // Añadir la fila a la tabla
             resultadosTable.appendChild(row);
         });
     } else {
-        // Si no hay resultados, mostrar un mensaje
         const row = document.createElement("tr");
         row.innerHTML = `<td colspan="7">No se encontraron resultados.</td>`;
         resultadosTable.appendChild(row);
     }
 });
+
+window.exportToExcel = function() {
+    const table = document.getElementById("resultados-table");
+    const workbook = XLSX.utils.table_to_book(table, { sheet: "Resultados" });
+    const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+
+    function s2ab(s) {
+        const buf = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buf);
+        for (let i = 0; i < s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+
+    const blob = new Blob([s2ab(wbout)], { type: 'application/octet-stream' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'resultados.xlsx';
+    a.click();
+    URL.revokeObjectURL(url);
+}

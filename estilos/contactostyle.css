@@ -2,11 +2,11 @@
     background-color: #fff;
     border-radius: 10px;
     margin: auto;
-    margin-top: 20px; /* Ajuste para que no se superponga con el header */
+    margin-top: 20px; 
     box-shadow: 0 0 5px #777;
     max-width: calc(100% - 550px); 
     min-width: 750px;
-    width: calc(100% - 200px); /* Asegura que el contenedor esté centrado */
+    width: calc(100% - 200px); 
     padding: 40px;
     margin-left: calc(125px + 100px);
 }

@@ -42,4 +42,24 @@ th {
     color: white;
 }
 
+.profile-section h2{
+    text-align: left;
+    margin-left: 30px;
+}
+
+button{
+    padding: 12px 20px;
+    background-color: #1d549b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-left: 60px;
+}
+
+button:hover {
+    background-color: #0763a0;
+}
 

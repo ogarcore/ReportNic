@@ -1,8 +1,8 @@
-// Importa Firebase y Firestore
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
-// Configuración de Firebase
+
 const firebaseConfig = {
     apiKey: "AIzaSyBPbr-ig4ukpRmtrtpiBQX5vZneMpLpv1Y",
     authDomain: "reportnic-pruebanoti.firebaseapp.com",
@@ -13,19 +13,19 @@ const firebaseConfig = {
     measurementId: "G-DSGS2P0DE8"
 };
 
-// Inicializar Firebase y Firestore
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Referencias a los elementos del formulario
+
 const loginForm = document.querySelector('form');
 const userField = document.getElementById('text');
 const passwordField = document.getElementById('password');
 
-// Función para verificar usuario y contraseña
+
 async function verificarCredenciales(usuario, contrasena) {
     try {
-        const usuariosCollection = collection(db, 'usuarios_hospitales');
+        const usuariosCollection = collection(db, 'usuarios_administradores_hospitales');
         const snapshot = await getDocs(usuariosCollection);
         let usuarioValido = false;
         
@@ -43,24 +43,24 @@ async function verificarCredenciales(usuario, contrasena) {
     }
 }
 
-// Evento al enviar el formulario
+
 loginForm.addEventListener('submit', async (event) => {
-    event.preventDefault();  // Evitar el envío del formulario por defecto
+    event.preventDefault();  
 
     const usuario = userField.value;
     const contrasena = passwordField.value;
-    const errorMessageDiv = document.getElementById('error-message');  // Selecciona el div del error
+    const errorMessageDiv = document.getElementById('error-message');  
 
-    // Limpiar mensaje de error anterior
+
     errorMessageDiv.textContent = '';
     errorMessageDiv.style.display = 'none';
 
     const esValido = await verificarCredenciales(usuario, contrasena);
 
     if (esValido) {
-        window.location.href = 'inicio.html';  // Redirigir a la página de inicio
+        window.location.href = 'inicio.html';  
     } else {
-        errorMessageDiv.textContent = 'Usuario o contraseña incorrectos';  // Mostrar el mensaje de error
-        errorMessageDiv.style.display = 'block';  // Hacerlo visible
+        errorMessageDiv.textContent = 'Usuario o contraseña incorrectos'; 
+        errorMessageDiv.style.display = 'block';  
     }
 });

@@ -1,4 +1,8 @@
 /* Profile Container Centered */
+body{
+    font-family: Montserrat, sans-serif;
+}
+
 .profile-container {
     background-color: #fff;
     border-radius: 10px;
@@ -44,7 +48,12 @@
     color: #333;
 }
 
-button[type="submit"], button[type="button"] {
+#search-date{
+    width: 130px;
+    cursor:text;
+}
+
+button[type="submit"]{
     padding: 12px 20px;
     background-color: #1d549b;
     color: white;
@@ -54,10 +63,11 @@ button[type="submit"], button[type="button"] {
     font-size: 16px;
     transition: background-color 0.3s;
     margin-right: 10px;
+    width: 150px;
 }
 
-button[type="submit"]:hover, button[type="button"]:hover {
-    background-color: #004d40;
+button[type="submit"]:hover {
+    background-color: #0763a0;
 }
 
 /* Footer */

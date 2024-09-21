@@ -112,7 +112,7 @@ body {
 }
 
 .form__input:focus{
-    border-bottom: 1px solid #777;
+    border-bottom: 1px solid #fd0000;
 }
 
 .form__input:focus,
@@ -135,7 +135,7 @@ body {
     color: red;
     font-size: 14px;
     margin-top: 5px;
-    display: none; /* Oculto por defecto */
+    display: none; 
 }
 
 .form__group {
