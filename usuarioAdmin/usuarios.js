@@ -48,8 +48,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 
-
-
 // Obtener elementos del DOM
 const modals = document.querySelectorAll('.modal');
 const editModal = document.getElementById('editModal');
@@ -65,12 +63,18 @@ document.querySelectorAll('.btn-action').forEach(button => {
     });
 });
 
-// Cerrar los modales cuando se hace clic en el botón de cerrar
 closeButtons.forEach(button => {
     button.addEventListener('click', () => {
         modals.forEach(modal => modal.style.display = 'none');
     });
 });
+
+const btnCancel = document.querySelector('.btn-cancel'); // Selecciona el botón de cancelar
+if (btnCancel) {
+    btnCancel.addEventListener('click', () => {
+        deleteModal.style.display = 'none'; // Cierra el modal de eliminación
+    });
+}
 
 // Cerrar el modal cuando se hace clic fuera de su contenido
 window.addEventListener('click', (e) => {

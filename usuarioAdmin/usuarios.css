@@ -338,10 +338,27 @@ body {
 }
 
 /* Estilos para el modal de historial */
+#historyModal .modal-content{
+    width: 70%;
+    max-height: 60%; 
+    overflow-y: auto;
+    border-radius: 5px;
+}
+
+.table-container {
+    width: 90%;
+    margin: 0 auto;
+    margin: 0;
+    padding: 10px 40px 20px;
+    border-radius: 10px;
+    overflow-x: none;
+}
+
 #historyModal .modal-content h2 {
     color: #3480d8;
     background-color: transparent;
-    margin-bottom: 20px;
+    margin: 0; 
+    padding-bottom:0 ;
 }
 
 .history-content {
@@ -352,10 +369,47 @@ body {
     border-radius: 5px;
 }
 
-.history-content p {
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 10px;
+#resultados-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    color: #222;
+}
+
+#resultados-table,#resultados-table th,#resultados-table td {
+    border: 1px solid #bbb;
+}
+
+#resultados-table th,#resultados-table td{
+    padding: 12px;
+    text-align: left;
+}
+
+#resultados-table th {
+    background-color: #1d549b;
+    color: white;
+}
+
+.profile-section h2{
+    text-align: left;
+    margin-left: 30px;
+}
+
+.profile-section button{
+    padding: 12px 20px;
+    background-color: #1d549b;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-left: 40px;
+    margin-top: 15px;
+}
+
+.profile-section button:hover {
+    background-color: #0763a0;
 }
 
 

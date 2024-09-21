@@ -22,6 +22,14 @@
                 <li><a href="usuarios.html">Usuarios</a></li>
                 <li><a href="notihistorial.html">Historial</a></li>
             </ul>
+            <div class="profile-menu" id="profileMenu">
+                <img src="../images/perfil.png" alt="Foto de perfil" class="profile-pic" id="profilePic">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="perfiladmin.html">Perfil</a>
+                    <a href="contactanos.html">Contactanos</a>
+                    <a href="index.html">Cerrar Sesión</a>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -83,7 +91,7 @@
                     <th>Apellido</th>
                     <th>Usuario</th>
                     <th>Contraseña</th>
-                    <th>Cédula-DNI</th>
+                    <th>Cédula</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -168,12 +176,106 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Historial del Usuario</h2>
-            <div class="history-content">
-                <!-- Aquí se mostrarán los datos del historial -->
+            <div class="table-container">
+                <table id="resultados-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Edad</th>
+                            <th>Condiciones</th>
+                            <th>Presion Sistólica</th>
+                            <th>Presion Diastólica</th>
+                            <th>Fecha y Hora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Juan</td>
+                            <td>Pérez</td>
+                            <td>50</td>
+                            <td>se callo</td>
+                            <td>140</td>
+                            <td>80</td>
+                            <td>08/08/2024 20:54pm</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Juan</td>
+                            <td>Pérez</td>
+                            <td>50</td>
+                            <td>se callo</td>
+                            <td>140</td>
+                            <td>80</td>
+                            <td>08/08/2024 20:54pm</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Juan</td>
+                            <td>Pérez</td>
+                            <td>50</td>
+                            <td>se callo</td>
+                            <td>140</td>
+                            <td>80</td>
+                            <td>08/08/2024 20:54pm</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Juan</td>
+                            <td>Pérez</td>
+                            <td>50</td>
+                            <td>se callo</td>
+                            <td>140</td>
+                            <td>80</td>
+                            <td>08/08/2024 20:54pm</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Juan</td>
+                            <td>Pérez</td>
+                            <td>50</td>
+                            <td>se callo</td>
+                            <td>140</td>
+                            <td>80</td>
+                            <td>08/08/2024 20:54pm</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Juan</td>
+                            <td>Pérez</td>
+                            <td>50</td>
+                            <td>se callo</td>
+                            <td>140</td>
+                            <td>80</td>
+                            <td>08/08/2024 20:54pm</td>
+                        </tr>
+                    </tbody>
+                    <tbody>
+                        <tr>
+                            <td>Juan</td>
+                            <td>Pérez</td>
+                            <td>50</td>
+                            <td>se callo</td>
+                            <td>140</td>
+                            <td>80</td>
+                            <td>08/08/2024 20:54pm</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="profile-section">
+                    <h2>Exportar Historial</h2>
+                    <button type="button" onclick="exportToExcel()">Exportar a Excel</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="usuarios.js"></script>
+    <script src="header_admin.js"></script>
 </body>
 </html>
