@@ -14,16 +14,18 @@
         <img src="images/logo.png" alt="Logo" class="header__logo">
         <h1 class="header__title">ReportNic.</h1>
     </header>
-    <form class="form form--login">
+    <form class="form form--login" id="loginForm">
         <h2 class="form__title title--login">Inicio de Sesión</h2>
         <p class="form__subtitle">Accede a tu panel de gestión de ReportNic.</p>
         <div class="form__main">
-            <label for="text" class="form__label">Usuario</label>
-            <input type="text" id="text" class="form__input" placeholder="Escriba su usuario">
+            <label for="user" class="form__label">Usuario</label>
+            <input type="text" id="user" name="user" class="form__input" placeholder="Escriba su usuario" required>
+    
             <label for="password" class="form__label">Contraseña</label>
-            <input type="password" id="password" class="form__input" placeholder="Escriba su contraseña">
+            <input type="password" id="password" name="password" class="form__input" placeholder="Escriba su contraseña" required>
+    
             <label for="hospital" class="form__label">Escoge tu Hospital</label>
-            <select id="hospital" class="form__input">
+            <select id="hospital" name="hospital" class="form__input" required>
                 <option value="" disabled selected>Elija su opción</option>
                 <option value="hospitalVelezPaiz">Hospital Vélez Paiz</option>
                 <option value="hospitalBautista">Hospital Bautista</option>
@@ -33,8 +35,8 @@
                 <input type="checkbox" id="checkbox" class="form__checkbox">
                 <label for="checkbox" class="form__label form__label--checkbox">Recordar contraseña</label>
             </div>
-            <input type="submit" class="form__button" value="Iniciar Sesion">
-            <p class="form__forgot-password">¿Olvisate tu contraseña?</p>
+            <input type="submit" class="form__button" value="Iniciar Sesión">
+            <p class="form__forgot-password">¿Olvidaste tu contraseña?</p>
         </div>
     </form>
     <footer class="footer footer--margin">

@@ -15,11 +15,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const loginForm = document.querySelector('form');
-const userField = document.getElementById('text');
+const userField = document.getElementById('user');
 const passwordField = document.getElementById('password');
 const hospitalField = document.getElementById('hospital');
 
-async function verificarCredenciales(usuario, contrasena, hospital) {
+async function verificarCredenciales(usuario, contraseña, hospital) {
     let collectionName;
     
     // Determinar la colección según el hospital seleccionado
@@ -38,7 +38,7 @@ async function verificarCredenciales(usuario, contrasena, hospital) {
 
         snapshot.forEach(doc => {
             const data = doc.data();
-            if (data.user === usuario && data.password === contrasena) {
+            if (data.user === usuario && data.password === contraseña) {
                 usuarioValido = true;
             }
         });
