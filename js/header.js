@@ -14,3 +14,21 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+function iniciarSesion(usuario) {
+    localStorage.setItem('usuario', JSON.stringify(usuario));
+}
+
+// Recuperar los datos de usuario
+function obtenerUsuario() {
+    return JSON.parse(localStorage.getItem('usuario'));
+}
+
+// Cerrar sesión y redirigir al login
+document.getElementById('logout').addEventListener('click', () => {
+    localStorage.removeItem('usuario');
+    localStorage.removeItem('userNotifications'); // Limpiar notificaciones del usuario si lo deseas
+    window.location.href = 'index.html'; // Redirigir a la página de inicio de sesión
+});
+
+

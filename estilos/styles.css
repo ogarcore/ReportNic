@@ -11,7 +11,7 @@ body {
     position: fixed;
     width: 100vw;
     height: 100vh;
-    background-image: url('../images/fondo.jpg');
+    background-image: url('../images/fondo_admin.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -66,7 +66,7 @@ body {
 
 .form__subtitle {
     font-size: 16px;
-    margin: 5px 0 50px;
+    margin: 5px 0 30px;
     text-align: center;
     font-weight: 400;
 }
@@ -132,9 +132,8 @@ body {
 }
 
 .form__error {
-    color: red;
+    color: #d10d0d;
     font-size: 14px;
-    margin-top: 5px;
     display: none; 
 }
 
@@ -146,7 +145,7 @@ body {
 }
 
 .group--margin{
-    margin-bottom: 25px;
+    margin-bottom: 5px;
 }
 
 .form__checkbox {
