@@ -24,7 +24,7 @@ window.addEventListener('click', (event) => {
 
 //INICIALIZAR FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, orderBy, query, where, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -41,9 +41,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Referencia a la colección
-const usersCollection = collection(db, 'usuario_hospitalVelezPaiz');
+// Recuperar el valor del hospital almacenado en localStorage
+const hospital = localStorage.getItem('hospital');
 
+// Seleccionar la colección adecuada basada en el valor del hospital
+let usersCollection;
+if (hospital === 'Bautista') {
+    usersCollection = collection(db, 'usuario_hospitalBautista');
+} else if (hospital === 'Velez Paiz') {
+    usersCollection = collection(db, 'usuario_hospitalVelezPaiz');
+} else {
+    console.error('Hospital no reconocido.');
+}
 
 // Manejar el envío del formulario para crear un nuevo usuario
 const createUserForm = document.getElementById('createUserForm');
@@ -84,7 +93,7 @@ createUserForm.addEventListener('submit', async (e) => {
 
         // Si ya existe un usuario con el mismo dni, mostrar un mensaje de error
         if (!dniSnapshot.empty) {
-            dniError.textContent = 'Esta cedula ya está registrado.';
+            dniError.textContent = 'Esta cédula ya está registrada.';
             hasError = true;
         }
 
@@ -98,7 +107,7 @@ createUserForm.addEventListener('submit', async (e) => {
         const userCount = snapshot.size + 1;  // Calculamos el número de documentos existentes + 1
 
         // Crear el documento con nombre personalizado (user1, user2, etc.)
-        const userDocRef = doc(db, 'usuario_hospitalVelezPaiz', `user${userCount}`);
+        const userDocRef = doc(usersCollection, `user${userCount}`);
         await setDoc(userDocRef, {
             firstName: firstName,
             lastName: lastName,
@@ -127,7 +136,6 @@ const successModalCloseBtn = document.getElementById('successModalCloseBtn');
 successModalCloseBtn.addEventListener('click', () => {
     document.getElementById('successModal').style.display = 'none';
 });
-
 
 
 
@@ -180,7 +188,7 @@ window.addEventListener('DOMContentLoaded', loadUsersRealTime);
 
 
 
-
+//menu de opciones
 document.addEventListener("DOMContentLoaded", function() {
     // Usamos event delegation para detectar los clicks en los botones que se generan dinámicamente
     document.addEventListener('click', function(event) {
@@ -226,7 +234,6 @@ document.addEventListener("DOMContentLoaded", function() {
 const modals = document.querySelectorAll('.modal');
 const editModal = document.getElementById('editModal');
 const deleteModal = document.getElementById('deleteModal');
-const historyModal = document.getElementById('historyModal');
 const closeButtons = document.querySelectorAll('.close');
 
 // Usar event delegation para los botones generados dinámicamente
@@ -293,16 +300,26 @@ document.addEventListener('click', function (e) {
 
 // Cargar los datos del usuario seleccionado
 async function loadUserData(userId) {
-    const userDocRef = doc(db, 'usuario_hospitalVelezPaiz', userId);
+    // Recuperar el hospital desde localStorage
+    const hospital = localStorage.getItem('hospital');
+    let usersCollection;
+
+    if (hospital === 'Bautista') {
+        usersCollection = 'usuario_hospitalBautista';
+    } else if (hospital === 'Velez Paiz') {
+        usersCollection = 'usuario_hospitalVelezPaiz';
+    } else {
+        console.error('Hospital no reconocido.');
+        return;
+    }
+
+    const userDocRef = doc(db, usersCollection, userId);
     const userDoc = await getDoc(userDocRef);
 
     if (userDoc.exists()) {
         const userData = userDoc.data();
-        
-        // No cargar automáticamente el username ni el password
-        // Esto asegura que se requiera ingresar estos datos manualmente al editar
 
-        // Mostrar el modal
+        // Mostrar el modal sin cargar automáticamente los campos username y password
         editModal.style.display = 'flex';
         selectedUserId = userId; // Guardar el ID del usuario seleccionado
     } else {
@@ -369,40 +386,53 @@ editUserForm.addEventListener('submit', async (e) => {
     }
 
     // Verificar si ya existe un usuario con el mismo username (si se ingresó un username)
-    const usersCollection = collection(db, 'usuario_hospitalVelezPaiz');
-    if (username) {
-        const usernameQuery = query(usersCollection, where("user", "==", username));
-        const usernameSnapshot = await getDocs(usernameQuery);
+    const hospital = localStorage.getItem('hospital');
+let usersCollection;
 
-        // Si el username ya existe en otro usuario, mostrar error
-        if (!usernameSnapshot.empty && usernameSnapshot.docs[0].id !== selectedUserId) {
-            usernameError.textContent = 'Este nombre de usuario ya está en uso.';
-            return;
-        }
+if (hospital === 'Bautista') {
+    usersCollection = collection(db, 'usuario_hospitalBautista');
+} else if (hospital === 'Velez Paiz') {
+    usersCollection = collection(db, 'usuario_hospitalVelezPaiz');
+} else {
+    console.error('Hospital no reconocido.');
+    return;
+}
+
+if (username) {
+    const usernameQuery = query(usersCollection, where("user", "==", username));
+    const usernameSnapshot = await getDocs(usernameQuery);
+
+    // Si el username ya existe en otro usuario, mostrar error
+    if (!usernameSnapshot.empty && usernameSnapshot.docs[0].id !== selectedUserId) {
+        usernameError.textContent = 'Este nombre de usuario ya está en uso.';
+        return;
     }
+}
 
-    const userDocRef = doc(db, 'usuario_hospitalVelezPaiz', selectedUserId);
+const userDocRef = doc(usersCollection,selectedUserId);
 
-    // Crear objeto con los campos a actualizar (solo los que están llenos)
-    const updatedData = {};
-    if (username) {
-        updatedData.user = username;
-    }
-    if (password) {
-        updatedData.password = password;
-    }
-    updatedData.updatedAt = serverTimestamp(); // Actualizar la fecha de edición
 
-    try {
-        // Actualizar el documento en Firestore solo con los campos necesarios
-        await setDoc(userDocRef, updatedData, { merge: true }); // Merge para no sobrescribir campos no incluidos
+// Crear objeto con los campos a actualizar
+const updatedData = {};
+if (username) {
+    updatedData.user = username;
+}
+if (password) {
+    updatedData.password = password;
+}
+updatedData.updatedAt = serverTimestamp();
 
-        // Cerrar el modal después de la actualización
-        editModal.style.display = 'none';
-        document.getElementById('successedit').style.display = 'block';
-    } catch (error) {
-        console.error("Error al actualizar el usuario: ", error);
-    }
+try {
+    // Actualizar el documento en Firestore solo con los campos necesarios
+    await setDoc(userDocRef, updatedData, { merge: true });
+
+    // Cerrar el modal y mostrar el modal de éxito
+    editModal.style.display = 'none';
+    document.getElementById('successedit').style.display = 'block';
+} catch (error) {
+    console.error("Error al actualizar el usuario: ", error);
+}
+
 });
 
 const successeditCloseBtn = document.getElementById('successeditCloseBtn');
@@ -432,23 +462,33 @@ const btnDelete = document.querySelector('.btn-delete');
 if (btnDelete) {
     btnDelete.addEventListener('click', async () => {
         if (selectedUserToDelete) {
+            const hospital = localStorage.getItem('hospital');
+            let usersCollection;
+
+            if (hospital === 'Bautista') {
+                usersCollection = 'usuario_hospitalBautista';
+            } else if (hospital === 'Velez Paiz') {
+                usersCollection = 'usuario_hospitalVelezPaiz';
+            } else {
+            console.error('Hospital no reconocido.');
+            return;
+            }
+
+            const userDocRef = doc(db, usersCollection, selectedUserToDelete);
             try {
-                // Referencia al documento del usuario a eliminar
-                const userDocRef = doc(db, 'usuario_hospitalVelezPaiz', selectedUserToDelete);
                 await deleteDoc(userDocRef); // Eliminar el documento
 
-                // Cerrar el modal de eliminación
+                // Cerrar el modal y mostrar el modal de éxito
                 deleteModal.style.display = 'none';
-                
-                // Mostrar modal de éxito
                 successDeleteModal.style.display = 'flex';
             } catch (error) {
                 console.error("Error al eliminar el usuario: ", error);
                 alert('Hubo un error al eliminar el usuario.');
             }
-        }
-    });
-}
+
+                    }
+                });
+            }
 
 // Cerrar el modal de éxito
 const btnCloseSuccessDelete = document.getElementById('btnCloseSuccessDelete');

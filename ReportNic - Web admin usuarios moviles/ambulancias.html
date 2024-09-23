@@ -63,11 +63,14 @@
         <div class="modal-content">
             <span class="close" id="closeModal">&times;</span>
             <h2 id="subtitleModal">Agregar Ambulancia</h2>
-            <div class="contenedor">
-                <label for="matriculaInput">Matrícula:</label>
-                <input type="text" id="matriculaInput" required>
-            </div>
-            <button id="saveAmbulanceBtn">Guardar</button>
+            <form id="createUserForm">
+                <div class="contenedor">
+                    <label for="matriculaInput">Matrícula:</label>
+                    <input type="text" id="matriculaInput" required>
+                    <span id="submitError" class="error-message"></span>
+                </div>
+                <button id="saveAmbulanceBtn" type="submit">Guardar</button>
+            </form>
         </div>
     </div>
 

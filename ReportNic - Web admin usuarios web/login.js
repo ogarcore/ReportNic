@@ -1,7 +1,5 @@
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
-
 
 const firebaseConfig = {
     apiKey: "AIzaSyBPbr-ig4ukpRmtrtpiBQX5vZneMpLpv1Y",
@@ -13,36 +11,35 @@ const firebaseConfig = {
     measurementId: "G-DSGS2P0DE8"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
 
 const loginForm = document.querySelector('form');
 const userField = document.getElementById('text');
 const passwordField = document.getElementById('password');
 
-
 async function verificarCredenciales(usuario, contrasena) {
     try {
         const usuariosCollection = collection(db, 'usuarios_admin_notificacionesweb');
         const snapshot = await getDocs(usuariosCollection);
-        let usuarioValido = false;
         
+        let usuarioValido = false;
+        let usuarioData = null;
+
         snapshot.forEach(doc => {
             const data = doc.data();
             if (data.user === usuario && data.password === contrasena) {
                 usuarioValido = true;
+                usuarioData = data;  // Guardamos los datos del usuario
             }
         });
 
-        return usuarioValido;
+        return { usuarioValido, usuarioData };
     } catch (error) {
         console.error("Error al verificar credenciales:", error);
-        return false;
+        return { usuarioValido: false, usuarioData: null };
     }
 }
-
 
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();  
@@ -51,13 +48,16 @@ loginForm.addEventListener('submit', async (event) => {
     const contraseña = passwordField.value;
     const errorMessageDiv = document.getElementById('error-message');  
 
-
     errorMessageDiv.textContent = '';
     errorMessageDiv.style.display = 'none';
 
-    const esValido = await verificarCredenciales(usuario, contraseña);
+    const { usuarioValido, usuarioData } = await verificarCredenciales(usuario, contraseña);
 
-    if (esValido) {
+    if (usuarioValido && usuarioData) {
+        // Guardar datos en localStorage
+        localStorage.setItem('user', usuarioData.user);
+        localStorage.setItem('hospital', usuarioData.hospital);
+
         window.location.href = 'administrador.html';  
     } else {
         errorMessageDiv.textContent = 'Usuario o contraseña incorrectos'; 

@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, addDoc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -17,90 +17,139 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const modal = document.getElementById('addModal');
-  const btn = document.getElementById('addAmbulanceBtn');
-  const closeModal = document.getElementById('closeModal');
+const btn = document.getElementById('addAmbulanceBtn');
+const closeModal = document.getElementById('closeModal');
 
-  btn.onclick = function() {
+btn.onclick = function() {
     modal.style.display = 'block';
-  }
+}
 
-  closeModal.onclick = function() {
+closeModal.onclick = function() {
     modal.style.display = 'none';
-  }
+}
 
-  window.onclick = function(event) {
+window.addEventListener('click', (event) => {
     if (event.target == modal) {
-      modal.style.display = 'none';
+        modal.style.display = 'none';
     }
-  }
+});
 
-// Referencia a la colección de ambulancias
+
+
+// Referencia a la colección
 const ambulanciasRef = collection(db, 'ambulancias');
+
 
 // Función para generar un código único (puedes mejorar la lógica si prefieres)
 function generarCodigoAmbulancia() {
-  return 'AMB-' + Math.floor(1000 + Math.random() * 9000); // Código tipo AMB-1234
+    return 'AMB-' + Math.floor(1000 + Math.random() * 9000); // Código tipo AMB-1234
 }
 
-// Guardar Ambulancia
-document.getElementById('saveAmbulanceBtn').addEventListener('click', async () => {
-  const matricula = document.getElementById('matriculaInput').value;
-  
-  if (matricula === '') {
-    alert('La matrícula es requerida');
-    return;
-  }
 
-  const codigo = generarCodigoAmbulancia(); // Generar el código de la ambulancia
+// Manejar el envío del formulario para crear un nuevo usuario
+// Manejar el envío del formulario para crear una nueva ambulancia
+const createUserForm = document.getElementById('createUserForm');
+createUserForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  try {
-    await addDoc(ambulanciasRef, {
-      codigo: codigo,
-      matricula: matricula,
-      fechaCreacion: serverTimestamp()
+    // Obtener los valores de los campos del formulario
+    const matricula = document.getElementById('matriculaInput').value;
+
+    // Elementos para mostrar mensajes de error
+    const submitError = document.getElementById('submitError');
+
+    // Limpiar los mensajes de error previos
+    submitError.textContent = '';
+
+    try {
+        // Verificar si ya existe una ambulancia con la misma matrícula
+        const matriculaQuery = query(ambulanciasRef, where("matricula", "==", matricula));
+        const matriculaSnapshot = await getDocs(matriculaQuery);
+
+        let hasError = false;
+
+        // Si ya existe una ambulancia con la misma matrícula, mostrar un mensaje de error
+        if (!matriculaSnapshot.empty) {
+            submitError.textContent = 'Esta matrícula ya está en uso.';
+            hasError = true;
+        }
+
+        // Si hay errores, no continuar con la creación de la ambulancia
+        if (hasError) {
+            return;
+        }
+
+        const codigo = generarCodigoAmbulancia();
+
+        // Crear un nuevo documento en la colección "ambulancias"
+        const ambulanciaDocRef = doc(ambulanciasRef, `ambulancia_${codigo}`);
+        await setDoc(ambulanciaDocRef, {
+            matricula: matricula,
+            codigo: codigo,
+            fechaCreacion: serverTimestamp()
+        });
+
+        // Limpiar el formulario
+        createUserForm.reset();
+
+        // Cerrar el modal de creación de ambulancia
+        modal.style.display = 'none';
+
+        // Mostrar un mensaje de éxito o realizar alguna acción posterior
+        alert('Ambulancia agregada correctamente.');
+    } catch (error) {
+        console.error("Error al agregar la ambulancia: ", error);
+        alert('Hubo un error al registrar la ambulancia.');
+    }
+});
+
+
+
+
+function loadUsersRealTime() {
+    const userTableBody = document.querySelector('.user-table tbody');
+    
+    // Consulta para ordenar usuarios por 'createdAt' de manera descendente (los más recientes primero)
+    const q = query(ambulanciasRef, orderBy('fechaCreacion', 'desc'));
+
+    // Escuchar los cambios en la colección en tiempo real
+    onSnapshot(q, (snapshot) => {
+        userTableBody.innerHTML = ''; // Limpiar la tabla antes de llenarla
+
+        // Recorrer los documentos en la colección
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+
+            // Crear una fila para cada usuario
+            const row = document.createElement('tr');
+
+            row.setAttribute('data-id', doc.id);
+            // Agregar las celdas con los datos del usuario
+            row.innerHTML = `
+            <td>${data.codigo}</td>
+            <td>${data.matricula}</td>
+            <td>
+                <div class="actions-container">
+                    <button class="actions-btn">●●●</button>
+                    <div class="actions-icons">
+                            <button class="btn-action" data-modal="editModal"><img src="../images/editar.png" alt="Editar"></button>
+                            <button class="btn-action" data-modal="deleteModal"><img src="../images/borrar.png" alt="Eliminar"></button>
+                    </div>
+                </div>
+            </td>
+            `;
+
+            // Agregar la fila a la tabla
+            userTableBody.appendChild(row);
+        });
     });
+}
 
-    alert('Ambulancia agregada exitosamente');
-    document.getElementById('addModal').style.display = 'none';
-  } catch (error) {
-    console.error('Error agregando ambulancia:', error);
-    alert('Hubo un error al agregar la ambulancia.');
-  }
-});
-
-// Tabla para mostrar ambulancias
-const tbody = document.querySelector('tbody');
-
-// Query para obtener las ambulancias ordenadas por fecha de creación
-const q = query(ambulanciasRef, orderBy('fechaCreacion', 'desc'));
-
-// Escuchar los cambios en la colección
-onSnapshot(q, (snapshot) => {
-  tbody.innerHTML = ''; // Limpiar la tabla antes de volver a renderizarla
-  snapshot.forEach((doc) => {
-    const data = doc.data();
-    const tr = document.createElement('tr');
-
-    tr.innerHTML = `
-      <td>${data.codigo}</td>
-      <td>${data.matricula}</td>
-      <td>
-        <div class="actions-container">
-          <button class="actions-btn">●●●</button>
-          <div class="actions-icons">
-            <button class="btn-action" data-modal="editModal"><img src="../images/editar.png" alt="Editar"></button>
-            <button class="btn-action" data-modal="deleteModal"><img src="../images/borrar.png" alt="Eliminar"></button>
-          </div>
-        </div>
-      </td>
-    `;
-
-    tbody.appendChild(tr);
-  });
-});
+// Llamar a la función para cargar los usuarios en tiempo real cuando se cargue la página
+window.addEventListener('DOMContentLoaded', loadUsersRealTime);
 
 
-
+//boton de menu 
 document.addEventListener("DOMContentLoaded", function() {
     // Usamos event delegation para detectar los clicks en los botones que se generan dinámicamente
     document.addEventListener('click', function(event) {
