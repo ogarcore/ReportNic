@@ -1,0 +1,230 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100%;
+    overflow: hidden;
+    font-family: Montserrat, sans-serif;
+    color: #ffffff;
+}
+
+.background-image {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('../images/fondo.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: blur(5px);
+    z-index: -1;
+}
+
+.prueba {
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background: #22222291;
+    z-index: -1;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    justify-content: center;
+}
+
+.header__logo {
+    margin-right: 5px;
+    width: 80px;
+    margin-top: 30px;
+}
+
+.header__title {
+    margin: 35px 10px 0;
+    font-weight: 500;
+}
+
+.form {
+    background: rgba(15, 15, 15, 0.61);
+    width: 550px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #222;
+}
+
+.form--login {
+    height: 450px;
+}
+
+.form--register {
+    height: 500px;
+}
+
+.form__title {
+    text-align: center;
+    margin: 10px 0 5px;
+    font-weight: 500;
+}
+
+.chiquitita{
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.title--login{
+    margin: 15px 0 10px;
+}
+
+.form__subtitle {
+    font-size: 16px;
+    margin: 5px 0 50px;
+    text-align: center;
+    font-weight: 400;
+}
+
+.form__link {
+    color: #5dade2;
+    width: 100px;
+    text-align: center;
+    font-weight: 400;
+    text-decoration: none;
+    display: block;
+    margin: 0 auto 25px;
+}
+
+.form__main {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+}
+
+.form__label {
+    width: 200px;
+    font-weight: 500;
+    font-size: 16px;
+    margin-bottom: 6px;
+    margin-top: 2px;
+}
+
+.form__label--checkbox {
+    font-size: 13px;
+    margin: 0;
+}
+
+.form__input {
+    color: #fff;
+    padding: 8px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid #3480d8;
+    margin-bottom: 12px;
+    margin-left: 10px;
+    width: 90%;
+    box-sizing: border-box;
+    font-family: Montserrat, sans-serif;
+    transition: border-bottom 0.3s ease;
+}
+
+.form__input:focus{
+    border-bottom: 1px solid #bbbbbb;
+}
+
+.form__input:focus,
+.form__select:focus{
+    outline: none;
+    background: #4e4e4e;
+}
+
+.form__input:hover,
+.form__select:hover{
+    border-bottom: 2px solid #cadce9;
+    background: #444;
+}
+
+.form__input::placeholder {
+    color: #666;
+}
+
+.form__error {
+    color: #ffc9c9;
+    font-size: 14px;
+    display: none; 
+}
+
+.form__group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    margin-top: 6px;
+}
+
+.group--margin{
+    margin-bottom: 25px;
+}
+
+.form__checkbox {
+    cursor: pointer;
+    accent-color: #3480d8;
+    margin: 0 5px 0 0;
+    width: 20px;
+}
+
+.form__checkbox:checked {
+    accent-color: #859dc7;
+}
+
+.form__button {
+    color: #eee;
+    width: 270px;
+    text-align: center;
+    cursor: pointer;
+    background: #3480d8;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    font-weight: bold;
+    height: 35px;
+    margin: 25px auto 0;
+    display: block;
+}
+
+.form__button:hover {
+    background: #779ECB;
+}
+
+.form__button:active {
+    background: #5e83ae;
+}
+
+.form__forgot-password {
+    color: #5dade2;
+    text-align: center;
+    font-size: 14px;
+    margin: 10px auto;
+    width: 203px;
+}
+
+.footer {
+    width: 400px;
+    text-align: center;
+    font-weight: 400;
+    font-size: 12px;
+    margin: auto;
+    margin-top: 25px;
+}
+
+.footer--margin{
+    margin-top: 25px;
+}
+
+
+
+
+

@@ -1,0 +1,227 @@
+
+body{
+    font-family: Montserrat, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;   
+    background-color: #555;
+}
+
+.search-section {
+    margin-top: 40px;
+    padding: 70px;
+    color: #fff;
+    background-color: #555;
+}
+
+.search-section h2 {
+    font-size: 24px;
+    margin: 0;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    background: #222;
+
+}
+
+.search-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 0 15px 0;
+}
+
+.search-bar input {
+    padding: 10px;
+    width: 60%;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+.search-bar input:focus{
+    outline: none;
+    border: 1px solid #777;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    background-color: #444;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.search-bar button:hover {
+    background-color: #555;
+}
+
+/* Tabla de usuarios */
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #fff;
+}
+
+.user-table th, .user-table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+.user-table th {
+    background-color: #333;
+    color: #fff;
+    border: none;
+}
+
+.user-table td {
+    background-color: #444;
+    border: none;
+    border-bottom:1px solid #fff;
+    text-align: center;
+}
+
+.actions-container {
+    position: relative; /* Necesario para que el menú se posicione respecto al contenedor */
+    display: inline-block;
+    z-index: 1;
+}
+
+.actions-btn {
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 15.5px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+}
+
+.actions-icons {
+    display: none;
+    gap: 8px;
+    justify-content: start;
+}
+
+.actions-icons button {
+    display: inline-block;
+    padding: 8.5px 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.actions-icons img {
+    width: 20px;
+    height: 20px;
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+}
+
+.actions-container.active .actions-btn {
+    display: none;
+}
+
+.actions-container.active .actions-icons {
+    display: flex;
+}
+
+/* Estilos para el modal */
+.modal {
+    display: none; 
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    width: 55%; 
+    height: 50%; /* Para ajustarse al contenido */
+    background: #111111e5; 
+    color: #fff;
+    border-radius: 15px;
+    z-index: 10; 
+    align-items: center;
+    padding: 20x;
+    
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    text-align: center;
+    height: 100%;
+}
+
+#subtitleModal {
+margin-top:10px ;
+    font-size: 35px;
+    color: #F2B705; /* Mantener el color del título */
+}
+
+#saveAmbulanceBtn, 
+#addAmbulanceBtn {
+    padding: 12px;
+    width: 40%;
+    margin: auto;
+    background-color: #FDC501;
+    color: #141414;
+    font-size: 20px;
+    font-weight: 500;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#addAmbulanceBtn{
+    width: 20%;
+    padding: 8px;
+    margin-bottom: 5px;
+}
+
+#saveAmbulanceBtn:hover,
+#saveAmbulanceBtn:focus {
+    color: rgb(114, 114, 114);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.contenedor{
+    height: 100px;
+    text-align: left;
+    margin-top: 50px;
+}
+
+.modal-content label {
+    font-size: 16px;
+    color: #ffffff;
+    margin-left: 100px;
+}
+
+.modal-content input {
+    justify-content: center;
+    padding: 10px;
+    font-size: 14px;
+    width: 40%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    border-bottom: 1px solid #E6B000;
+}
+
+.modal-content input:hover{
+    border-bottom: 1px solid #ffc508;
+    background: #2b2b2bc4;
+}
+
+.modal-content input:focus{
+    background: #353535;
+    border-bottom: 1px solid #ffbf00;
+}

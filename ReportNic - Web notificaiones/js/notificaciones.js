@@ -15,6 +15,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let notifications = [];
+const notificationTimeout = 60000; // Tiempo límite en milisegundos (ej. 10000 ms = 10 segundos)
+let isNotificationSelected = false; // Variable para saber si hay una notificación seleccionada
 
 function getHiddenNotifications() {
     return JSON.parse(localStorage.getItem('hiddenNotifications')) || [];
@@ -70,8 +72,9 @@ function listenToNotifications() {
                 const time = timestamp.toTimeString().split(' ')[0]; 
 
                 if (!getHiddenNotifications().includes(change.doc.id)) {
-                    notifications.push({
+                    const notification = {
                         id: change.doc.id,
+                        createdAt: timestamp, // Guardar el tiempo de creación
                         date,
                         time,
                         firstName: data.firstName,
@@ -80,68 +83,62 @@ function listenToNotifications() {
                         systolic: data.systolic,
                         diastolic: data.diastolic,
                         conditions: data.conditions
-                    });
+                    };
 
-                    renderNotifications(); 
+                    notifications.push(notification);
+                    renderNotifications(notification); 
                 }
             }
         });
     });
 }
 
-let lastNotificationIndex = -1; 
-
-function renderNotifications() {
+function renderNotifications(notification) {
     const notificationsContainer = document.getElementById('notifications');
+    const notificationDiv = document.createElement('div');
+    notificationDiv.classList.add('notification', 'fadeInDown'); 
+    notificationDiv.innerHTML = 
+        `<h3>Emergencia en camino</h3>
+        <p>Hora: ${notification.time}</p>
+        <p>${notification.conditions}</p>
+        <button class="close-btn">&times;</button>`;
     
-    notifications.forEach((notification, index) => {
-        if (index > lastNotificationIndex) {
-            const notificationDiv = document.createElement('div');
-            notificationDiv.classList.add('notification', 'fadeInDown'); 
-            notificationDiv.innerHTML = 
-                `<h3>Emergencia en camino</h3>
-                <p>Hora: ${notification.time}</p>
-                <p>${notification.conditions}</p>
-                <button class="close-btn">&times;</button>`;
-            
-            notificationDiv.addEventListener('click', () => loadPatientData(index));
+    notificationDiv.addEventListener('click', () => loadPatientData(notification));
 
-            notificationDiv.querySelector('.close-btn').addEventListener('click', (e) => {
-                e.stopPropagation(); 
-
-                saveNotificationToFirestore(notification);
-
-                setTimeout(() => {
-                    hideNotification(notification.id); 
-                    notificationDiv.remove(); 
-                    clearPatientData(); 
-                }, 300); // Tiempo para mostrar la animación de cierre
-            });
-
-            notificationsContainer.appendChild(notificationDiv);
-            lastNotificationIndex = index;
-        }
+    notificationDiv.querySelector('.close-btn').addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        saveNotificationToFirestore(notification);
+        hideNotification(notification.id);
+        notificationDiv.remove();
+        clearPatientData(); // Limpiar la ficha al cerrar la notificación
+        isNotificationSelected = false; // Restablecer el estado
     });
+
+    notificationsContainer.appendChild(notificationDiv);
+
+    // Ocultar la notificación después del tiempo límite desde su creación
+    const timeElapsed = new Date() - notification.createdAt; // Tiempo transcurrido desde la creación
+    const remainingTime = notificationTimeout - timeElapsed;
+
+    // Solo ocultar si el tiempo restante es positivo
+    if (remainingTime > 0) {
+        setTimeout(() => {
+            hideNotification(notification.id);
+            notificationDiv.remove();
+            clearPatientData(); // Limpiar la ficha al ocultar la notificación
+            isNotificationSelected = false; // Restablecer el estado
+        }, remainingTime);
+    } else {
+        // Si ya ha pasado el tiempo, oculta inmediatamente
+        hideNotification(notification.id);
+        notificationDiv.remove();
+        clearPatientData(); // Limpiar la ficha al ocultar la notificación
+        isNotificationSelected = false; // Restablecer el estado
+    }
 }
 
-function clearPatientData() {
-    document.getElementById('patient-time').textContent = '';
-    document.getElementById('patient-date').textContent = '';
-    document.getElementById('patient-name').value = '';
-    document.getElementById('patient-lastname').value = '';
-    document.getElementById('patient-age').value = '';
-    document.getElementById('patient-blood-pressure-systolic').value = '';
-    document.getElementById('patient-blood-pressure-diastolic').value = '';
-    document.getElementById('patient-conditions').value = '';
-    isNotificationSelected = false;
-}
-
-let isNotificationSelected = false; 
-
-function loadPatientData(index) {
-    const notification = notifications[index];
-    isNotificationSelected = true;
-
+function loadPatientData(notification) {
+    isNotificationSelected = true; // Indicar que hay una notificación seleccionada
     document.getElementById('patient-time').textContent = notification.time;
     document.getElementById('patient-date').textContent = notification.date;
     document.getElementById('patient-name').value = notification.firstName;
@@ -152,10 +149,25 @@ function loadPatientData(index) {
     document.getElementById('patient-conditions').value = notification.conditions;
 }
 
+function clearPatientData() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('es-ES', { hour12: false });
+    document.getElementById('patient-time').textContent = timeString; // Mostrar hora actual
+    document.getElementById('patient-date').textContent = now.toLocaleDateString();
+    document.getElementById('patient-name').value = '';
+    document.getElementById('patient-lastname').value = '';
+    document.getElementById('patient-age').value = '';
+    document.getElementById('patient-blood-pressure-systolic').value = '';
+    document.getElementById('patient-blood-pressure-diastolic').value = '';
+    document.getElementById('patient-conditions').value = '';
+    isNotificationSelected = false; // Restablecer el estado
+}
+
+
 function updateTime() {
     if (!isNotificationSelected) { 
         const now = new Date();
-        const timeString = now.toLocaleTimeString('es-ES', { hour12: false }); 
+        const timeString = now.toLocaleTimeString('es-ES', { hour12: false });
         document.getElementById('patient-time').textContent = timeString;
         document.getElementById('patient-date').textContent = now.toLocaleDateString();
     }
