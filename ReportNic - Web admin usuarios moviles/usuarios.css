@@ -307,17 +307,18 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: #11111193;
+    background: #00000070;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    z-index: 101;
 }
 
 .modal-contentt {
-    background: #111111e5; 
-    padding: 20px;
+    background: #111111f6; 
+    padding: 25px;
+    padding-left: 40px;
     border-radius: 20px;
-    width: 35%;
+    width: 40%;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -356,6 +357,7 @@ body {
 .modal-contentt label {
     margin-top: 10px;
     font-size: 16px;
+    font-weight: 500;
     color: #ffffff;
 }
 
@@ -368,15 +370,16 @@ body {
     outline: none;
     background-color: transparent;
     border-bottom: 1px solid #f1f1f1;
+    color: #fff;
 }
 
 .modal-contentt input:hover{
     border-bottom: 1px solid #E6B000;
-    background: #2b2b2bc4;
+    background: #111111d8;
 }
 
 .modal-contentt input:focus{
-    background: #353535;
+    background: #1f1f1f;
     border-bottom: 1px solid #ffbf00;
 }
 
@@ -434,7 +437,7 @@ body {
 
 #successedit .btn-submit {
     padding: 10px 20px;
-    background-color: #3480d8;
+    background-color: #e9af03;
     color: #fff;
     border: none;
     cursor: pointer;
@@ -442,7 +445,7 @@ body {
 }
 
 #successedit .btn-submit:hover {
-    background-color: #2c6bb4;
+    background-color: #F2B705;
 }
 
 #editModal img{
@@ -452,7 +455,7 @@ body {
 
 /* Estilos para el modal de eliminación */
 #deleteModal .modal-contentt h2 {
-    color: #b12c2c;
+    color: #d42c2c;
 }
 
 #deleteModal p {
@@ -501,7 +504,6 @@ body {
 }
 
 
-#deleteModal .modal-contentt h2 , 
 #successDeleteModal .modal-contentt h2{
     margin-bottom: 20px;
     background: transparent;

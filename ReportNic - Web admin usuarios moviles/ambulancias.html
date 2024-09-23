@@ -71,7 +71,43 @@
         </div>
     </div>
 
+    <div id="editModal" class="modales">
+        <div class="modal-contentt">
+            <span class="close">&times;</span>
+            <form id="editUserForm">
+                <label for="editMatricula">Matricula</label>
+                <input type="text" id="editMatricula" name="matricula" placeholder="Ingrese el nuevo numero de matricula">
+                <span id="editError" class="error-message"></span>
 
+                <button type="submit" class="btn-submit">Guardar Cambios</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de éxito -->
+    <div id="successedit" class="modales">
+        <div class="modal-contentt">
+            <h2>Usuario guardado exitosamente</h2>
+            <button id="successeditCloseBtn" class="btn-submit">Aceptar</button>
+        </div>
+    </div>
+    
+    <!-- Modal de eliminación -->
+    <div id="deleteModal" class="modales">
+        <div class="modal-contentt">
+            <h2>Eliminar Usuario</h2>
+            <p>¿Estás seguro de que deseas eliminar a esta ambulancia?</p>
+            <button class="btn-delete">Eliminar</button>
+            <button class="btn-cancel">Cancelar</button>
+        </div>
+    </div>
+
+    <div id="successDeleteModal" class="modales">
+        <div class="modal-contentt">
+            <h2>Usuario eliminado exitosamente.</h2>
+            <button id="btnCloseSuccessDelete">Aceptar</button>
+        </div>
+    </div>
 
     <script src="header_admin.js"></script>
     <script type="module" src="ambulancia.js"></script>

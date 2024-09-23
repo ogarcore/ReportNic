@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, onSnapshot, orderBy, addDoc, query, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -234,8 +234,21 @@ const table = document.querySelector('#userTable');
 let selectedUserId; // Guardará el ID del usuario seleccionado
 
 
+document.querySelectorAll('.edit-btn').forEach(button => {
+    button.addEventListener('click', function() {
+    const userId = this.getAttribute('data-user-id');
+    
+    if (!userId) {
+        console.error('No se ha seleccionado un usuario');
+        return;
+    }
+    
+      // Lógica para obtener los datos del usuario a partir del userId
+      getUserData(userId);  // Asegúrate de tener esta función para obtener los datos del usuario seleccionado
+    });
+});
 
-
+//modal editar
 //modal editar
 
 // No cargar automáticamente los datos en los inputs de usuario y contraseña al abrir el modal
@@ -246,11 +259,16 @@ document.addEventListener('click', function (e) {
         const userId = row.getAttribute('data-id'); // Obtener el ID del usuario
 
         // Limpiar los campos antes de cargar los datos
-        document.getElementById('editUsername').value = '';
+        document.getElementById('editNombre').value = '';
+        document.getElementById('editApellido').value = '';
+        document.getElementById('editCedula').value = '';
+        document.getElementById('editTelefono').value = '';
+        document.getElementById('editCorreo').value = '';
         document.getElementById('editPassword').value = '';
         document.getElementById('confirmPassword').value = '';
-        document.getElementById('usernameError').textContent = '';
-        document.getElementById('passwordError').textContent = '';
+        document.getElementById('cedulaError').textContent = '';
+        document.getElementById('correoError').textContent = '';
+        document.getElementById('confirmPasswordError').textContent = '';
 
         // Cargar datos del usuario en el modal
         loadUserData(userId);
@@ -259,7 +277,7 @@ document.addEventListener('click', function (e) {
 
 // Cargar los datos del usuario seleccionado
 async function loadUserData(userId) {
-    const userDocRef = doc(db, 'usuario_hospitalVelezPaiz', userId);
+    const userDocRef = doc(db, 'registro_usuarios_moviles', userId);
     const userDoc = await getDoc(userDocRef);
 
     if (userDoc.exists()) {
@@ -306,13 +324,20 @@ const editUserForm = document.getElementById('editUserForm');
 editUserForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const username = document.getElementById('editUsername').value.trim();
+    const nombre = document.getElementById('editNombre').value.trim();
+    const apellido = document.getElementById('editApellido').value.trim();
+    const cedula = document.getElementById('editCedula').value.trim();
+    const telefono = document.getElementById('editTelefono').value.trim();
+    const correo = document.getElementById('editCorreo').value.trim();
     const password = document.getElementById('editPassword').value.trim();
     const confirmPassword = document.getElementById('confirmPassword').value.trim();
 
-    const usernameError = document.getElementById('editError');
-    const passwordError = document.getElementById('passwordError');
-    usernameError.textContent = '';
+    const cedulaError = document.getElementById('cedulaError');
+    const correoError = document.getElementById('correoError');
+    const passwordError = document.getElementById('confirmPasswordError');
+    
+    cedulaError.textContent = '';
+    correoError.textContent = '';
     passwordError.textContent = '';
 
     let hasError = false;
@@ -324,8 +349,8 @@ editUserForm.addEventListener('submit', async (e) => {
     }
 
     // Si ambos campos están vacíos, mostrar error
-    if (!username && !password) {
-        usernameError.textContent = 'Debe llenar al menos el nombre de usuario o la contraseña.';
+    if (!nombre && !apellido && !cedula && !telefono && !correo && !password) {
+        passwordError.textContent = 'Debe llenar al menos un campo.';
         hasError = true;
     }
 
@@ -335,27 +360,49 @@ editUserForm.addEventListener('submit', async (e) => {
     }
 
     // Verificar si ya existe un usuario con el mismo username (si se ingresó un username)
-    const usersCollection = collection(db, 'usuario_hospitalVelezPaiz');
-    if (username) {
-        const usernameQuery = query(usersCollection, where("user", "==", username));
-        const usernameSnapshot = await getDocs(usernameQuery);
+    const usersCollection = collection(db, 'registro_usuarios_moviles');
+    if (cedula) {
+        const cedulaQuery = query(usersCollection, where("cedula", "==", cedula));
+        const cedulaSnapshot = await getDocs(cedulaQuery);
 
         // Si el username ya existe en otro usuario, mostrar error
-        if (!usernameSnapshot.empty && usernameSnapshot.docs[0].id !== selectedUserId) {
-            usernameError.textContent = 'Este nombre de usuario ya está en uso.';
+        if (!cedulaSnapshot.empty && cedulaSnapshot.docs[0].id !== selectedUserId) {
+            cedulaError.textContent = 'Este numero de cedula ya esta en uso';
+            return;
+        }
+    }
+    if(correo){
+        const correoQuery = query(usersCollection, where("correo", "==", correo));
+        const correoSnapshot = await getDocs(correoQuery);
+
+        // Si el username ya existe en otro usuario, mostrar error
+        if (!correoSnapshot.empty && correoSnapshot.docs[0].id !== selectedUserId) {
+            correoError.textContent = 'Este correo ya esta en uno.';
             return;
         }
     }
 
-    const userDocRef = doc(db, 'usuario_hospitalVelezPaiz', selectedUserId);
+    const userDocRef = doc(db, 'registro_usuarios_moviles', selectedUserId);
 
     // Crear objeto con los campos a actualizar (solo los que están llenos)
     const updatedData = {};
-    if (username) {
-        updatedData.user = username;
+    if (nombre) {
+        updatedData.nombre = nombre;
+    }
+    if (apellido) {
+        updatedData.apellido = apellido;
+    }
+    if (cedula) {
+        updatedData.cedula = cedula;
+    }
+    if (telefono) {
+        updatedData.telefono = telefono;
+    }
+    if (correo) {
+        updatedData.correo = correo;
     }
     if (password) {
-        updatedData.password = password;
+        updatedData.contraseña = password;
     }
     updatedData.updatedAt = serverTimestamp(); // Actualizar la fecha de edición
 
@@ -400,7 +447,7 @@ if (btnDelete) {
         if (selectedUserToDelete) {
             try {
                 // Referencia al documento del usuario a eliminar
-                const userDocRef = doc(db, 'usuario_hospitalVelezPaiz', selectedUserToDelete);
+                const userDocRef = doc(db, 'registro_usuarios_moviles', selectedUserToDelete);
                 await deleteDoc(userDocRef); // Eliminar el documento
 
                 // Cerrar el modal de eliminación

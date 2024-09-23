@@ -1,6 +1,9 @@
 
-body{
+*{
     font-family: Montserrat, sans-serif;
+}
+
+body{
     margin: 0;
     padding: 0;
     color: #333;
@@ -224,4 +227,241 @@ margin-top:10px ;
 .modal-content input:focus{
     background: #353535;
     border-bottom: 1px solid #ffbf00;
+}
+
+.modales {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #00000070;
+    justify-content: center;
+    align-items: center;
+    z-index: 101;
+}
+
+.modal-contentt {
+    background: #111111f6; 
+    padding: 25px;
+    padding-left: 40px;
+    border-radius: 20px;
+    width: 40%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+    float: right;
+    padding: 0;
+    height: 30px;
+    width: 25px;
+    text-align: center;
+    font-size: 26px;
+    cursor: pointer;
+    background-color: #e9af03;
+    color: #000;
+    border: 1px solid #333;
+    box-shadow: 1px 1px 1px #333;
+    border-radius: 2px;
+}
+
+.close:hover{
+    color: #b12c2c;
+    box-shadow: 2px 2px 1px #f3f3f3e7;
+    border-radius: 2px;
+}
+
+
+.modal-contentt form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-contentt label {
+    margin-top: 10px;
+    font-size: 25px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: #ffffff;
+}
+
+.modal-contentt input {
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    border-bottom: 1px solid #f1f1f1;
+    color: #fff;
+}
+
+.modal-contentt input:hover{
+    border-bottom: 1px solid #E6B000;
+    background: #111111d8;
+}
+
+.modal-contentt input:focus{
+    background: #1f1f1f;
+    border-bottom: 1px solid #ffbf00;
+}
+
+.error-message {
+    color: #d80d0d;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+#editModal .password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#editModal .password-wrapper input {
+    width: 85%;
+}
+
+#toggleIcon1,#toggleIcon2 {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+#successedit{
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro */
+}
+
+#successedit .modal-contentt {
+    background-color: #fff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    text-align: center;
+}
+
+#successedit .modal-contentt h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#successedit .btn-submit {
+    padding: 10px 20px;
+    background-color: #e9af03;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#successedit .btn-submit:hover {
+    background-color: #F2B705;
+}
+
+#editModal img{
+    -webkit-filter: invert(100%);
+    filter: invert(100%);
+}
+
+/* Estilos para el modal de eliminación */
+#deleteModal .modal-contentt h2 {
+    color: #d42c2c;
+}
+
+#deleteModal p {
+    font-size: 18px;
+    margin-bottom: 40px;
+    color: #fff;
+}
+
+.btn-delete {
+    padding: 10px 20px;
+    background-color: #b12c2c;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.btn-delete:hover {
+    background-color: #a00;
+}
+
+.btn-cancel:hover {
+    background-color: #555;
+}
+
+#deleteModal, #successDeleteModal{
+    display: none; /* Oculto por defecto */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro */
+}
+
+
+#successDeleteModal .modal-contentt h2{
+    margin-bottom: 20px;
+    background: transparent;
+    color: #333;
+}
+
+#successDeleteModal button {
+    padding: 10px 20px;
+    background-color: #3480d8;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#successDeleteModal button:hover {
+    background-color: #2c6bb4;
+}
+
+
+.btn-submit{
+    margin-top: 10px;
+    padding: 9px;
+    background-color: #FDC501;
+    color: #141414;
+    font-size: 18px;
+    font-weight: 500;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-submit:hover{
+    background-color: #E6B000; 
 }
