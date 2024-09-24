@@ -1,8 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, addDoc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
 
-
-
+// Configuración de Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyB07sR2b1NMI0lvJUYa6hHHDfAqIdhb5hI",
     authDomain: "reportnicdb.firebaseapp.com",
@@ -13,14 +13,16 @@ const firebaseConfig = {
     measurementId: "G-7Z3Y1M2MP6"
 };
 
-// Initialize Firebase
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const analytics = getAnalytics(app);
 
 
 let isProcessing = false;
 
-        // Función para generar un código aleatorio
+//crear un codigo aleatorio
+// Función para generar un código aleatorio
         function generarCodigoAleatorio() {
             const codigo = Math.random().toString(36).substring(2, 10); // Genera un código alfanumérico
             console.log('Código generado:', codigo);
@@ -100,16 +102,17 @@ let isProcessing = false;
 
 
 
+    //vista en la tabla de usuarios activos
 
 // Función para cargar usuarios en tiempo real
 function loadUsersRealTime() {
     const userTableBody = document.querySelector('.user-table tbody');
 
-    // Referencia a la colección 'registro_usuarios_moviles'
-    const usersCollection = collection(db, 'registro_usuarios_moviles');
+    // Referencia a la colección 'usuarios_moviles'
+    const usersCollection = collection(db, 'usuarios_moviles');
 
     // Consulta para ordenar usuarios por 'createdAt' de manera descendente (los más recientes primero)
-    const q = query(usersCollection, orderBy('createdAt', 'desc'));
+    const q = query(usersCollection, orderBy('Fecha de Creacion', 'desc'));
 
     // Escuchar los cambios en la colección en tiempo real
     onSnapshot(q, (snapshot) => {
@@ -129,7 +132,7 @@ function loadUsersRealTime() {
                 <td>${userData.apellido}</td>
                 <td>${userData.cedula}</td>
                 <td>${userData.telefono}</td>
-                <td>${userData.correo}</td>
+                <td>${userData.email}</td>
                 <td>${userData.contraseña}</td>
                 <td>
                     <div class="actions-container">
@@ -147,10 +150,11 @@ function loadUsersRealTime() {
         });
     });
 }
-
 // Llamar a la función para cargar los usuarios en tiempo real cuando se cargue la página
 window.addEventListener('DOMContentLoaded', loadUsersRealTime);
 
+
+//menu de opciones de la tabla
 document.addEventListener("DOMContentLoaded", function() {
     // Usamos event delegation para detectar los clicks en los botones que se generan dinámicamente
     document.addEventListener('click', function(event) {
@@ -186,7 +190,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
-
 
 //ventanas modales de editar,borrar, e historial de usuario
 
@@ -250,7 +253,6 @@ document.querySelectorAll('.edit-btn').forEach(button => {
 });
 
 //modal editar
-//modal editar
 
 // No cargar automáticamente los datos en los inputs de usuario y contraseña al abrir el modal
 document.addEventListener('click', function (e) {
@@ -278,7 +280,7 @@ document.addEventListener('click', function (e) {
 
 // Cargar los datos del usuario seleccionado
 async function loadUserData(userId) {
-    const userDocRef = doc(db, 'registro_usuarios_moviles', userId);
+    const userDocRef = doc(db, 'usuarios_moviles', userId);
     const userDoc = await getDoc(userDocRef);
 
     if (userDoc.exists()) {
@@ -349,7 +351,7 @@ editUserForm.addEventListener('submit', async (e) => {
         hasError = true;
     }
 
-    // Si ambos campos están vacíos, mostrar error
+    // Si campos están vacíos, mostrar error
     if (!nombre && !apellido && !cedula && !telefono && !correo && !password) {
         passwordError.textContent = 'Debe llenar al menos un campo.';
         hasError = true;
@@ -361,7 +363,7 @@ editUserForm.addEventListener('submit', async (e) => {
     }
 
     // Verificar si ya existe un usuario con el mismo username (si se ingresó un username)
-    const usersCollection = collection(db, 'registro_usuarios_moviles');
+    const usersCollection = collection(db, 'usuarios_moviles');
     if (cedula) {
         const cedulaQuery = query(usersCollection, where("cedula", "==", cedula));
         const cedulaSnapshot = await getDocs(cedulaQuery);
@@ -383,7 +385,7 @@ editUserForm.addEventListener('submit', async (e) => {
         }
     }
 
-    const userDocRef = doc(db, 'registro_usuarios_moviles', selectedUserId);
+    const userDocRef = doc(db, 'usuarios_moviles', selectedUserId);
 
     // Crear objeto con los campos a actualizar (solo los que están llenos)
     const updatedData = {};
@@ -448,7 +450,7 @@ if (btnDelete) {
         if (selectedUserToDelete) {
             try {
                 // Referencia al documento del usuario a eliminar
-                const userDocRef = doc(db, 'registro_usuarios_moviles', selectedUserToDelete);
+                const userDocRef = doc(db, 'usuarios_moviles', selectedUserToDelete);
                 await deleteDoc(userDocRef); // Eliminar el documento
 
                 // Cerrar el modal de eliminación
@@ -471,6 +473,8 @@ if (btnCloseSuccessDelete) {
         successDeleteModal.style.display = 'none';
     });
 }
+
+
 
 
 

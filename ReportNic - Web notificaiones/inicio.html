@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="estilos/inciostyle.css">
     <link rel="stylesheet" href="estilos/headerstyle.css">
     <link rel="stylesheet" href="estilos/fonts.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
 </head>
 <body>
     <header>
@@ -69,6 +70,18 @@
                     <span id="patient-date"></span>
                 </div>
             </div>
+
+            <div class="mapa-contenedor">
+                <div id="map"></div>
+                <div class="mapa-contenedor__llegada-estimada">
+                    <p class="llegada">Llegada Estimada</p>
+                    <p class="tiempo">10min.</p>
+                </div>
+            </div>
+            
+            
+            
+
             <div class="ficha-paciente">
                 <div class="ficha-paciente__info-column">
                     <div class="ficha-paciente__seccion-info">
@@ -84,9 +97,21 @@
                         <input type="text" id="patient-age" disabled>
                     </div>
                 </div>
-                <div class="ficha-paciente__seccion-presion">
+            </div>
+
+            <div class="ficha-paciente__seccion-presion">
+                <!-- Sección de Afectaciones -->
+                <div class="ficha-paciente__afectaciones">
+                    <h3 class="ficha-paciente__titulo-afectaciones">Afectaciones:</h3>
+                    <div class="ficha-paciente__entrada-larga">
+                        <textarea type="text" id="patient-conditions" disabled></textarea>
+                    </div>
+                </div>
+            
+                <!-- Sección de Presión Arterial -->
+                <div class="ficha-paciente__valores-presion">
                     <h2 class="ficha-paciente__titulo-presion">Presión Arterial</h2>
-                    <div class="ficha-paciente__valores-presion">
+                    <div class="ficha-paciente__presiones">
                         <div class="ficha-paciente__presion">
                             <label class="ficha-paciente__etiqueta">Sistólica</label>
                             <input type="text" id="patient-blood-pressure-systolic" disabled>
@@ -100,23 +125,9 @@
                 </div>
             </div>
             
-            <h3 class="ficha-paciente__titulo-afectaciones">Afectaciones:</h3>
-            <div class="ficha-paciente__entrada-larga">
-                <textarea type="text" id="patient-conditions" disabled></textarea>
-            </div>
-
-            <!-- Mapa -->
-            <div class="mapa-contenedor">
-                <div id="map"></div>
-                <div class="mapa-contenedor__llegada-estimada">
-                    <p class="llegada">Llegada Estimada: </p>
-                    <p class="tiempo">10min.</p>
-                </div>
-            </div>
         </div>
 
 
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script type="module" src="js/notificaciones.js" defer></script>
     <script src="js/header.js"></script>
 </body>

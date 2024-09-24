@@ -1,18 +1,22 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
 
+// Configuración de Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyBPbr-ig4ukpRmtrtpiBQX5vZneMpLpv1Y",
-    authDomain: "reportnic-pruebanoti.firebaseapp.com",
-    projectId: "reportnic-pruebanoti",
-    storageBucket: "reportnic-pruebanoti.appspot.com",
-    messagingSenderId: "893062373282",
-    appId: "1:893062373282:web:2e2162de389e903fb61cfb",
-    measurementId: "G-DSGS2P0DE8"
+    apiKey: "AIzaSyB07sR2b1NMI0lvJUYa6hHHDfAqIdhb5hI",
+    authDomain: "reportnicdb.firebaseapp.com",
+    projectId: "reportnicdb",
+    storageBucket: "reportnicdb.appspot.com",
+    messagingSenderId: "361642844511",
+    appId: "1:361642844511:web:0134bcb94209b1c65116ea",
+    measurementId: "G-7Z3Y1M2MP6"
 };
 
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const analytics = getAnalytics(app);
 
 const loginForm = document.querySelector('form');
 const userField = document.getElementById('user');
@@ -23,10 +27,10 @@ async function verificarCredenciales(usuario, contraseña, hospital) {
     let collectionName;
     
     // Determinar la colección según el hospital seleccionado
-    if (hospital === 'hospitalVelezPaiz') {
-        collectionName = 'usuario_hospitalVelezPaiz';
-    } else if (hospital === 'hospitalBautista') {
-        collectionName = 'usuario_hospitalBautista';
+    if (hospital === 'hospitalCarlosRobertoHuembes(Filial El Carmen)') {
+        collectionName = 'usuario_HospitalCarlosRobertoHuembes';
+    } else if (hospital === 'hospitalSuMedico') {
+        collectionName = 'usuario_HospitalSuMedico';
     } else {
         return false;  // Si no se selecciona un hospital válido
     }
@@ -35,15 +39,24 @@ async function verificarCredenciales(usuario, contraseña, hospital) {
         const usuariosCollection = collection(db, collectionName);
         const snapshot = await getDocs(usuariosCollection);
         let usuarioValido = false;
+        let ubicacionHospital = ''; // Variable para guardar la ubicación
 
         snapshot.forEach(doc => {
             const data = doc.data();
             if (data.user === usuario && data.password === contraseña) {
                 usuarioValido = true;
+                
+                // Convertir el GeoPoint a un objeto con latitud y longitud
+                const ubicacion = data.ubicacionHospital;  // Obtenemos el GeoPoint
+                ubicacionHospital = {
+                    lat: ubicacion.latitude,
+                    lng: ubicacion.longitude
+                };
             }
         });
 
-        return usuarioValido;
+        // Si el usuario es válido, devolver también la ubicación
+        return { usuarioValido, ubicacionHospital };
     } catch (error) {
         console.error("Error al verificar credenciales:", error);
         return false;
@@ -67,12 +80,16 @@ loginForm.addEventListener('submit', async (event) => {
         return;
     }
 
-    const esValido = await verificarCredenciales(usuario, contrasena, hospital);
+    const resultado = await verificarCredenciales(usuario, contrasena, hospital);
 
-    if (esValido) {
-        // Guardar el nombre del usuario y hospital en localStorage
+    if (resultado.usuarioValido) {
+        // Guardar el nombre del usuario, hospital y ubicación en localStorage
         localStorage.setItem('usuario', usuario);
         localStorage.setItem('hospital', hospital);
+        
+        // Aquí debes referenciar el `ubicacionHospital` del `resultado`
+        localStorage.setItem('ubicacionHospital', JSON.stringify(resultado.ubicacionHospital));  // Usar resultado.ubicacionHospital
+    
         localStorage.setItem('notificaciones', JSON.stringify([])); // Inicializar array vacío de notificaciones
         window.location.href = 'inicio.html';  
     } else {
@@ -80,6 +97,3 @@ loginForm.addEventListener('submit', async (event) => {
         errorMessageDiv.style.display = 'block';  
     }
 });
-
-
-

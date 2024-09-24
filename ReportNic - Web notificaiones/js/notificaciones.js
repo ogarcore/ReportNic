@@ -1,18 +1,22 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, addDoc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
 
+// Configuración de Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyBPbr-ig4ukpRmtrtpiBQX5vZneMpLpv1Y",
-    authDomain: "reportnic-pruebanoti.firebaseapp.com",
-    projectId: "reportnic-pruebanoti",
-    storageBucket: "reportnic-pruebanoti.appspot.com",
-    messagingSenderId: "893062373282",
-    appId: "1:893062373282:web:2e2162de389e903fb61cfb",
-    measurementId: "G-DSGS2P0DE8"
+    apiKey: "AIzaSyB07sR2b1NMI0lvJUYa6hHHDfAqIdhb5hI",
+    authDomain: "reportnicdb.firebaseapp.com",
+    projectId: "reportnicdb",
+    storageBucket: "reportnicdb.appspot.com",
+    messagingSenderId: "361642844511",
+    appId: "1:361642844511:web:0134bcb94209b1c65116ea",
+    measurementId: "G-7Z3Y1M2MP6"
 };
 
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const analytics = getAnalytics(app);
 
 let notifications = [];
 const notificationTimeout = 60000; // Tiempo límite en milisegundos (ej. 10000 ms = 10 segundos)
@@ -34,23 +38,23 @@ async function saveNotificationToFirestore(notification) {
     const hospital = localStorage.getItem('hospital');
     let collectionName;
 
-    if (hospital === 'hospitalVelezPaiz') {
-        collectionName = 'usuario_hospitalVelezPaiz_historial';
-    } else if (hospital === 'hospitalBautista') {
-        collectionName = 'usuario_hospitalBautista_historial';
+    if (hospital === 'hospitalCarlosRobertoHuembes(Filial El Carmen)') {
+        collectionName = 'historial_HospitalCarlosRobertoHuembes';
+    } else if (hospital === 'hospitalSuMedico') {
+        collectionName = 'historial_HospitalSuMedico';
     }
 
     if (collectionName) {
         try {
             await addDoc(collection(db, collectionName), {
                 id: notification.id,
-                firstName: notification.firstName,
-                lastName: notification.lastName,
-                age: notification.age,
-                systolic: notification.systolic,
-                diastolic: notification.diastolic,
-                conditions: notification.conditions,
-                dateTime: new Date(),
+                nombre: notification.nombre,
+                apellidos: notification.apellidos,
+                edad: notification.edad,
+                presionSistolica: notification.presionSistolica,
+                presionDiastolica: notification.presionDiastolica,
+                afectaciones: notification.afectaciones,
+                fechaYHora: new Date(),
                 user: localStorage.getItem('usuario')
             });
             console.log('Notificación guardada en Firestore');
@@ -60,29 +64,31 @@ async function saveNotificationToFirestore(notification) {
     }
 }
 
+let notifCollection;
+
 function listenToNotifications() {
-    const notifCollection = collection(db, "coleccion");
+    notifCollection = collection(db, "Emergencias");
 
     onSnapshot(notifCollection, (snapshot) => {
         snapshot.docChanges().forEach((change) => {
             if (change.type === 'added') {
                 const data = change.doc.data();
-                const timestamp = data.dateTime.toDate();
+                const timestamp = data.fechaYHora.toDate();
                 const date = timestamp.toISOString().split('T')[0]; 
                 const time = timestamp.toTimeString().split(' ')[0]; 
 
                 if (!getHiddenNotifications().includes(change.doc.id)) {
                     const notification = {
                         id: change.doc.id,
-                        createdAt: timestamp, // Guardar el tiempo de creación
+                        createdAt: timestamp, 
                         date,
                         time,
-                        firstName: data.firstName,
-                        lastName: data.lastName,
-                        age: data.age,
-                        systolic: data.systolic,
-                        diastolic: data.diastolic,
-                        conditions: data.conditions
+                        nombre: data.nombre,
+                        apellidos: data.apellidos,
+                        edad: data.edad,
+                        presionSistolica: data.presionSistolica,
+                        presionDiastolica: data.presionDiastolica,
+                        afectaciones: data.afectaciones,
                     };
 
                     notifications.push(notification);
@@ -92,6 +98,8 @@ function listenToNotifications() {
         });
     });
 }
+
+
 
 function renderNotifications(notification) {
     const notificationsContainer = document.getElementById('notifications');
@@ -141,13 +149,64 @@ function loadPatientData(notification) {
     isNotificationSelected = true; // Indicar que hay una notificación seleccionada
     document.getElementById('patient-time').textContent = notification.time;
     document.getElementById('patient-date').textContent = notification.date;
-    document.getElementById('patient-name').value = notification.firstName;
-    document.getElementById('patient-lastname').value = notification.lastName;
-    document.getElementById('patient-age').value = notification.age;
-    document.getElementById('patient-blood-pressure-systolic').value = notification.systolic;
-    document.getElementById('patient-blood-pressure-diastolic').value = notification.diastolic;
-    document.getElementById('patient-conditions').value = notification.conditions;
+    document.getElementById('patient-name').value = notification.nombre;
+    document.getElementById('patient-lastname').value = notification.apellidos;
+    document.getElementById('patient-age').value = notification.edad;
+    document.getElementById('patient-blood-pressure-systolic').value = notification.presionSistolica;
+    document.getElementById('patient-blood-pressure-diastolic').value = notification.presionDiastolica;
+    document.getElementById('patient-conditions').value = notification.afectaciones;
 }
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiYXhlbDc3NyIsImEiOiJjbTE5bjBzZnEwMzZzMnZvbnhneDJqcXg3In0.5210d_aHgbv_nEIj0aUdIg';
+
+const ubicacionHospital = JSON.parse(localStorage.getItem('ubicacionHospital'));
+
+if (ubicacionHospital) {
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [ubicacionHospital.lng, ubicacionHospital.lat],
+        zoom: 12
+    });
+
+    map.on('load', function () {
+        mostrarUbicacionHospital(); // Llama a la función cuando el mapa se cargue completamente
+    });
+} else {
+    console.error("No se encontró la ubicación en localStorage.");
+}
+
+function mostrarUbicacionHospital() {
+    const ubicacionHospital = JSON.parse(localStorage.getItem('ubicacionHospital'));
+    
+    if (ubicacionHospital) {
+        const { lng, lat } = ubicacionHospital;
+        map.flyTo({ center: [lng, lat], zoom: 16 });
+        
+        // Crear un div para el marcador personalizado
+        const el = document.createElement('div');
+        el.className = 'hospital-marker';
+        
+        el.innerHTML = `
+            <div class="hospital-icon"></div>
+        `;
+        
+        // Crear marcador con el div personalizado
+        new mapboxgl.Marker(el)
+            .setLngLat([lng, lat]) // Establecer la ubicación con lat y lng
+            .addTo(map); // Añadir el marcador al mapa
+    }
+}
+
+
+// Función para actualizar el mapa si no hay notificaciones seleccionadas
+function updateMap() {
+    if (!isNotificationSelected) {
+        mostrarUbicacionHospital();
+    }
+}
+
+
 
 function clearPatientData() {
     const now = new Date();
@@ -161,6 +220,9 @@ function clearPatientData() {
     document.getElementById('patient-blood-pressure-diastolic').value = '';
     document.getElementById('patient-conditions').value = '';
     isNotificationSelected = false; // Restablecer el estado
+
+    // Actualizar el mapa
+    updateMap();
 }
 
 
@@ -170,6 +232,9 @@ function updateTime() {
         const timeString = now.toLocaleTimeString('es-ES', { hour12: false });
         document.getElementById('patient-time').textContent = timeString;
         document.getElementById('patient-date').textContent = now.toLocaleDateString();
+
+        // Actualizar el mapa
+        updateMap();
     }
 }
 
@@ -177,11 +242,4 @@ updateTime();
 setInterval(updateTime, 1000);
 window.onload = listenToNotifications;
 
-document.addEventListener('DOMContentLoaded', function() {
-    const coordenadasManagua = [12.1364, -86.2514];
-    const map = L.map('map').setView(coordenadasManagua, 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    }).addTo(map);
-});
+

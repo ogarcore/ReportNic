@@ -24,32 +24,33 @@ window.addEventListener('click', (event) => {
 
 //INICIALIZAR FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, orderBy, query, where, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, addDoc, GeoPoint, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
 
 // Configuración de Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyBPbr-ig4ukpRmtrtpiBQX5vZneMpLpv1Y",
-    authDomain: "reportnic-pruebanoti.firebaseapp.com",
-    projectId: "reportnic-pruebanoti",
-    storageBucket: "reportnic-pruebanoti.appspot.com",
-    messagingSenderId: "893062373282",
-    appId: "1:893062373282:web:2e2162de389e903fb61cfb",
-    measurementId: "G-DSGS2P0DE8"
+    apiKey: "AIzaSyB07sR2b1NMI0lvJUYa6hHHDfAqIdhb5hI",
+    authDomain: "reportnicdb.firebaseapp.com",
+    projectId: "reportnicdb",
+    storageBucket: "reportnicdb.appspot.com",
+    messagingSenderId: "361642844511",
+    appId: "1:361642844511:web:0134bcb94209b1c65116ea",
+    measurementId: "G-7Z3Y1M2MP6"
 };
 
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+const analytics = getAnalytics(app);
 // Recuperar el valor del hospital almacenado en localStorage
 const hospital = localStorage.getItem('hospital');
 
 // Seleccionar la colección adecuada basada en el valor del hospital
 let usersCollection;
-if (hospital === 'Bautista') {
-    usersCollection = collection(db, 'usuario_hospitalBautista');
-} else if (hospital === 'Velez Paiz') {
-    usersCollection = collection(db, 'usuario_hospitalVelezPaiz');
+if (hospital === 'Hospital Carlos Roberto Huembes (Filial El Carmen)') {
+    usersCollection = collection(db, 'usuario_HospitalCarlosRobertoHuembes');
+} else if (hospital === 'Hospital SuMedico') {
+    usersCollection = collection(db, 'usuario_HospitalSuMedico');
 } else {
     console.error('Hospital no reconocido.');
 }
@@ -102,6 +103,14 @@ createUserForm.addEventListener('submit', async (e) => {
             return;
         }
 
+        let geoPoint;
+        if (hospital === 'Hospital Carlos Roberto Huembes (Filial El Carmen)') {
+            geoPoint = new GeoPoint(12.147033604886012, -86.28400333669804); // Coordenadas del Hospital Bautista
+        } else if (hospital === 'Hospital SuMedico') {
+            geoPoint = new GeoPoint(12.13921, -86.28249); // Coordenadas del Hospital Velez Paiz
+        }
+
+
         // Obtener todos los documentos existentes en la colección
         const snapshot = await getDocs(usersCollection);
         const userCount = snapshot.size + 1;  // Calculamos el número de documentos existentes + 1
@@ -114,6 +123,7 @@ createUserForm.addEventListener('submit', async (e) => {
             user: username,
             password: password,
             dni: dni,
+            ubicacionHospital: geoPoint,
             createdAt: serverTimestamp()
         });
 
@@ -304,10 +314,10 @@ async function loadUserData(userId) {
     const hospital = localStorage.getItem('hospital');
     let usersCollection;
 
-    if (hospital === 'Bautista') {
-        usersCollection = 'usuario_hospitalBautista';
-    } else if (hospital === 'Velez Paiz') {
-        usersCollection = 'usuario_hospitalVelezPaiz';
+    if (hospital === "Hospital Carlos Roberto Huembes (Filial El Carmen)") {
+        usersCollection = 'usuario_HospitalCarlosRobertoHuembes';
+    } else if (hospital === 'Hospital SuMedico') {
+        usersCollection = 'usuario_HospitalSuMedico';
     } else {
         console.error('Hospital no reconocido.');
         return;
@@ -389,10 +399,10 @@ editUserForm.addEventListener('submit', async (e) => {
     const hospital = localStorage.getItem('hospital');
 let usersCollection;
 
-if (hospital === 'Bautista') {
-    usersCollection = collection(db, 'usuario_hospitalBautista');
-} else if (hospital === 'Velez Paiz') {
-    usersCollection = collection(db, 'usuario_hospitalVelezPaiz');
+if (hospital === 'Hospital Carlos Roberto Huembes (Filial El Carmen)') {
+    usersCollection = collection(db, 'usuario_HospitalCarlosRobertoHuembes');
+} else if (hospital === 'Hospital SuMedico') {
+    usersCollection = collection(db, 'usuario_HospitalSuMedico');
 } else {
     console.error('Hospital no reconocido.');
     return;
@@ -465,10 +475,10 @@ if (btnDelete) {
             const hospital = localStorage.getItem('hospital');
             let usersCollection;
 
-            if (hospital === 'Bautista') {
-                usersCollection = 'usuario_hospitalBautista';
-            } else if (hospital === 'Velez Paiz') {
-                usersCollection = 'usuario_hospitalVelezPaiz';
+            if (hospital === 'Hospital Carlos Roberto Huembes (Filial El Carmen)') {
+                usersCollection = 'usuario_HospitalCarlosRobertoHuembes';
+            } else if (hospital === 'Hospital SuMedico') {
+                usersCollection = 'usuario_HospitalSuMedico';
             } else {
             console.error('Hospital no reconocido.');
             return;
