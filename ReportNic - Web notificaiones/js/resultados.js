@@ -5,15 +5,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (searchResults && searchResults.length > 0) {
         searchResults.forEach(result => {
             const row = document.createElement("tr");
-            const dateTime = new Date(result.dateTime.seconds * 1000);
+            const dateTime = new Date(result.fechaYHora.seconds * 1000);
             const formattedDateTime = `${dateTime.toLocaleDateString()} ${dateTime.toLocaleTimeString()}`;
             row.innerHTML = `
-                <td>${result.firstName}</td>
-                <td>${result.lastName}</td>
-                <td>${result.age}</td>
-                <td>${result.conditions}</td>
-                <td>${result.systolic}</td>
-                <td>${result.diastolic}</td>
+                <td>${result.nombre}</td>
+                <td>${result.apellidos}</td>
+                <td>${result.edad}</td>
+                <td>${result.afectaciones}</td>
+                <td>${result.presionSistolica}</td>
+                <td>${result.presionDiastolica}</td>
                 <td>${formattedDateTime}</td>
             `;
             resultadosTable.appendChild(row);

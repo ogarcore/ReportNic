@@ -27,7 +27,9 @@ function obtenerUsuario() {
 // Cerrar sesión y redirigir al login
 document.getElementById('logout').addEventListener('click', () => {
     localStorage.removeItem('usuario');
-    localStorage.removeItem('userNotifications'); // Limpiar notificaciones del usuario si lo deseas
+    localStorage.removeItem('userNotifications'); 
+    localStorage.removeItem('hospital');
+    localStorage.removeItem('ubicacionHospital');// Limpiar notificaciones del usuario si lo deseas
     window.location.href = 'index.html'; // Redirigir a la página de inicio de sesión
 });
 

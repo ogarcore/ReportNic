@@ -36,6 +36,7 @@ function hideNotification(notificationId) {
 
 async function saveNotificationToFirestore(notification) {
     const hospital = localStorage.getItem('hospital');
+    const usuario = localStorage.getItem('usuario'); // Obtener el usuario del localStorage
     let collectionName;
 
     if (hospital === 'hospitalCarlosRobertoHuembes(Filial El Carmen)') {
@@ -54,9 +55,9 @@ async function saveNotificationToFirestore(notification) {
                 presionSistolica: notification.presionSistolica,
                 presionDiastolica: notification.presionDiastolica,
                 afectaciones: notification.afectaciones,
-                eta:notification.eta,
+                eta: notification.eta,
                 fechaYHora: new Date(),
-                user: localStorage.getItem('usuario')
+                usuario: usuario 
             });
             console.log('Notificación guardada en Firestore');
         } catch (error) {
@@ -64,6 +65,7 @@ async function saveNotificationToFirestore(notification) {
         }
     }
 }
+
 
 let notifCollection;
 
@@ -147,17 +149,19 @@ function renderNotifications(notification) {
     // Solo ocultar si el tiempo restante es positivo
     if (remainingTime > 0) {
         setTimeout(() => {
-            hideNotification(notification.id);
-            notificationDiv.remove();
-            clearPatientData(); // Limpiar la ficha al ocultar la notificación
-            isNotificationSelected = false; // Restablecer el estado
+            saveNotificationToFirestore(notification); // Guardar en Firestore antes de desaparecer
+            hideNotification(notification.id); // Ocultar notificación
+            notificationDiv.remove(); // Remover de la interfaz
+            clearPatientData(); 
+            isNotificationSelected = false;
         }, remainingTime);
     } else {
         // Si ya ha pasado el tiempo, oculta inmediatamente
+        saveNotificationToFirestore(notification); // Guardar en Firestore antes de desaparecer
         hideNotification(notification.id);
         notificationDiv.remove();
-        clearPatientData(); // Limpiar la ficha al ocultar la notificación
-        isNotificationSelected = false; // Restablecer el estado
+        clearPatientData(); 
+        isNotificationSelected = false;
     }
 }
 
@@ -198,7 +202,7 @@ function updateMapWithCoordinates(latActual, lngActual, latHospital, lngHospital
 
     // Crear un nuevo marcador para la ubicación actual del paciente con un icono personalizado
     const patientIcon = document.createElement('img');
-    patientIcon.src = 'images/patient-icon.png';  // Reemplazar con la ruta correcta
+    patientIcon.src = '../images/patient-icon.png';  // Reemplazar con la ruta correcta
     patientIcon.style.width = '40px';  // Ajustar el tamaño del icono
     patientIcon.style.height = '40px';
 
@@ -206,12 +210,11 @@ function updateMapWithCoordinates(latActual, lngActual, latHospital, lngHospital
         element: patientIcon
     })
         .setLngLat([lngActual, latActual])
-        .setPopup(new mapboxgl.Popup().setText("Ubicación actual del paciente"))
         .addTo(map);
 
     // Crear un nuevo marcador para la ubicación del hospital con un icono personalizado
     const hospitalIcon = document.createElement('img');
-    hospitalIcon.src = 'images/hospital-icon.png';  // Reemplazar con la ruta correcta
+    hospitalIcon.src = '../images/hospital-icon.png';  // Reemplazar con la ruta correcta
     hospitalIcon.style.width = '40px';  // Ajustar el tamaño del icono
     hospitalIcon.style.height = '40px';
 
@@ -219,7 +222,6 @@ function updateMapWithCoordinates(latActual, lngActual, latHospital, lngHospital
         element: hospitalIcon
     })
         .setLngLat([lngHospital, latHospital])
-        .setPopup(new mapboxgl.Popup().setText("Ubicación del hospital"))
         .addTo(map);
 
     // Centrar el mapa y ajustar el zoom para mostrar ambos puntos (paciente y hospital)

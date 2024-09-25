@@ -53,6 +53,12 @@ body{
     cursor:text;
 }
 
+.error-message {
+    color: red;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
 button[type="submit"]{
     padding: 12px 20px;
     background-color: #1d549b;

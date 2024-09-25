@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, addDoc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
 
 // Configuración de Firebase
@@ -18,34 +18,46 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const analytics = getAnalytics(app);
 
-
 document.querySelector("form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const searchName = document.getElementById("search-name").value.trim();
     const searchLastName = document.getElementById("search-lastname").value.trim();
     const searchDate = document.getElementById("search-date").value;
+    
+    // Limpiar cualquier mensaje de error previo
+    const errorMessageDiv = document.getElementById("error-message");
+    errorMessageDiv.textContent = "";  // Limpiar el mensaje de error
 
-    let collectionRef = collection(db, "Emergencias");  
-    let q = query(collectionRef); 
+    const hospital = localStorage.getItem("hospital");
 
+    let historialCollection = "";
+    if (hospital === "hospitalCarlosRobertoHuembes(Filial El Carmen)") {
+        historialCollection = "historial_HospitalCarlosRobertoHuembes(Filial El Carmen)";
+    } else if (hospital === "hospitalSuMedico") {
+        historialCollection = "historial_HospitalSuMedico";
+    } else {
+        alert("Hospital no encontrado en el localStorage");
+        return;
+    }
+
+    let collectionRef = collection(db, historialCollection);
+    let q = query(collectionRef);
 
     if (searchName) {
-        q = query(q, where("firstName", "==", searchName));
+        q = query(q, where("nombre", "==", searchName));
     }
     if (searchLastName) {
-        q = query(q, where("lastName", "==", searchLastName));
+        q = query(q, where("apellidos", "==", searchLastName));
     }
     if (searchDate) {
+        const startOfDay = new Date(`${searchDate}T00:00:00`);
+        const endOfDay = new Date(`${searchDate}T23:59:59`);
 
-        const startOfDay = new Date(`${searchDate}T00:00:00`);  
-        const endOfDay = new Date(`${searchDate}T23:59:59`);  
-
-        const startTimestamp = Timestamp.fromDate(startOfDay);  
+        const startTimestamp = Timestamp.fromDate(startOfDay);
         const endTimestamp = Timestamp.fromDate(endOfDay);
 
-
-        q = query(collectionRef, where("dateTime", ">=", startTimestamp), where("dateTime", "<=", endTimestamp));
+        q = query(q, where("fechaYHora", ">=", startTimestamp), where("fechaYHora", "<=", endTimestamp));
     }
 
     try {
@@ -56,15 +68,16 @@ document.querySelector("form").addEventListener("submit", async (e) => {
                 results.push({ id: doc.id, ...doc.data() });
             });
 
-
             localStorage.setItem("searchResults", JSON.stringify(results));
-
 
             window.location.href = "resultados.html";
         } else {
-            alert("No se encontraron coincidencias.");
+            // Mostrar el mensaje de error debajo del campo de fecha si no se encuentran coincidencias
+            errorMessageDiv.textContent = "No se encontraron coincidencias.";
         }
     } catch (error) {
         console.error("Error al buscar documentos: ", error);
+        errorMessageDiv.textContent = "Ocurrió un error al buscar. Inténtalo de nuevo.";
     }
 });
+
