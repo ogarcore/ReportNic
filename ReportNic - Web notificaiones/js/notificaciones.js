@@ -19,7 +19,7 @@ const db = getFirestore(app);
 const analytics = getAnalytics(app);
 
 let notifications = [];
-const notificationTimeout = 60000; // Tiempo límite en milisegundos (ej. 10000 ms = 10 segundos)
+const notificationTimeout = 120000; // Tiempo límite en milisegundos (ej. 10000 ms = 10 segundos)
 let isNotificationSelected = false; // Variable para saber si hay una notificación seleccionada
 
 function getHiddenNotifications() {
@@ -54,6 +54,7 @@ async function saveNotificationToFirestore(notification) {
                 presionSistolica: notification.presionSistolica,
                 presionDiastolica: notification.presionDiastolica,
                 afectaciones: notification.afectaciones,
+                eta:notification.eta,
                 fechaYHora: new Date(),
                 user: localStorage.getItem('usuario')
             });
@@ -77,27 +78,42 @@ function listenToNotifications() {
                 const date = timestamp.toISOString().split('T')[0]; 
                 const time = timestamp.toTimeString().split(' ')[0]; 
 
-                if (!getHiddenNotifications().includes(change.doc.id)) {
-                    const notification = {
-                        id: change.doc.id,
-                        createdAt: timestamp, 
-                        date,
-                        time,
-                        nombre: data.nombre,
-                        apellidos: data.apellidos,
-                        edad: data.edad,
-                        presionSistolica: data.presionSistolica,
-                        presionDiastolica: data.presionDiastolica,
-                        afectaciones: data.afectaciones,
-                    };
+                const hospitalLocalStorage = localStorage.getItem('hospital');
+                const notificationHospital = data.hospitalSeleccionado?.nombre; 
 
-                    notifications.push(notification);
-                    renderNotifications(notification); 
+                // Comparar el hospital
+                if (
+                    (hospitalLocalStorage === 'hospitalCarlosRobertoHuembes(Filial El Carmen)' && notificationHospital === 'Hospital Carlos Roberto Huembes (Filial El Carmen)') ||
+                    (hospitalLocalStorage === 'hospitalSuMedico' && notificationHospital === 'Hospital SuMédico')
+                ) {
+                    if (!getHiddenNotifications().includes(change.doc.id)) {
+                        const notification = {
+                            id: change.doc.id,
+                            createdAt: timestamp, 
+                            date,
+                            time,
+                            nombre: data.fichaPaciente.nombre,
+                            apellidos: data.fichaPaciente.apellidos,
+                            edad: data.fichaPaciente.edad,
+                            presionSistolica: data.fichaPaciente.presionSistolica,
+                            presionDiastolica: data.fichaPaciente.presionDiastolica,
+                            afectaciones: data.fichaPaciente.afectaciones,
+                            eta: data.eta,  // Agregar ETA
+                            coordenadasActuales: data.coordenadasActuales,  // Guardar coordenadas actuales
+                            hospitalSeleccionado: data.hospitalSeleccionado // Guardar hospital seleccionado
+                        };
+
+                        notifications.push(notification);
+                        renderNotifications(notification); 
+                    }
+                } else {
+                    console.log("La notificación no corresponde al hospital del usuario");
                 }
             }
         });
     });
 }
+
 
 
 
@@ -108,7 +124,7 @@ function renderNotifications(notification) {
     notificationDiv.innerHTML = 
         `<h3>Emergencia en camino</h3>
         <p>Hora: ${notification.time}</p>
-        <p>${notification.conditions}</p>
+        <p>${notification.afectaciones}</p>
         <button class="close-btn">&times;</button>`;
     
     notificationDiv.addEventListener('click', () => loadPatientData(notification));
@@ -147,6 +163,11 @@ function renderNotifications(notification) {
 
 function loadPatientData(notification) {
     isNotificationSelected = true; // Indicar que hay una notificación seleccionada
+
+    // Mostrar la ETA en el nuevo input
+    document.getElementById('tiempo').value = notification.eta;
+
+    // Actualizar los campos del paciente
     document.getElementById('patient-time').textContent = notification.time;
     document.getElementById('patient-date').textContent = notification.date;
     document.getElementById('patient-name').value = notification.nombre;
@@ -155,6 +176,62 @@ function loadPatientData(notification) {
     document.getElementById('patient-blood-pressure-systolic').value = notification.presionSistolica;
     document.getElementById('patient-blood-pressure-diastolic').value = notification.presionDiastolica;
     document.getElementById('patient-conditions').value = notification.afectaciones;
+
+    // Actualizar mapa con las coordenadas actuales del paciente
+    const { latitude: latActual, longitude: lngActual } = notification.coordenadasActuales;
+    const { latitude: latHospital, longitude: lngHospital } = notification.hospitalSeleccionado.coordenadas;
+
+    updateMapWithCoordinates(latActual, lngActual, latHospital, lngHospital);
+}
+
+let patientMarker = null;
+let hospitalMarker = null;
+
+function updateMapWithCoordinates(latActual, lngActual, latHospital, lngHospital) {
+    // Limpiar los marcadores anteriores si existen
+    if (patientMarker) {
+        patientMarker.remove();
+    }
+    if (hospitalMarker) {
+        hospitalMarker.remove();
+    }
+
+    // Crear un nuevo marcador para la ubicación actual del paciente con un icono personalizado
+    const patientIcon = document.createElement('img');
+    patientIcon.src = 'images/patient-icon.png';  // Reemplazar con la ruta correcta
+    patientIcon.style.width = '40px';  // Ajustar el tamaño del icono
+    patientIcon.style.height = '40px';
+
+    patientMarker = new mapboxgl.Marker({
+        element: patientIcon
+    })
+        .setLngLat([lngActual, latActual])
+        .setPopup(new mapboxgl.Popup().setText("Ubicación actual del paciente"))
+        .addTo(map);
+
+    // Crear un nuevo marcador para la ubicación del hospital con un icono personalizado
+    const hospitalIcon = document.createElement('img');
+    hospitalIcon.src = 'images/hospital-icon.png';  // Reemplazar con la ruta correcta
+    hospitalIcon.style.width = '40px';  // Ajustar el tamaño del icono
+    hospitalIcon.style.height = '40px';
+
+    hospitalMarker = new mapboxgl.Marker({
+        element: hospitalIcon
+    })
+        .setLngLat([lngHospital, latHospital])
+        .setPopup(new mapboxgl.Popup().setText("Ubicación del hospital"))
+        .addTo(map);
+
+    // Centrar el mapa y ajustar el zoom para mostrar ambos puntos (paciente y hospital)
+    const bounds = new mapboxgl.LngLatBounds();
+    bounds.extend([lngActual, latActual]); // Añadir la ubicación del paciente
+    bounds.extend([lngHospital, latHospital]); // Añadir la ubicación del hospital
+
+    map.fitBounds(bounds, {
+        padding: 50, // Espacio alrededor de los puntos en píxeles
+        maxZoom: 15, // Zoom máximo
+        duration: 1000 // Duración de la animación en milisegundos
+    });
 }
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXhlbDc3NyIsImEiOiJjbTE5bjBzZnEwMzZzMnZvbnhneDJqcXg3In0.5210d_aHgbv_nEIj0aUdIg';
@@ -181,7 +258,7 @@ function mostrarUbicacionHospital() {
     
     if (ubicacionHospital) {
         const { lng, lat } = ubicacionHospital;
-        map.flyTo({ center: [lng, lat], zoom: 16 });
+        map.flyTo({ center: [lng, lat], zoom: 17 });
         
         // Crear un div para el marcador personalizado
         const el = document.createElement('div');
@@ -207,7 +284,6 @@ function updateMap() {
 }
 
 
-
 function clearPatientData() {
     const now = new Date();
     const timeString = now.toLocaleTimeString('es-ES', { hour12: false });
@@ -219,7 +295,18 @@ function clearPatientData() {
     document.getElementById('patient-blood-pressure-systolic').value = '';
     document.getElementById('patient-blood-pressure-diastolic').value = '';
     document.getElementById('patient-conditions').value = '';
+    document.getElementById('tiempo').value = '';
     isNotificationSelected = false; // Restablecer el estado
+
+    // Remover los marcadores si existen
+    if (patientMarker) {
+        patientMarker.remove();
+        patientMarker = null; // Reiniciar la variable
+    }
+    if (hospitalMarker) {
+        hospitalMarker.remove();
+        hospitalMarker = null; // Reiniciar la variable
+    }
 
     // Actualizar el mapa
     updateMap();

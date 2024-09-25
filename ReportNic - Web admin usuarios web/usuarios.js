@@ -105,7 +105,7 @@ createUserForm.addEventListener('submit', async (e) => {
 
         let geoPoint;
         if (hospital === 'Hospital Carlos Roberto Huembes (Filial El Carmen)') {
-            geoPoint = new GeoPoint(12.147033604886012, -86.28400333669804); // Coordenadas del Hospital Bautista
+            geoPoint = new GeoPoint(12.14689, -86.28385); // Coordenadas del Hospital Bautista
         } else if (hospital === 'Hospital SuMedico') {
             geoPoint = new GeoPoint(12.13921, -86.28249); // Coordenadas del Hospital Velez Paiz
         }

@@ -240,6 +240,7 @@ h2{
     border: none ;
     border-bottom: 2px solid #1d549b80;
     text-align: left;
+    text-align: center;
 }
 
 .ficha-paciente__seccion-presion {
@@ -400,8 +401,13 @@ h2{
     margin: 0;
 }
 
-.tiempo {
+#tiempo {
+    color: #fff;
+    font-size: 15px;
+    background-color: transparent;
+    border: none;
     text-align: center;
+    justify-content: center;
     margin: 0;
 }
 
