@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../estilos/indexstyle.css">
+    <link rel="stylesheet" href="../estilos/fonts.css">
+    <link rel="icon" href="../images/letra-r (2).png">
+    <title>Inicio de Sesion</title>
+</head>
+<body>
+    <div class="background-image"></div>
+    <div class="prueba"></div>
+    <header class="header">
+        <img src="../images/logo oscuro.png" alt="Logo" class="header__logo">
+        <h1 class="header__title">ReportNic - AdminWeb</h1>
+    </header>
+    <form class="form form--login">
+        <h2 class="form__title title--login">Inicio de Sesión</h2>
+        <p class="form__subtitle">Accede a tu panel de gestión de usuarios ReportNic.</p>
+        <div class="form__main">
+            <label for="text" class="form__label">Usuario</label>
+            <input type="text" id="text" class="form__input" placeholder="Escriba su usuario">
+            <label for="password" class="form__label">Contraseña</label>
+            <input type="password" id="password" class="form__input" placeholder="Escriba su contraseña">
+            <div id="error-message" class="form__error"></div>
+            <div class="form__group group--margin">
+                <input type="checkbox" id="checkbox" class="form__checkbox">
+                <label for="checkbox" class="form__label form__label--checkbox">Recordar contraseña</label>
+            </div>
+            <input type="submit" class="form__button" value="Iniciar Sesion">
+            <p class="form__forgot-password">¿Olvisate tu contraseña?</p>
+        </div>
+    </form>
+    <footer class="footer footer--margin">
+        <p>
+            Copyright © 2024 ReportNic. Todos los derechos reservados. La reproducción o distribución de este contenido sin permiso previo está prohibida.
+        </p>
+    </footer>
+    <script type="module" src="../js/login.js"></script>
+</body>
+</html>
+
+
+
