@@ -38,8 +38,8 @@ body {
 }
 
 .form {
-    background: #eee;
-    width: 370px;
+    background: #eeeeeec0;
+    width: 550px;
     margin: auto;
     padding: 20px;
     border-radius: 8px;
@@ -48,10 +48,6 @@ body {
 
 .form--login {
     height: 450px;
-}
-
-.form--register {
-    height: 500px;
 }
 
 .form__title {
@@ -71,19 +67,11 @@ body {
     font-weight: 400;
 }
 
-.form__link {
-    color: #5dade2;
-    width: 100px;
-    text-align: center;
-    font-weight: 400;
-    text-decoration: none;
-    display: block;
-    margin: 0 auto 25px;
-}
 
 .form__main {
     display: flex;
     flex-direction: column;
+    margin-left: 20px;
 }
 
 .form__label {
@@ -101,18 +89,18 @@ body {
 
 .form__input {
     padding: 8px;
-    background: #eee;
+    background: transparent;
     border: none;
     border-bottom: 1px solid #bbb;
     margin-bottom: 12px;
-    width: 100%;
+    width: 90%;
     box-sizing: border-box;
     font-family: Montserrat, sans-serif;
     transition: border-bottom 0.3s ease;
 }
 
 .form__input:focus{
-    border-bottom: 1px solid #fd0000;
+    border-bottom: 1px solid #0065fd;
 }
 
 .form__input:focus,
@@ -182,12 +170,18 @@ body {
     background: #5e83ae;
 }
 
-.form__forgot-password {
+.form__reportnic-admin {
+    text-decoration: none;
     color: #5dade2;
     text-align: center;
     font-size: 14px;
     margin: 10px auto;
     width: 203px;
+}
+
+.form__reportnic-admin:hover{
+    color: #5e83ae;
+    text-decoration:underline;
 }
 
 .footer {

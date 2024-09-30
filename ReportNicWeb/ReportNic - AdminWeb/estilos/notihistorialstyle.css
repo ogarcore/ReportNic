@@ -8,13 +8,13 @@ body{
     background-color: #fff;
     border-radius: 10px;
     margin: auto;
-    margin-top: 20px;/* Ajuste para que no se superponga con el header */
+    margin-top: 110px;
     box-shadow: 0 1px 10px #000000c7;
     max-width: calc(100% - 550px); 
     min-width: 750px;
-    width: calc(100% - 200px); /* Asegura que el contenedor esté centrado */
+    width: calc(100% - 200px); 
     padding: 40px;
-    margin-left: calc(125px + 100px); /* Margen izquierdo del sidebar + mitad del espacio restante */
+    margin-left: calc(125px + 100px);
 }
 
 .profile-section {

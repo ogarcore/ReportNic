@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/letra r.png">
     <title>Ambulancias</title>
     <link rel="stylesheet" href="../estilos/ambulancias.css">
     <link rel="stylesheet" href="../estilos/header_admin.css">
@@ -27,7 +28,7 @@
                 <div class="dropdown-menu" id="dropdownMenu">
                     <a href="perfiladmin.html">Perfil</a>
                     <a href="contactanos.html">Contactanos</a>
-                    <a href="index.html">Cerrar Sesión</a>
+                    <a href="index.html" id="logout">Cerrar Sesión</a>
                 </div>
             </div>
         </nav>
@@ -89,7 +90,7 @@
     <!-- Modal de éxito -->
     <div id="successedit" class="modales">
         <div class="modal-contentt">
-            <h2>Usuario guardado exitosamente</h2>
+            <h2>Matricula guardada exitosamente</h2>
             <button id="successeditCloseBtn" class="btn-submit">Aceptar</button>
         </div>
     </div>
@@ -97,8 +98,8 @@
     <!-- Modal de eliminación -->
     <div id="deleteModal" class="modales">
         <div class="modal-contentt">
-            <h2>Eliminar Usuario</h2>
-            <p>¿Estás seguro de que deseas eliminar a esta ambulancia?</p>
+            <h2>Eliminar Ambulancia</h2>
+            <p>¿Estás seguro de que deseas eliminar esta ambulancia?</p>
             <button class="btn-delete">Eliminar</button>
             <button class="btn-cancel">Cancelar</button>
         </div>
@@ -106,7 +107,7 @@
 
     <div id="successDeleteModal" class="modales">
         <div class="modal-contentt">
-            <h2>Usuario eliminado exitosamente.</h2>
+            <h2>Ambulancia eliminada exitosamente.</h2>
             <button id="btnCloseSuccessDelete">Aceptar</button>
         </div>
     </div>

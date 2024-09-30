@@ -64,9 +64,6 @@ body {
     height: 450px;
 }
 
-.form--register {
-    height: 500px;
-}
 
 .form__title {
     text-align: center;
@@ -86,15 +83,6 @@ body {
     font-weight: 400;
 }
 
-.form__link {
-    color: #5dade2;
-    width: 100px;
-    text-align: center;
-    font-weight: 400;
-    text-decoration: none;
-    display: block;
-    margin: 0 auto 25px;
-}
 
 .form__main {
     display: flex;
@@ -199,12 +187,18 @@ body {
     background: #5e83ae;
 }
 
-.form__forgot-password {
+.form__ReportNicWeb {
+    text-decoration: none;
     color: #5dade2;
     text-align: center;
     font-size: 14px;
     margin: 10px auto;
     width: 203px;
+}
+
+.form__ReportNicWeb:hover{
+    color: #5e83ae;
+    text-decoration: underline;
 }
 
 .footer {

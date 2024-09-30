@@ -16,13 +16,20 @@ body {
     display: flex;
     justify-content: space-between;
     height: 100%;
-    background: #3480d8;
+    margin-top: 50px;
     gap: 100px;
+    position: relative;
+    height: 50vh; /* Se asegura que cubra toda la ventana */
+    background-image: url(../images/stacked-waves-haikei.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 1;
 }
 
 .user-info {
     width: 45%;
-    margin-top:15px;
+    margin-top:55px;
     margin-bottom: 120px;
     margin-left: 60px;;
 }
@@ -45,7 +52,6 @@ body {
     margin-bottom: 10px;
     -webkit-filter: invert(100%);
     filter: invert(100%);
-
 }
 
 .user-info p {
@@ -62,9 +68,15 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background: #fff;
     border-radius:0 0 0 20px ;
     box-shadow: 0 2px 6px #00000044;
+    position: relative;
+    height: 50vh; /* Se asegura que cubra toda la ventana */
+    background-image: url(../images/stacked-waves-haikei\ \(1\).svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 1;
 }
 
 .btn-create-user {

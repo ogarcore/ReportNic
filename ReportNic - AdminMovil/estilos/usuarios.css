@@ -18,12 +18,18 @@ body {
     height: 100%;
     margin-top: 50px;
     gap: 100px;    
-    background-color: #F2B705;
+    position: relative;
+    height: 50vh; /* Se asegura que cubra toda la ventana */
+    background-image: url(../images/stacked-waves-haikei\ \(2\).svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 1;
 }
 
 .user-info {
     width: 45%;
-    margin-top:40px;
+    margin-top:55px;
     margin-bottom: 100px;
     margin-left: 60px;
 }
@@ -61,8 +67,14 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-color: #fff;
     border-radius:0 0 0 20px ;
+    position: relative;
+    height: 50vh; /* Se asegura que cubra toda la ventana */
+    background-image: url(../images/stacked-waves-haikei\ \(3\).svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 1;
 
 }
 
@@ -522,4 +534,17 @@ body {
 
 #successDeleteModal button:hover {
     background-color: #2c6bb4;
+}
+
+/* Estado inicial de las imágenes y textos, invisibles y movidos hacia la izquierda */
+.fade-in-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Estado visible, las imágenes y textos se ven y vuelven a su posición original */
+.fade-in-left.visible {
+    opacity: 1;
+    transform: translateX(0);
 }
