@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, addDoc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
 
 // Configuración de Firebase
@@ -18,12 +18,29 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const analytics = getAnalytics(app);
 
-
-
 const loginForm = document.querySelector('form');
 const userField = document.getElementById('text');
 const passwordField = document.getElementById('password');
 
+// Función para cifrar el usuario
+function cifrarUsuario(usuario) {
+    const clave = 'clave'; // Define una clave para la encriptación
+    let cifrado = '';
+    for (let i = 0; i < usuario.length; i++) {
+        cifrado += String.fromCharCode(usuario.charCodeAt(i) ^ clave.charCodeAt(i % clave.length));
+    }
+    return cifrado;
+}
+
+// Función para descifrar el usuario
+function descifrarUsuario(usuarioCifrado) {
+    const clave = 'clave'; // Usa la misma clave que para cifrar
+    let descifrado = '';
+    for (let i = 0; i < usuarioCifrado.length; i++) {
+        descifrado += String.fromCharCode(usuarioCifrado.charCodeAt(i) ^ clave.charCodeAt(i % clave.length));
+    }
+    return descifrado;
+}
 
 async function verificarCredenciales(usuario, contrasena) {
     try {
@@ -45,7 +62,6 @@ async function verificarCredenciales(usuario, contrasena) {
     }
 }
 
-
 loginForm.addEventListener('submit', async (event) => {
     event.preventDefault();  
 
@@ -53,13 +69,22 @@ loginForm.addEventListener('submit', async (event) => {
     const contraseña = passwordField.value;
     const errorMessageDiv = document.getElementById('error-message');  
 
-
     errorMessageDiv.textContent = '';
     errorMessageDiv.style.display = 'none';
 
     const esValido = await verificarCredenciales(usuario, contraseña);
 
     if (esValido) {
+        // Cifrar el nombre de usuario antes de almacenarlo
+        const usuarioCifrado = cifrarUsuario(usuario);
+        
+        // Guardar en localStorage o sessionStorage según el checkbox
+        if (checkbox.checked) {
+            localStorage.setItem('usuario', usuarioCifrado);
+        } else {
+            sessionStorage.setItem('usuario', usuarioCifrado);
+        }
+
         window.location.href = 'administrador.html';  
     } else {
         errorMessageDiv.textContent = 'Usuario o contraseña incorrectos'; 

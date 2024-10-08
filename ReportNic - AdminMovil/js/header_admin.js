@@ -24,6 +24,7 @@ logoutButton.addEventListener('click', (e) => {
 
     // Limpiar el localStorage
     localStorage.clear();
+    sessionStorage.clear();
 
     // Redirigir al index.html
     window.location.href = '../html/index.html';
