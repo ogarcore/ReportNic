@@ -313,24 +313,25 @@ body {
 }
 
 .modales {
-    display: none;
+    display: none; /* Esto asegura que los modales estén ocultos al cargar la página */
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: #00000070;
+    background: rgba(0, 0, 0, 0.7); /* Fondo oscuro */
     justify-content: center;
     align-items: center;
     z-index: 101;
 }
 
+/* El resto de tus estilos de modal no cambian */
 .modal-contentt {
     background: #111111f6; 
     padding: 25px;
     padding-left: 40px;
     border-radius: 20px;
-    width: 40%;
+    width: 40%; /* Mantén el ancho deseado */
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 

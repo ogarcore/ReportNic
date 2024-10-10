@@ -8,7 +8,7 @@ const path = require('path');
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Configurar CORS
 const allowedOrigins = ['http://localhost:5501'];
@@ -31,9 +31,17 @@ app.use(bodyParser.json());
 const autenticacionRuta = require('./rutas/autenticacion');
 const usersRuta = require('./rutas/users');
 
-app.use('/api', autenticacionRuta);
+app.use('/api/autenticacion', autenticacionRuta);
 app.use('/api/users', usersRuta);
+app.use(express.static(path.join(__dirname, 'public')));
+app.use((req, res, next) => {
+    res.status(404).json({ mensaje: 'Ruta no encontrada' });
+});
 
+// Ruta de prueba
+app.get('/', (req, res) => {
+    res.send('Servidor Node.js funcionando correctamente.');
+    });
 // Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);

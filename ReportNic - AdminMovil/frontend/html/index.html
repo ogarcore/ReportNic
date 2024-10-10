@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="../estilos/indexstyle.css">
     <link rel="stylesheet" href="../estilos/fonts.css">
     <link rel="icon" href="../images/letra r.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <title>Inicio de Sesion</title>
 </head>
 <body>
@@ -19,8 +20,8 @@
         <h2 class="form__title title--login">Inicio de Sesión</h2>
         <p class="form__subtitle">Accede a tu panel de gestión de usuarios ReportNic.</p>
         <div class="form__main">
-            <label for="text" class="form__label">Usuario</label>
-            <input type="text" id="text" class="form__input" placeholder="Escriba su usuario">
+            <label for="username" class="form__label">Usuario</label>
+            <input type="text" id="username" class="form__input" placeholder="Escriba su usuario">
             <label for="password" class="form__label">Contraseña</label>
             <input type="password" id="password" class="form__input" placeholder="Escriba su contraseña">
             <div id="error-message" class="form__error"></div>

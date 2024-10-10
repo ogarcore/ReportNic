@@ -1,80 +1,65 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const admin = require('firebase-admin');
-const path = require('path');
+const crypto = require('crypto');
+const db = require('../firebaseAdmin');
+const router = express.Router();
 const dotenv = require('dotenv');
 
-// Cargar variables de entorno
+// Cargar las variables de entorno
 dotenv.config();
 
-const router = express.Router();
+// Acceder a la clave desde el archivo .env
+const ENCRYPTION_KEY = process.env.SECRET_KEY; // Obtenemos la clave desde .env
+const IV_LENGTH = 16; // Para AES, el IV siempre es de 16 bytes
 
-// Inicializar Firebase Admin si no está inicializado
-if (!admin.apps.length) {
-    const serviceAccountPath = path.resolve(__dirname, '../', process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-    const serviceAccount = require(serviceAccountPath);
-
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: "https://reportnicdb.firebaseio.com"
-    });
+// Función para encriptar la contraseña
+function encrypt(text) {
+    const iv = crypto.randomBytes(IV_LENGTH);
+    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv); // Usar Buffer.from sin 'hex'
+    let encrypted = cipher.update(text);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
 }
 
-const db = admin.firestore();
+// Función para desencriptar la contraseña
+function decrypt(text) {
+    let textParts = text.split(':');
+    let iv = Buffer.from(textParts.shift(), 'hex');
+    let encryptedText = Buffer.from(textParts.join(':'), 'hex');
+    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv); // Usar Buffer.from sin 'hex'
+    let decrypted = decipher.update(encryptedText);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    return decrypted.toString();
+}
 
-// Ruta para generar el hash de una contraseña
-router.post('/generar-hash', async (req, res) => {
-    const { contrasena } = req.body;
-
-    if (!contrasena) {
-        return res.status(400).json({ mensaje: 'La contraseña es requerida.' });
-    }
-
-    try {
-        const saltRounds = 10;
-        const contrasenaHashed = await bcrypt.hash(contrasena, saltRounds);
-        res.status(200).json({ hash: contrasenaHashed });
-    } catch (error) {
-        console.error("Error al generar hash:", error);
-        res.status(500).json({ mensaje: 'Error interno del servidor.' });
-    }
-});
-
-// Ruta para manejar el login
+// Ruta de login
 router.post('/login', async (req, res) => {
-    const { usuario, contraseña } = req.body;
-
-    if (!usuario || !contraseña) {
-        return res.status(400).json({ mensaje: 'Usuario y contraseña son requeridos.' });
-    }
+    const { user, password } = req.body;
 
     try {
-        const usuariosCollection = db.collection('usuarios_admin_movil');
-        const snapshot = await usuariosCollection.where('user', '==', usuario).limit(1).get();
+        const usersCollection = db.collection('usuarios_admin_movil');
+        const snapshot = await usersCollection.where('user', '==', user).get();
 
         if (snapshot.empty) {
-            return res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos.' });
+            return res.status(400).json({ error: 'Usuario no encontrado' });
         }
 
-        const doc = snapshot.docs[0];
-        const data = doc.data();
+        let validUser = false;
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const decryptedPassword = decrypt(data.password);
+            if (decryptedPassword === password) {
+                validUser = true;
+            }
+        });
 
-        const passwordMatch = await bcrypt.compare(contraseña, data.password);
-
-        if (passwordMatch) {
-            const token = jwt.sign(
-                { usuario: data.user, id: doc.id },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' }
-            );
-            res.status(200).json({ mensaje: 'Autenticación exitosa.', token });
+        if (validUser) {
+            return res.status(200).json({ message: 'Login exitoso' });
         } else {
-            res.status(401).json({ mensaje: 'Usuario o contraseña incorrectos.' });
+            return res.status(400).json({ error: 'Contraseña incorrecta' });
         }
     } catch (error) {
-        console.error("Error al verificar credenciales:", error);
-        res.status(500).json({ mensaje: 'Error interno del servidor.' });
+        console.error('Error durante la autenticación', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
 
