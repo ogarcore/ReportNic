@@ -225,6 +225,7 @@ function renderUsers(users) {
     asignarEventosActionsBtn(); // Asignar eventos a los botones después de renderizar
 }
 
+
 // Función para cerrar el modal
 function cerrarModal(modalId) {
     const modal = document.getElementById(modalId);
@@ -323,6 +324,7 @@ document.getElementById('btn-succes').addEventListener('click', async () => {
         console.error('Error al actualizar el usuario:', error);
     }
 });
+
 
 function abrirModalEliminar(userId) {
     const deleteModal = document.getElementById('deleteModal');

@@ -58,6 +58,7 @@ function decryptPassword(encryptedPassword) {
 router.get('/', async (req, res) => {
     try {
         const usersSnapshot = await db.collection('usuarios_moviles').orderBy('Fecha de Creacion', 'desc').get();
+        
         const users = usersSnapshot.docs.map(doc => {
             const data = doc.data();
             return {
@@ -73,7 +74,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Ruta para buscar usuarios
 // Ruta para buscar usuarios
 router.get('/search', async (req, res) => {
     const searchValue = req.query.query;
