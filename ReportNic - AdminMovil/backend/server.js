@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Configurar CORS
-const allowedOrigins = ['http://localhost:5501'];
+const allowedOrigins = ['http://localhost:5501', 'http://localhost:5504'];
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);

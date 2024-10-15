@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial</title>
-    <link rel="stylesheet" href="../estilos/notihistorialstyle.css">
+    <title>Tabla de Registros Médicos</title>
+    <link rel="stylesheet" href="../estilos/notihistorial.css">
     <link rel="stylesheet" href="../estilos/header_admin.css">
     <link rel="stylesheet" href="../estilos/fonts.css">
     <link rel="icon" href="../images/letra-r (2).png">
@@ -34,32 +34,35 @@
         </nav>
     </header>
 
-    <div class="profile-container">
-        <div class="profile-body">
-            <div class="profile-section">
-                <h2>Búsqueda del Historial</h2>
-                <form action="#">     
-                    <div class="form-group">
-                        <label for="search-name">Nombre:</label>
-                        <input type="text" id="search-name" name="search-name" placeholder="Ingrese el nombre">
-                    </div>
-                    <div class="form-group">
-                        <label for="search-lastname">Apellido:</label>
-                        <input type="text" id="search-lastname" name="search-lastname" placeholder="Ingrese el apellido">
-                    </div>
-                    <div class="form-group">
-                        <label for="search-date">Fecha:</label>
-                        <input type="date" id="search-date" name="search-date">
-                    </div>
-                    <button type="submit">Buscar</button>
-                </form>
-                <div id="error-message" class="error-message"></div>
-            </div>
+
+    <div class="container">
+        <h1>Registro de Pacientes</h1>
+        <div class="search-bar">
+            <input type="text" id="search-name" placeholder="Buscar por nombre">
+            <input type="text" id="search-lastname" placeholder="Buscar por apellido">
+            <input type="date" id="search-date">
+            <button id="search-btn">Buscar</button>
+            <button id="view-all-btn">Ver Todos</button>
         </div>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Edad</th>
+                    <th>Condiciones</th>
+                    <th>Presión Sistólica</th>
+                    <th>Presión Diastólica</th>
+                    <th>Fecha y Hora</th>
+                    <th>Recibida por el Usuario</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Aquí irán los datos dinámicos -->
+            </tbody>
+        </table>
     </div>
-
-
-    <script type="module" src="../js/notihistorial.js"></script>
+    <script src="../js/notihistorial.js"></script>
     <script src="../js/header_admin.js"></script>
 </body>
 </html>

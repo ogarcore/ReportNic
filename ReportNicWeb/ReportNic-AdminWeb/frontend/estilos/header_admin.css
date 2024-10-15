@@ -124,6 +124,18 @@ h1 {
     z-index: 100;
 }
 
+/* Quitar los estilos de lista en el dropdown del perfil */
+.dropdown-menu {
+    list-style: none; /* Elimina los puntos de la lista */
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown-menu li {
+    margin-left: 0; /* Evita que haya sangría en los elementos de la lista */
+}
+
+
 .profile-menu.active .dropdown-menu {
     opacity: 1;
     visibility: visible;
@@ -165,3 +177,82 @@ h1 {
 .dropdown-menu a:not(:last-child) {
     margin-bottom: 8px;
 }
+
+/* Responsive Styles */
+
+/* Small Screens */
+@media (max-width: 768px) {
+    header {
+        padding: 10px;
+    }
+
+    .header-menu ul {
+        display: none;
+    }
+
+    .hamburger-menu {
+        display: block;
+        cursor: pointer;
+    }
+
+    .hamburger-menu div {
+        width: 30px;
+        height: 4px;
+        background-color: #fff;
+        margin: 6px 0;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger-menu.active div:nth-child(1) {
+        transform: translateY(10px) rotate(45deg);
+    }
+
+    .hamburger-menu.active div:nth-child(2) {
+        opacity: 0;
+    }
+
+    .hamburger-menu.active div:nth-child(3) {
+        transform: translateY(-10px) rotate(-45deg);
+    }
+
+    .header-menu.active ul {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background-color: #3480d8;
+        width: 100%;
+        height: auto;
+    }
+
+    .header-menu.active ul li {
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    .profile-menu {
+        margin-left: 10px;
+    }
+}
+
+/* Medium Screens */
+@media (min-width: 769px) and (max-width: 1024px) {
+    h1 {
+        font-size: 22px;
+    }
+
+    .profile-pic {
+        width: 35px;
+        height: 35px;
+    }
+
+    .header-menu a {
+        padding: 6px 10px;
+    }
+
+    .profile-menu {
+        margin-left: 10px;
+    }
+}
+

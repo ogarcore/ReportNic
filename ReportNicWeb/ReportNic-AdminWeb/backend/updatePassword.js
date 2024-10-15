@@ -28,10 +28,10 @@ const algorithm = 'aes-256-cbc';
 const secretKey = process.env.SECRET_KEY;
 
 // Función para encriptar la contraseña
-function encryptPassword(password) {
+function encryptPassword(text) {
     const iv = crypto.randomBytes(16); // Generar un IV de 16 bytes
     const cipher = crypto.createCipheriv(algorithm, Buffer.from(secretKey), iv);
-    let encrypted = cipher.update(password, 'utf-8', 'hex');
+    let encrypted = cipher.update(text, 'utf-8', 'hex');
     encrypted += cipher.final('hex');
     return iv.toString('hex') + ':' + encrypted; // IV y texto cifrado separados por ":"
 }
@@ -45,7 +45,7 @@ app.put('/update-password', async (req, res) => {
         const encryptedPassword = encryptPassword(password);
 
         // Referencia al documento que deseas actualizar
-        const userRef = db.collection('usuarios_admin_web').doc('HospitalCarlosRobertoHuembes(FilialElCarmen)');
+        const userRef = db.collection('usuarios_admin_web').doc('HospitalFernandoVélezPaiz');
 
         // Actualizar el campo de la contraseña
         await userRef.update({ password: encryptedPassword });

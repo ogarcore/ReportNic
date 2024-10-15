@@ -7,18 +7,10 @@ const dotenv = require('dotenv');
 
 // Cargar variables de entorno
 dotenv.config();
-
 const router = express.Router();
 
-// Función para encriptar contraseñas
-function encryptPassword(password) {
-    const ENCRYPTION_KEY = process.env.SECRET_KEY; // Asegúrate de que la clave tenga 32 bytes
-    const iv = crypto.randomBytes(16); // Inicialización del vector
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-    let encrypted = cipher.update(password);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString('hex') + ':' + encrypted.toString('hex'); // Devolver el IV y el texto cifrado
-}
+
+
 
 // Ruta para generar y guardar un código en Firestore
 router.post('/generarCodigo', async (req, res) => {
@@ -42,17 +34,6 @@ router.post('/generarCodigo', async (req, res) => {
 });
 
 
-// Función para desencriptar contraseñas
-function decryptPassword(encryptedPassword) {
-    const ENCRYPTION_KEY = process.env.SECRET_KEY; // Clave de encriptación
-    const parts = encryptedPassword.split(':');
-    const iv = Buffer.from(parts.shift(), 'hex');
-    const encryptedText = Buffer.from(parts.join(':'), 'hex');
-    const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString(); // Devuelve la contraseña desencriptada
-}
 
 // Modifica la ruta para obtener todos los usuarios
 router.get('/', async (req, res) => {
@@ -64,7 +45,6 @@ router.get('/', async (req, res) => {
             return {
                 id: doc.id,
                 ...data,
-                contraseña: decryptPassword(data.contraseña) // Desencriptar la contraseña
             };
         });
         res.status(200).json(users);
@@ -114,7 +94,7 @@ router.get('/search', async (req, res) => {
         // Desencriptar las contraseñas de los usuarios encontrados
         foundUsers = foundUsers.map(user => ({
             ...user,
-            contraseña: decryptPassword(user.contraseña) // Desencriptar la contraseña
+            contraseña: user.contraseña // Desencriptar la contraseña
         }));
 
         res.status(200).json(foundUsers);
@@ -189,7 +169,7 @@ router.put('/:id', async (req, res) => {
 
         // Encriptar la contraseña antes de almacenarla
         if (contraseña) {
-            updatedData.contraseña = encryptPassword(contraseña);
+            updatedData.contraseña = contraseña;
         }
 
         await userRef.update(updatedData);

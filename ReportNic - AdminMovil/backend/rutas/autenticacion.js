@@ -7,30 +7,6 @@ const dotenv = require('dotenv');
 // Cargar las variables de entorno
 dotenv.config();
 
-// Acceder a la clave desde el archivo .env
-const ENCRYPTION_KEY = process.env.SECRET_KEY; // Obtenemos la clave desde .env
-const IV_LENGTH = 16; // Para AES, el IV siempre es de 16 bytes
-
-// Función para encriptar la contraseña
-function encrypt(text) {
-    const iv = crypto.randomBytes(IV_LENGTH);
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv); // Usar Buffer.from sin 'hex'
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString('hex') + ':' + encrypted.toString('hex');
-}
-
-// Función para desencriptar la contraseña
-function decrypt(text) {
-    let textParts = text.split(':');
-    let iv = Buffer.from(textParts.shift(), 'hex');
-    let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-    let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY), iv); // Usar Buffer.from sin 'hex'
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-}
-
 // Ruta de login
 router.post('/login', async (req, res) => {
     const { user, password } = req.body;
@@ -46,8 +22,8 @@ router.post('/login', async (req, res) => {
         let validUser = false;
         snapshot.forEach(doc => {
             const data = doc.data();
-            const decryptedPassword = decrypt(data.password);
-            if (decryptedPassword === password) {
+            data.password;
+            if (data.password === password) {
                 validUser = true;
             }
         });

@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.PORT || 3002;
 
 // Configurar CORS
-const allowedOrigins = ['http://localhost:5500'];
+const allowedOrigins = ['http://localhost:5500','http://localhost:5501','http://localhost:5502' ];
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
@@ -28,9 +28,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
+const historialRuta = require('./rutas/historial');
 const autenticacionRuta = require('./rutas/autenticacion');
 const usersRuta = require('./rutas/users');
 
+app.use('/api/historial', historialRuta);
 app.use('/api/autenticacion', autenticacionRuta);
 app.use('/api/users', usersRuta);
 

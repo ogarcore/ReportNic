@@ -1,142 +1,155 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, addDoc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
+// client/notificaciones.js
 
-// Configuración de Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyB07sR2b1NMI0lvJUYa6hHHDfAqIdhb5hI",
-    authDomain: "reportnicdb.firebaseapp.com",
-    projectId: "reportnicdb",
-    storageBucket: "reportnicdb.appspot.com",
-    messagingSenderId: "361642844511",
-    appId: "1:361642844511:web:0134bcb94209b1c65116ea",
-    measurementId: "G-7Z3Y1M2MP6"
-};
+// Configurar el Access Token de Mapbox
+mapboxgl.accessToken = 'pk.eyJ1IjoiYXhlbDc3NyIsImEiOiJjbTE5bjBzZnEwMzZzMnZvbnhneDJqcXg3In0.5210d_aHgbv_nEIj0aUdIg'; 
 
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const analytics = getAnalytics(app);
-
+let socket;
 let notifications = [];
-const notificationTimeout = 120000; // Tiempo límite en milisegundos (ej. 10000 ms = 10 segundos)
-let isNotificationSelected = false; // Variable para saber si hay una notificación seleccionada
+const notificationTimeout = 120000; // 2 minutos
+let isNotificationSelected = false; // Para saber si hay una notificación seleccionada
+let patientMarker = null;
+let hospitalMarker = null;
+let map; // Declarar map globalmente
 
+// Función para obtener el token JWT del almacenamiento
+function getToken() {
+    return localStorage.getItem('token') || sessionStorage.getItem('token');
+}
+
+// Función para decodificar el token y obtener los datos del usuario
+function getUserData() {
+    const token = getToken();
+    if (!token) return null;
+    try {
+        return jwt_decode(token);
+    } catch (error) {
+        console.error('Error decodificando el token:', error);
+        return null;
+    }
+}
+
+// Función para obtener hiddenNotifications desde el token
 function getHiddenNotifications() {
-    return JSON.parse(localStorage.getItem('hiddenNotifications')) || [];
+    const userData = getUserData();
+    return userData ? userData.notificaciones || [] : [];
 }
 
-function hideNotification(notificationId) {
-    let hiddenNotifications = getHiddenNotifications();
-    if (!hiddenNotifications.includes(notificationId)) {
-        hiddenNotifications.push(notificationId);
-    }
-    localStorage.setItem('hiddenNotifications', JSON.stringify(hiddenNotifications));
-}
-
-async function saveNotificationToFirestore(notification) {
-    const hospital = localStorage.getItem('hospital');
-    const usuario = localStorage.getItem('usuario'); // Obtener el usuario del localStorage
-    let collectionName;
-
-    if (hospital === 'hospitalCarlosRobertoHuembes(Filial El Carmen)') {
-        collectionName = 'historial_HospitalCarlosRobertoHuembes';
-    } else if (hospital === 'hospitalSuMedico') {
-        collectionName = 'historial_HospitalSuMedico';
+// Función para inicializar la conexión Socket.io
+function initializeSocket() {
+    const token = getToken();
+    if (!token) {
+        console.error('No se encontró el token JWT.');
+        return;
     }
 
-    if (collectionName) {
-        try {
-            await addDoc(collection(db, collectionName), {
-                id: notification.id,
-                nombre: notification.nombre,
-                apellidos: notification.apellidos,
-                edad: notification.edad,
-                presionSistolica: notification.presionSistolica,
-                presionDiastolica: notification.presionDiastolica,
-                afectaciones: notification.afectaciones,
-                eta: notification.eta,
-                fechaYHora: new Date(),
-                usuario: usuario 
-            });
-            console.log('Notificación guardada en Firestore');
-        } catch (error) {
-            console.error('Error al guardar la notificación:', error);
+    socket = io('http://localhost:3003', {
+        auth: {
+            token: token
         }
-    }
-}
+    });
 
+    socket.on('connect', () => {
+        console.log('Conectado al servidor de notificaciones.');
+    });
 
-let notifCollection;
+    socket.on('nuevaNotificacion', (notification) => {
+        // Filtrar notificaciones ya ocultas
+        if (!getHiddenNotifications().includes(notification.id)) {
+            notifications.push(notification);
+            renderNotifications(notification);
+        }
+    });
 
-function listenToNotifications() {
-    notifCollection = collection(db, "Emergencias");
+    socket.on('disconnect', () => {
+        console.log('Desconectado del servidor de notificaciones.');
+    });
 
-    onSnapshot(notifCollection, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added') {
-                const data = change.doc.data();
-                const timestamp = data.fechaYHora.toDate();
-                const date = timestamp.toISOString().split('T')[0]; 
-                const time = timestamp.toTimeString().split(' ')[0]; 
-
-                const hospitalLocalStorage = localStorage.getItem('hospital');
-                const notificationHospital = data.hospitalSeleccionado?.nombre; 
-
-                // Comparar el hospital
-                if (
-                    (hospitalLocalStorage === 'hospitalCarlosRobertoHuembes(Filial El Carmen)' && notificationHospital === 'Hospital Carlos Roberto Huembes (Filial El Carmen)') ||
-                    (hospitalLocalStorage === 'hospitalSuMedico' && notificationHospital === 'Hospital SuMédico')
-                ) {
-                    if (!getHiddenNotifications().includes(change.doc.id)) {
-                        const notification = {
-                            id: change.doc.id,
-                            createdAt: timestamp, 
-                            date,
-                            time,
-                            nombre: data.fichaPaciente.nombre,
-                            apellidos: data.fichaPaciente.apellidos,
-                            edad: data.fichaPaciente.edad,
-                            presionSistolica: data.fichaPaciente.presionSistolica,
-                            presionDiastolica: data.fichaPaciente.presionDiastolica,
-                            afectaciones: data.fichaPaciente.afectaciones,
-                            eta: data.eta,  // Agregar ETA
-                            coordenadasActuales: data.coordenadasActuales,  // Guardar coordenadas actuales
-                            hospitalSeleccionado: data.hospitalSeleccionado // Guardar hospital seleccionado
-                        };
-
-                        notifications.push(notification);
-                        renderNotifications(notification); 
-                    }
-                } else {
-                    console.log("La notificación no corresponde al hospital del usuario");
-                }
-            }
-        });
+    socket.on('connect_error', (err) => {
+        console.error('Error de conexión con Socket.io:', err.message);
     });
 }
 
+// Función para agregar una notificación a hiddenNotifications
+async function addHiddenNotification(notificationId) {
+    const token = getToken();
+    if (!token) {
+        console.error('No se encontró el token JWT.');
+        return;
+    }
 
+    try {
+        const response = await fetch('http://localhost:3003/api/notificacion/hidden', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ notificationId })
+        });
 
+        const data = await response.json();
 
+        if (response.ok) {
+            // Actualizar el token en el almacenamiento local
+            localStorage.setItem('token', data.token) || sessionStorage.setItem('token', data.token);
+            console.log('hiddenNotifications actualizado y token renovado.');
+        } else {
+            console.error('Error al actualizar hiddenNotifications:', data.mensaje);
+        }
+    } catch (error) {
+        console.error('Error al actualizar hiddenNotifications:', error);
+    }
+}
+
+// Función para guardar la notificación en Firestore a través del backend
+async function saveNotificationToFirestore(notification) {
+    // Añadir la notificación a la lista de ocultas
+    await addHiddenNotification(notification.id);
+
+    // Enviar la notificación al backend para que se guarde en Firestore
+    try {
+        const response = await fetch('http://localhost:3003/api/notificacion/guardar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+            body: JSON.stringify(notification) // Enviar el objeto de notificación completo
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            console.log('Notificación guardada en Firestore:', data.mensaje);
+        } else {
+            console.error('Error al guardar la notificación:', data.mensaje);
+        }
+    } catch (error) {
+        console.error('Error al enviar la notificación al backend:', error);
+    }
+}
+
+// Función para renderizar las notificaciones en el HTML
+// Función para renderizar las notificaciones en el HTML
 function renderNotifications(notification) {
     const notificationsContainer = document.getElementById('notifications');
     const notificationDiv = document.createElement('div');
-    let closedManually = false; // Bandera para controlar si se cierra manualmente
+    let closedManually = false; // Para controlar si se cierra manualmente
+
     notificationDiv.classList.add('notification', 'fadeInDown');
+    notificationDiv.setAttribute('data-id', notification.id); // Para facilitar la eliminación
     notificationDiv.innerHTML = 
         `<h3>Emergencia en camino</h3>
         <p>Hora: ${notification.time}</p>
-        <p>${notification.afectaciones}</p>
+        <p>${notification.fichaPaciente.afectaciones}</p>
         <button class="close-btn">&times;</button>`;
-    
+
     notificationDiv.addEventListener('click', () => loadPatientData(notification));
 
     // Evento para cerrar manualmente la notificación (al hacer clic en el botón "x")
-    notificationDiv.querySelector('.close-btn').addEventListener('click', (e) => {
+    notificationDiv.querySelector('.close-btn').addEventListener('click', async (e) => {
         e.stopPropagation(); 
         closedManually = true; // Marcar que se cerró manualmente
-        saveNotificationToFirestore(notification); // Guardar en Firestore al cerrar manualmente
+        await saveNotificationToFirestore(notification); // Guardar en Firestore al cerrar manualmente
         hideNotification(notification.id); // Ocultar notificación
         notificationDiv.remove(); // Remover de la interfaz
         clearPatientData(); // Limpiar la ficha al cerrar la notificación
@@ -145,16 +158,16 @@ function renderNotifications(notification) {
 
     notificationsContainer.appendChild(notificationDiv);
 
-    // Ocultar la notificación después del tiempo límite desde su creación
-    const timeElapsed = new Date() - notification.createdAt; // Tiempo transcurrido desde la creación
+    // Convertir 'createdAt' a Date
+    const notificationCreatedAt = new Date(notification.createdAt);
+    const timeElapsed = new Date() - notificationCreatedAt; // Tiempo transcurrido en ms
     const remainingTime = notificationTimeout - timeElapsed;
 
     // Solo ocultar si el tiempo restante es positivo
     if (remainingTime > 0) {
-        setTimeout(() => {
-            // Solo guardar automáticamente si no fue cerrada manualmente
+        setTimeout(async () => {
             if (!closedManually) {
-                saveNotificationToFirestore(notification); // Guardar en Firestore antes de desaparecer
+                await saveNotificationToFirestore(notification); // Guardar en Firestore antes de desaparecer
                 hideNotification(notification.id); // Ocultar notificación
                 notificationDiv.remove(); // Remover de la interfaz
                 clearPatientData(); 
@@ -174,21 +187,22 @@ function renderNotifications(notification) {
 }
 
 
+// Función para cargar los datos del paciente en la ficha
 function loadPatientData(notification) {
     isNotificationSelected = true; // Indicar que hay una notificación seleccionada
 
-    // Mostrar la ETA en el nuevo input
+    // Mostrar la ETA en el input
     document.getElementById('tiempo').value = notification.eta;
 
     // Actualizar los campos del paciente
     document.getElementById('patient-time').textContent = notification.time;
     document.getElementById('patient-date').textContent = notification.date;
-    document.getElementById('patient-name').value = notification.nombre;
-    document.getElementById('patient-lastname').value = notification.apellidos;
-    document.getElementById('patient-age').value = notification.edad;
-    document.getElementById('patient-blood-pressure-systolic').value = notification.presionSistolica;
-    document.getElementById('patient-blood-pressure-diastolic').value = notification.presionDiastolica;
-    document.getElementById('patient-conditions').value = notification.afectaciones;
+    document.getElementById('patient-name').value = notification.fichaPaciente.nombre;
+    document.getElementById('patient-lastname').value = notification.fichaPaciente.apellidos;
+    document.getElementById('patient-age').value = notification.fichaPaciente.edad;
+    document.getElementById('patient-blood-pressure-systolic').value = notification.fichaPaciente.presionSistolica;
+    document.getElementById('patient-blood-pressure-diastolic').value = notification.fichaPaciente.presionDiastolica;
+    document.getElementById('patient-conditions').value = notification.fichaPaciente.afectaciones;
 
     // Actualizar mapa con las coordenadas actuales del paciente
     const { latitude: latActual, longitude: lngActual } = notification.coordenadasActuales;
@@ -197,9 +211,7 @@ function loadPatientData(notification) {
     updateMapWithCoordinates(latActual, lngActual, latHospital, lngHospital);
 }
 
-let patientMarker = null;
-let hospitalMarker = null;
-
+// Función para actualizar el mapa con las coordenadas
 function updateMapWithCoordinates(latActual, lngActual, latHospital, lngHospital) {
     // Limpiar los marcadores anteriores si existen
     if (patientMarker) {
@@ -245,47 +257,52 @@ function updateMapWithCoordinates(latActual, lngActual, latHospital, lngHospital
     });
 }
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiYXhlbDc3NyIsImEiOiJjbTE5bjBzZnEwMzZzMnZvbnhneDJqcXg3In0.5210d_aHgbv_nEIj0aUdIg';
+// Función para inicializar el mapa
+function initializeMap() {
+    const userData = getUserData();
+    if (!userData) {
+        console.error('No se encontró la información del usuario en el token.');
+        return;
+    }
 
-const ubicacionHospital = JSON.parse(localStorage.getItem('ubicacionHospital'));
+    const ubicacionHospital = userData.ubicacionHospital;
 
-if (ubicacionHospital) {
-    var map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
-        center: [ubicacionHospital.lng, ubicacionHospital.lat],
-        zoom: 12
-    });
+    if (ubicacionHospital) {
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [ubicacionHospital.lng, ubicacionHospital.lat],
+            zoom: 12
+        });
 
-    map.on('load', function () {
-        mostrarUbicacionHospital(); // Llama a la función cuando el mapa se cargue completamente
-    });
-} else {
-    console.error("No se encontró la ubicación en localStorage.");
+        map.on('load', function () {
+            mostrarUbicacionHospital();
+        });
+    } else {
+        console.error("No se encontró la ubicación en el token.");
+    }
 }
 
+// Función para mostrar la ubicación del hospital en el mapa
 function mostrarUbicacionHospital() {
-    const ubicacionHospital = JSON.parse(localStorage.getItem('ubicacionHospital'));
-    
+    const userData = getUserData();
+    const ubicacionHospital = userData.ubicacionHospital;
+
     if (ubicacionHospital) {
         const { lng, lat } = ubicacionHospital;
         map.flyTo({ center: [lng, lat], zoom: 17 });
-        
+
         // Crear un div para el marcador personalizado
         const el = document.createElement('div');
         el.className = 'hospital-marker';
-        
-        el.innerHTML = `
-            <div class="hospital-icon"></div>
-        `;
-        
+        el.innerHTML = `<div class="hospital-icon"></div>`;
+
         // Crear marcador con el div personalizado
         new mapboxgl.Marker(el)
             .setLngLat([lng, lat]) // Establecer la ubicación con lat y lng
             .addTo(map); // Añadir el marcador al mapa
     }
 }
-
 
 // Función para actualizar el mapa si no hay notificaciones seleccionadas
 function updateMap() {
@@ -294,7 +311,7 @@ function updateMap() {
     }
 }
 
-
+// Función para limpiar los datos del paciente
 function clearPatientData() {
     const now = new Date();
     const timeString = now.toLocaleTimeString('es-ES', { hour12: false });
@@ -323,7 +340,7 @@ function clearPatientData() {
     updateMap();
 }
 
-
+// Función para actualizar la hora y fecha cada segundo
 function updateTime() {
     if (!isNotificationSelected) { 
         const now = new Date();
@@ -336,8 +353,22 @@ function updateTime() {
     }
 }
 
-updateTime();
-setInterval(updateTime, 1000);
-window.onload = listenToNotifications;
+// Función para manejar la inicialización de la aplicación
+function initializeApp() {
+    initializeMap();
+    initializeSocket();
+    updateTime();
+    setInterval(updateTime, 1000);
+}
+
+function hideNotification(notificationId) {
+    const notificationElement = document.querySelector(`[data-id="${notificationId}"]`);
+    if (notificationElement) {
+        notificationElement.remove();  // Elimina el elemento de la interfaz
+        console.log(`Notificación ${notificationId} ocultada.`);
+    }
+}
 
 
+
+window.onload = initializeApp;

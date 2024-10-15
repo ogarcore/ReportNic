@@ -1,83 +1,114 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
+document.addEventListener('DOMContentLoaded', async () => {
+    const tableBody = document.querySelector('table.styled-table tbody');
+    const searchBtn = document.getElementById('search-btn'); 
+    const viewAllBtn = document.getElementById('view-all-btn');
+    const searchNameInput = document.getElementById('search-name');
+    const searchLastnameInput = document.getElementById('search-lastname');
+    const searchDateInput = document.getElementById('search-date');
 
-// Configuración de Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyB07sR2b1NMI0lvJUYa6hHHDfAqIdhb5hI",
-    authDomain: "reportnicdb.firebaseapp.com",
-    projectId: "reportnicdb",
-    storageBucket: "reportnicdb.appspot.com",
-    messagingSenderId: "361642844511",
-    appId: "1:361642844511:web:0134bcb94209b1c65116ea",
-    measurementId: "G-7Z3Y1M2MP6"
-};
+    const getDataFromStorage = (key) => {
+        return sessionStorage.getItem(key) || localStorage.getItem(key);
+    };
 
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const analytics = getAnalytics(app);
+    const token = getDataFromStorage('token');
 
-document.querySelector("form").addEventListener("submit", async (e) => {
-    e.preventDefault();
+    // Función para limpiar la tabla antes de añadir nuevos datos
+    const clearTable = () => {
+        tableBody.innerHTML = ''; // Esto evitará que se agreguen duplicados
+    };
 
-    const searchName = document.getElementById("search-name").value.trim();
-    const searchLastName = document.getElementById("search-lastname").value.trim();
-    const searchDate = document.getElementById("search-date").value;
-    
-    // Limpiar cualquier mensaje de error previo
-    const errorMessageDiv = document.getElementById("error-message");
-    errorMessageDiv.textContent = "";  // Limpiar el mensaje de error
+    // Función para limpiar los inputs
+    const clearInputs = () => {
+        searchNameInput.value = '';
+        searchLastnameInput.value = '';
+        searchDateInput.value = '';
+    };
 
-    const hospital = localStorage.getItem("hospital");
-
-    let historialCollection = "";
-    if (hospital === "Hospital Carlos Roberto Huembes (Filial El Carmen)") {
-        historialCollection = "historial_HospitalCarlosRobertoHuembes";
-    } else if (hospital === "Hospital SuMedico") {
-        historialCollection = "historial_HospitalSuMedico";
-    } else {
-        alert("Hospital no encontrado en el localStorage");
-        return;
-    }
-
-    let collectionRef = collection(db, historialCollection);
-    let q = query(collectionRef);
-
-    if (searchName) {
-        q = query(q, where("nombre", "==", searchName));
-    }
-    if (searchLastName) {
-        q = query(q, where("apellidos", "==", searchLastName));
-    }
-    if (searchDate) {
-        const startOfDay = new Date(`${searchDate}T00:00:00`);
-        const endOfDay = new Date(`${searchDate}T23:59:59`);
-
-        const startTimestamp = Timestamp.fromDate(startOfDay);
-        const endTimestamp = Timestamp.fromDate(endOfDay);
-
-        q = query(q, where("fechaYHora", ">=", startTimestamp), where("fechaYHora", "<=", endTimestamp));
-    }
-
-    try {
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-            const results = [];
-            querySnapshot.forEach((doc) => {
-                results.push({ id: doc.id, ...doc.data() });
+    // Función para realizar la búsqueda y mostrar los datos
+    const fetchData = async (searchParams = {}) => {
+        try {
+            const queryString = new URLSearchParams(searchParams).toString();
+            const response = await fetch(`http://localhost:3002/api/historial/historial?${queryString}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                }
             });
 
-            localStorage.setItem("searchResults", JSON.stringify(results));
+            const results = await response.json();
 
-            window.location.href = "resultados.html";
-        } else {
-            // Mostrar el mensaje de error debajo del campo de fecha si no se encuentran coincidencias
-            errorMessageDiv.textContent = "No se encontraron coincidencias.";
+            // Limpiar la tabla antes de llenarla de nuevo
+            clearTable();
+
+            if (response.ok) {
+                if (results.length > 0) {
+                    results.forEach(result => {
+                        const row = document.createElement('tr');
+
+                        if (result.fechaYHora && result.fechaYHora._seconds) {
+                            const dateTime = new Date(result.fechaYHora._seconds * 1000); 
+                            const formattedDateTime = `${dateTime.toLocaleDateString()} ${dateTime.toLocaleTimeString()}`;
+
+                            row.innerHTML = `
+                                <td>${result.nombre}</td>
+                                <td>${result.apellidos}</td>
+                                <td>${result.edad}</td>
+                                <td>${result.afectaciones}</td>
+                                <td>${result.presionSistolica}</td>
+                                <td>${result.presionDiastolica}</td>
+                                <td>${formattedDateTime}</td>
+                                <td>${result.usuario}</td>
+                            `;
+                        } else {
+                            row.innerHTML = `
+                                <td>${result.nombre}</td>
+                                <td>${result.apellidos}</td>
+                                <td>${result.edad}</td>
+                                <td>${result.afectaciones}</td>
+                                <td>${result.presionSistolica}</td>
+                                <td>${result.presionDiastolica}</td>
+                                <td>Fecha no disponible</td>
+                                <td>${result.usuario}</td>
+                            `;
+                        }
+
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="8">No se encontraron datos.</td></tr>`;
+                }
+            } else {
+                alert('Error fetching data: ' + results.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while fetching data.');
         }
-    } catch (error) {
-        console.error("Error al buscar documentos: ", error);
-        errorMessageDiv.textContent = "Ocurrió un error al buscar. Inténtalo de nuevo.";
-    }
-});
+    };
 
+    // Evento para el botón de búsqueda
+    searchBtn.addEventListener('click', () => {
+        const searchParams = {
+            searchName: searchNameInput.value.trim(),
+            searchLastname: searchLastnameInput.value.trim(),
+            searchDate: searchDateInput.value,
+        };
+
+        // Llamar a la función de búsqueda
+        fetchData(searchParams);
+
+
+    });
+
+    // Evento para el botón de ver todos
+    viewAllBtn.addEventListener('click', () => {
+        fetchData(); // Mostrar todos los datos
+
+        // Limpiar los inputs cuando se selecciona "Ver todos"
+        clearInputs(); 
+    });
+
+    // Cargar todos los datos al inicio
+    fetchData();
+});

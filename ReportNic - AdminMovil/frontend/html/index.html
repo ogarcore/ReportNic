@@ -12,34 +12,41 @@
 <body>
     <div class="background-image"></div>
     <div class="prueba"></div>
-    <header class="header">
+
+    <header class="header text-center">
         <img src="../images/logo amarillo.png" alt="Logo" class="header__logo">
         <h1 class="header__title">ReportNic - AdminMovil</h1>
     </header>
-    <form class="form form--login">
-        <h2 class="form__title title--login">Inicio de Sesión</h2>
-        <p class="form__subtitle">Accede a tu panel de gestión de usuarios ReportNic.</p>
-        <div class="form__main">
-            <label for="username" class="form__label">Usuario</label>
-            <input type="text" id="username" class="form__input" placeholder="Escriba su usuario">
-            <label for="password" class="form__label">Contraseña</label>
-            <input type="password" id="password" class="form__input" placeholder="Escriba su contraseña">
-            <div id="error-message" class="form__error"></div>
-            <div class="form__group group--margin">
-                <input type="checkbox" id="checkbox" class="form__checkbox">
-                <label for="checkbox" class="form__label form__label--checkbox">Mantener sesion abierta</label>
+
+    <div class="container-fluid d-flex justify-content-center align-items-center min-vh-100">
+        <form class="form form--login p-4 rounded shadow">
+            <h2 class="form__title title--login">Inicio de Sesión</h2>
+            <p class="form__subtitle">Accede a tu panel de gestión de usuarios ReportNic.</p>
+            <div class="form__main">
+                <label for="username" class="form__label">Usuario</label>
+                <input type="text" id="username" class="form__input form-control" placeholder="Escriba su usuario">
+                <label for="password" class="form__label">Contraseña</label>
+                <input type="password" id="password" class="form__input form-control" placeholder="Escriba su contraseña">
+                <div id="error-message" class="form__error"></div>
+                <div class="form__group group--margin d-flex align-items-center">
+                    <input type="checkbox" id="checkbox" class="form__checkbox">
+                    <label for="checkbox" class="form__label form__label--checkbox">Mantener sesión abierta</label>
+                </div>
+                <input type="submit" class="form__button btn btn-warning w-100" value="Iniciar Sesión">
+                <p class="form__forgot-password text-center mt-2">¿Olvisate tu contraseña?</p>
             </div>
-            <input type="submit" class="form__button" value="Iniciar Sesion">
-            <p class="form__forgot-password">¿Olvisate tu contraseña?</p>
-        </div>
-    </form>
-    <footer class="footer footer--margin">
+        </form>
+    </div>
+
+    <footer class="footer text-center mt-4">
         <p>
-            Copyright © 2024 ReportNic. Todos los derechos reservados. La reproducción o distribución de este contenido sin permiso previo está prohibida.
+            Copyright © 2024 ReportNic. Todos los derechos reservados.
         </p>
     </footer>
+
     <script type="module" src="../js/login.js"></script>
 </body>
+
 </html>
 
 

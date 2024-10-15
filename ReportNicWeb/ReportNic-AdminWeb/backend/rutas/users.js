@@ -324,7 +324,7 @@ router.get('/historial', verifyToken, async (req, res) => {
         // Buscar en el historial
         const historialCollectionName = `historial_${hospital}`;
         const historialSnapshot = await db.collection(historialCollectionName)
-            .where('usuario', '==', userData.user) // Aquí 'usuario' es el campo de la colección historial
+            .where('usuario', '==', userData.usuario) // Aquí 'usuario' es el campo de la colección historial
             .get();
 
         if (historialSnapshot.empty) {
