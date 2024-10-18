@@ -31,11 +31,12 @@ app.use(bodyParser.json());
 const historialRuta = require('./rutas/historial');
 const autenticacionRuta = require('./rutas/autenticacion');
 const usersRuta = require('./rutas/users');
+const suscripcionRuta= require('./rutas/suscripcion')
 
 app.use('/api/historial', historialRuta);
 app.use('/api/autenticacion', autenticacionRuta);
 app.use('/api/users', usersRuta);
-
+app.use('/api/suscripcion', suscripcionRuta);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
     res.status(404).json({ mensaje: 'Ruta no encontrada' });

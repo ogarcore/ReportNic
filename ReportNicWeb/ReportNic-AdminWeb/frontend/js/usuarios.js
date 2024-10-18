@@ -364,7 +364,7 @@ async function cargarDatosUsuario(userId) {
 
     try {
 
-        const response = await fetch(`http://localhost:3002/api/users/${encodeURIComponent(userId)}`, {
+        const response = await fetch(`http://localhost:3002/api/users/historial/${encodeURIComponent(userId)}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -460,7 +460,6 @@ document.getElementById('btn-delete').addEventListener('click', async () => {
         });
 
         if (response.ok) {
-            alert('Usuario eliminado correctamente');
             cerrarModal('deleteModal'); // Cerrar el modal de eliminación
             loadUsersRealTime(); // Recargar los usuarios después de la eliminación
         } else {
@@ -482,11 +481,9 @@ async function cargarHistorial(userId) {
     const getDataFromStorage = (key) => sessionStorage.getItem(key) || localStorage.getItem(key);
     const token = getDataFromStorage('token');
     
-    console.log('Token obtenido:', token);
-    console.log('Intentando cargar el historial del usuario con ID:', userId);
-    
     try {
-        const response = await fetch(`http://localhost:3002/api/users/historial?userId=${userId}`, {
+        // Cambiar la URL para incluir el userId en los params de la ruta
+        const response = await fetch(`http://localhost:3002/api/users/historial/${encodeURIComponent(userId)}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -494,25 +491,18 @@ async function cargarHistorial(userId) {
             }
         });
 
-        // Intenta analizar la respuesta como JSON
-        let historial;
-        try {
-            historial = await response.json();
-        } catch (parseError) {
-            console.error('Error al analizar la respuesta JSON:', parseError);
-            const textResponse = await response.text(); // Leer como texto para ver el error
-            console.error('Texto de la respuesta:', textResponse);
-            return; // Salir de la función si no se puede analizar la respuesta
-        }
-
-        console.log('Respuesta de la API:', response);
-        console.log('Historial obtenido:', historial);
-
         if (response.ok) {
-            console.log('Respuesta correcta. Procediendo a mostrar el historial en la tabla.');
-            mostrarHistorialEnTabla(historial); // Mostrar el historial en la tabla
+            const historial = await response.json(); // Obtener los datos en formato JSON
+
+            // Mostrar los datos en la tabla
+            mostrarHistorialEnTabla(Array.isArray(historial) ? historial : [historial]);
         } else {
-            console.error('Error al cargar el historial:', historial?.message || 'No se proporcionó un mensaje de error.');
+            const errorData = await response.json();
+
+            // Mostrar mensaje si no se encontraron datos
+            if (response.status === 404) {
+                mostrarHistorialEnTabla([]); // Pasar un array vacío para mostrar el mensaje de 'No se encontraron datos'
+            }
         }
     } catch (error) {
         console.error('Error al cargar el historial:', error);
@@ -521,9 +511,18 @@ async function cargarHistorial(userId) {
 
 function abrirModalHistorial(userId) {
     const historyModal = document.getElementById('historyModal');
+    const tableBody = document.querySelector('#resultados-table tbody');
+    
     if (historyModal) {
         console.log('Abriendo modal de historial.');
         historyModal.style.display = 'flex'; // Muestra el modal (usa 'flex' para centrarlo)
+
+        // Limpiar el contenido de la tabla antes de cargar el nuevo historial
+        if (tableBody) {
+            tableBody.innerHTML = ''; // Limpiar la tabla
+        } else {
+            console.error('No se encontró el cuerpo de la tabla.');
+        }
 
         // Cargar el historial al abrir el modal
         cargarHistorial(userId);
@@ -543,14 +542,22 @@ function mostrarHistorialEnTabla(historial) {
 
     tableBody.innerHTML = ''; // Limpiar la tabla
 
-    historial.forEach(registro => {
-        console.log('Procesando registro:', registro);
+    if (historial.length === 0) {
+        // Mostrar el mensaje si no hay datos
+        tableBody.innerHTML = `<tr><td colspan="8">No se encontraron datos.</td></tr>`;
+        return;
+    }
 
-        const fechaYHora = new Date(registro.fechaYHora.seconds * 1000); // Convertir el timestamp a un objeto Date
+    // Mostrar los registros si hay historial
+    historial.forEach(registro => {
+
+        const fechaYHora = registro.fechaYHora && registro.fechaYHora.seconds
+            ? new Date(registro.fechaYHora.seconds * 1000)
+            : new Date(); // Fallback si no es un objeto de timestamp
+
         const fechaFormateada = fechaYHora.toLocaleDateString(); // Obtener solo la fecha
         const horaFormateada = fechaYHora.toLocaleTimeString(); // Obtener solo la hora
 
-        console.log(`Registro convertido: Fecha - ${fechaFormateada}, Hora - ${horaFormateada}`);
 
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -563,7 +570,6 @@ function mostrarHistorialEnTabla(historial) {
             <td>${fechaFormateada} ${horaFormateada}</td>
         `;
         tableBody.appendChild(row);
-        console.log('Fila añadida a la tabla.');
     });
 }
 
@@ -589,6 +595,21 @@ document.querySelectorAll('.close').forEach(closeBtn => {
             modal.style.display = 'none';
         }
     });
+});
+
+const togglePassword = document.getElementById('toggle-password');
+
+togglePassword.addEventListener('click', () => {
+    // Cambiar el tipo del input entre "password" y "text"
+    const type = passwordField.type === 'password' ? 'text' : 'password';
+    passwordField.type = type;
+
+    // Cambiar la imagen del ícono
+    if (type === 'password') {
+        togglePassword.src = "../images/esconder.png"; // Imagen para ojo cerrado
+    } else {
+        togglePassword.src = "../images/ojo.png"; // Imagen para ojo abierto
+    }
 });
 
 window.addEventListener('click', (event) => {

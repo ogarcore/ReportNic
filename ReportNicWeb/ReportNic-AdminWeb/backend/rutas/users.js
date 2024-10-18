@@ -75,9 +75,7 @@ router.post('/create-user', verifyToken, async (req, res) => {
             await historialCollectionRef.add({}); // Esto crea la colección
         }
 
-
         const geoPoint = new admin.firestore.GeoPoint(ubicacionHospital._latitude, ubicacionHospital._longitude);
-
 
         await usersCollectionRef.add({
             firstName,
@@ -86,6 +84,7 @@ router.post('/create-user', verifyToken, async (req, res) => {
             password: encryptPassword(password),
             dni,
             ubicacionHospital: geoPoint,
+            acceso: true, // Campo booleano de suscripción
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
 
@@ -95,6 +94,7 @@ router.post('/create-user', verifyToken, async (req, res) => {
         res.status(500).json({ message: 'Error al crear el usuario.' });
     }
 });
+
 
 // Función para desencriptar contraseñas
 function decryptPassword(encryptedPassword) {
@@ -298,37 +298,41 @@ router.delete('/:id', verifyToken, async (req, res) => {
     }
 });
 
-router.get('/historial', verifyToken, async (req, res) => {
+// Nueva ruta para obtener historial basado en el ejemplo
+router.get('/historial/:id', verifyToken, async (req, res) => {
     const { hospital: hospitalFromToken } = req.user;
-    const { userId } = req.query; // ID del usuario
-    
-    if (!hospitalFromToken || !userId) {
-        return res.status(400).json({ message: 'Hospital o userId no proporcionado.' });
+    const userId = req.params.id; // Recibe el ID del usuario como parámetro de la ruta
+
+    if (!hospitalFromToken) {
+        return res.status(400).json({ mensaje: 'No se pudo extraer el hospital del token.' });
     }
 
     const hospital = hospitalFromToken;
 
     try {
-        // Obtener el usuario
         const usersCollectionName = `usuarios_${hospital}`;
         const userDoc = await db.collection(usersCollectionName).doc(userId).get();
-
+        
         if (!userDoc.exists) {
-            return res.status(404).json({ message: 'Usuario no encontrado.' });
+            console.log(`Usuario con ID ${userId} no encontrado en la colección ${usersCollectionName}.`);
+            return res.status(404).json({ mensaje: 'Usuario no encontrado.' });
         }
 
         const userData = userDoc.data();
+        const usuario = userData.user;
 
+        if (!usuario) {
+            return res.status(400).json({ mensaje: 'El campo de usuario no existe en los datos del usuario.' });
+        }
 
-        
-        // Buscar en el historial
         const historialCollectionName = `historial_${hospital}`;
         const historialSnapshot = await db.collection(historialCollectionName)
-            .where('usuario', '==', userData.usuario) // Aquí 'usuario' es el campo de la colección historial
+            .where('usuario', '==', usuario)
             .get();
 
+        // Verificar si no hay registros en el historial
         if (historialSnapshot.empty) {
-            return res.status(404).json({ message: 'No se encontraron registros en el historial.' });
+            return res.status(404).json({ mensaje: 'No se encontraron registros en el historial.' });
         }
 
         const historialData = historialSnapshot.docs.map(doc => ({
@@ -336,11 +340,14 @@ router.get('/historial', verifyToken, async (req, res) => {
             ...doc.data()
         }));
 
-        res.status(200).json(historialData); // Enviar los datos del historial al frontend
+        res.status(200).json(historialData);
     } catch (error) {
         console.error('Error al obtener el historial:', error);
-        res.status(500).json({ message: 'Error al obtener el historial.' });
+        res.status(500).json({ success: false, mensaje: 'Error al obtener el historial.' });
     }
 });
+
+
+
 
 module.exports = router;

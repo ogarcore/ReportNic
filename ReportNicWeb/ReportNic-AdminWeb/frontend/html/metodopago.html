@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago de Membresía</title>
+    <link rel="stylesheet" href="../estilos/metodopago.css">
+    <link rel="stylesheet" href="../estilos/fonts.css">
+</head>
+<body>
+    <section class="payment-section">
+        <h1>Detalles del Pago</h1>
+        <div class="payment-summary">
+            <p>Producto: <span id="selectedPlan">Cargando...</span></p>
+            <p>Precio: <span id="selectedPrice">Cargando...</span></p>
+        </div>
+
+        <form id="paymentForm">
+            <label for="cardName">Nombre en la tarjeta</label>
+            <input type="text" id="cardName" placeholder="Nombre en la tarjeta" required>
+
+            <label for="cardNumber">Número de tarjeta</label>
+            <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="16" required oninput="detectCardType(this.value)">
+            <p id="cardType" style="display:none;"></p><!-- Aquí se mostrará el tipo de tarjeta -->
+
+            <div class="card-details">
+                <div>
+                    <label for="expiryDate">Fecha de caducidad</label>
+                    <input type="text" id="expiryDate" maxlength="5" placeholder="MM/YY" oninput="formatExpiryDate(this)">
+                </div>
+                <div>
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" placeholder="000" maxlength="4" required>
+                </div>
+            </div>
+
+            <button type="submit" class="pay-button">Pagar ahora</button>
+        </form>
+
+        <div id="confirmationMessage" class="hidden">
+            <p>¡Pago Completado!</p>
+            <p>Redirigiendo....</p>
+        </div>
+
+        <div id="loading" class="hidden">
+            <div class="loader"></div>
+            <p>Procesando pago, por favor espera...</p>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+    <script src="../js/metodopago.js"></script>
+
+</body>
+</html>

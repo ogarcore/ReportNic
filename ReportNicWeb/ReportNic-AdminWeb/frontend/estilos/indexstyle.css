@@ -326,6 +326,25 @@ body {
     }
 }
 
+.password-container {
+    position: relative;
+}
+
+#password {
+    padding-right: 35px; /* Espacio para el ícono */
+}
+
+.eye-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    filter: invert(100%);
+}
+
 
 
 

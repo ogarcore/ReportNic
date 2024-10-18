@@ -36,3 +36,17 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener("resize", handleScreenResize);
     handleScreenResize();
 });
+
+const logoutButton = document.getElementById('logout');
+
+// Función para cerrar sesión
+logoutButton.addEventListener('click', (e) => {
+    e.preventDefault(); // Prevenir el comportamiento por defecto del enlace
+
+    // Limpiar el localStorage
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Redirigir al index.html
+    window.location.href = '../html/index.html';
+});

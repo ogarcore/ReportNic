@@ -69,4 +69,37 @@ router.post('/login', async (req, res) => {
     }
 });
 
+router.get('/hospitalData', async (req, res) => {
+    const token = req.headers.authorization.split(' ')[1]; // Obtener el token de la cabecera
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const user = decoded.user;
+
+        const usersCollection = db.collection('usuarios_admin_web');
+        const snapshot = await usersCollection.where('user', '==', user).get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        let hospitalData = {};
+
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            hospitalData = {
+                tipoHospital: data.tipoHospital, // Obtener el tipo de hospital
+                suscripcion: data.suscripcion // Obtener el estado de suscripción (booleano)
+            };
+        });
+
+        // Incluir el tipoHospital en el token
+        const updatedToken = jwt.sign({ ...decoded, tipoHospital: hospitalData.tipoHospital }, JWT_SECRET);
+
+        return res.status(200).json({ ...hospitalData, token: updatedToken });
+    } catch (error) {
+        console.error('Error al obtener el tipo de hospital y suscripción', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
 module.exports = router;

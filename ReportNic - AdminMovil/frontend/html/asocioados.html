@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospitales Asociados en Managua</title>
+    <link rel="stylesheet" href="../estilos/asociados.css">
+    <link rel="stylesheet" href="../estilos/fonts.css">
+    <link rel="stylesheet" href="../estilos/header_admin.css">
+</head>
+<body>
+    <header>
+        <a href="administrador.html" class="logo--link">
+            <div class="logo-container">
+                <img src="../images/logo amarillo.png" alt="Logo" class="logo">
+                <h1>ReportNic - AdminMovil</h1>
+            </div>
+        </a>
+        <nav class="header-menu">
+            <ul class="nav-menu">
+                <li><a href="administrador.html">Inicio</a></li>
+                <li><a href="usuarios.html">Usuarios</a></li>
+                <li><a href="ambulancias.html">Ambulancias</a></li>
+                <li><a href="historialTurnos.html">Turnos</a></li>
+            </ul>
+            <div class="profile-menu" id="profileMenu">
+                <img src="../images/perfil.png" alt="Foto de perfil" class="profile-pic" id="profilePic">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="asocioados.html">Asociados</a>
+                    <a href="contactanos.html">Contactanos</a>
+                    <a href="index.html" id="logout">Cerrar Sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="header-container">
+        <h2>Hospitales Asociados en Managua</h2>
+    </div>
+    
+    <section class="hospitales">
+        <div class="hospitales-container">
+            <div class="hospitales-section publicos">
+                <h3>Hospitales Públicos</h3>
+                <ul class="hospitales-list">
+                    <li class="hospital-item"><i class="fas fa-hospital"></i> Hospital Escuela Dr. Roberto Calderón</li>
+                    <li class="hospital-item"><i class="fas fa-hospital"></i> Hospital Manolo Morales Peralta</li>
+                    <li class="hospital-item"><i class="fas fa-hospital"></i> Hospital Alemán Nicaragüense</li>
+                    <li class="hospital-item"><i class="fas fa-hospital"></i> Hospital Bertha Calderón</li>
+                    <li class="hospital-item"><i class="fas fa-hospital"></i> Hospital Lenín Fonseca</li>
+                    <li class="hospital-item"><i class="fas fa-hospital"></i> Hospital Primario Carlos Fonseca</li>
+                    <li class="hospital-item"><i class="fas fa-hospital"></i> Hospital Fernando Velez Paiz</li>
+                    <li class="hospital-item"><i class="fas fa-hospital"></i> Hospital Carlos Roberto Huembes(Filial el Carmen)</li>
+                </ul>
+            </div>
+            
+            <div class="hospitales-section privados">
+                <h3>Hospitales Privados</h3>
+                <ul class="hospitales-list">
+                    <li class="hospital-item"><i class="fas fa-hospital-alt"></i> Hospital Metropolitano Vivian Pellas</li>
+                    <li class="hospital-item"><i class="fas fa-hospital-alt"></i> Hospital Bautista</li>
+                    <li class="hospital-item"><i class="fas fa-hospital-alt"></i> Hospital Salud Integral</li>
+                    <li class="hospital-item"><i class="fas fa-hospital-alt"></i> Hospital Central Managua</li>
+                    <li class="hospital-item"><i class="fas fa-hospital-alt"></i> Hospital Monte España</li>
+                    <li class="hospital-item"><i class="fas fa-hospital-alt"></i> Clínica Santa María</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p>Copyright © 2024 ReportNic. Todos los derechos reservados</p>
+    </footer>
+    <script src="../js/header_admin.js"></script>
+</body>
+</html>

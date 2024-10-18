@@ -1,3 +1,5 @@
+// server.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -11,7 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Configurar CORS
-const allowedOrigins = ['http://localhost:5501', 'http://localhost:5504'];
+const allowedOrigins = ['http://localhost:5501', 'http://localhost:5504']; // Ajusta según tus necesidades
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
@@ -30,10 +32,18 @@ app.use(bodyParser.json());
 // Rutas de autenticación y usuarios
 const autenticacionRuta = require('./rutas/autenticacion');
 const usersRuta = require('./rutas/users');
+const ambulanciaRuta = require('./rutas/ambulancias');
+const turnosRuta = require('./rutas/turnos');
 
 app.use('/api/autenticacion', autenticacionRuta);
 app.use('/api/users', usersRuta);
+app.use('/api/ambulancias', ambulanciaRuta);
+app.use('/api/turnos', turnosRuta);
+
+// Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Manejar rutas no encontradas
 app.use((req, res, next) => {
     res.status(404).json({ mensaje: 'Ruta no encontrada' });
 });
@@ -41,7 +51,8 @@ app.use((req, res, next) => {
 // Ruta de prueba
 app.get('/', (req, res) => {
     res.send('Servidor Node.js funcionando correctamente.');
-    });
+});
+
 // Iniciar el servidor
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en el puerto ${PORT}`);

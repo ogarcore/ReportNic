@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Suscripciones</title>
+    <link rel="stylesheet" href="../estilos/gestiondesuscripciones.css">
+    <link rel="stylesheet" href="../estilos/header_admin.css">
+    <link rel="stylesheet" href="../estilos/fonts.css">
+</head>
+<body>
+    <header>
+        <a href="administrador.html" class="logo--link">
+            <div class="logo-container">
+                <img src="../images/logoblanco.png" alt="Logo" class="logo">
+                <h1>ReportNic - AdminWeb</h1>
+            </div>
+        </a>
+        <nav class="header-menu">
+            <ul>
+                <li><a href="admnistradorpriv.html">Inicio</a></li>
+                <li><a href="usuariospriv.html">Usuarios</a></li>
+                <li><a href="notihistorialpriv.html">Historial</a></li>
+            </ul>
+            <div class="profile-menu" id="profileMenu">
+                <img src="../images/perfil.png" alt="Foto de perfil" class="profile-pic" id="profilePic">
+                <div class="dropdown-menu" id="dropdownMenu">
+                    <a href="contactanospriv.html">Contactanos</a>
+                    <a href="gestiondesuscripciones.html">Membresia</a>
+                    <a href="index.html" id="logout">Cerrar Sesión</a>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
+    <h2>Gestión de Suscripciones</h2>
+
+    <div class="container">
+        <h1>Gestión de Suscripciones</h1>
+        <table class="subscription-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Plan</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Fecha de Fin</th>
+                    <th>Renovación</th>
+                    <th>Método de Pago</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Los datos serán generados dinámicamente -->
+            </tbody>
+        </table>
+    </div>
+    <!-- Modal de Confirmación -->
+        <div id="cancelModal" class="modal">
+            <div class="modal-content">
+                <span id="closeModal" class="close">&times;</span>
+                <p>¿Estás seguro de que deseas cancelar tu suscripción?</p>
+                <button id="confirmCancel">Sí, cancelar suscripción</button>
+                <button id="cancelAction">No, mantener suscripción</button>
+            </div>
+        </div>
+
+    <script src="../js/gestiondesuscripciones.js"></script>
+    <script src="../js/headerpriv.js"></script>
+</body>
+</html>

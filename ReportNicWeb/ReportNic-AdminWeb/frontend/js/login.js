@@ -19,15 +19,40 @@ async function enviarCredenciales(usuario, contraseña) {
         const data = await response.json();
 
         if (response.ok) {
-            // Si la autenticación fue exitosa
-            const token = data.token; // Recibir el JWT del servidor
+            const token = data.token;
 
+            // Guardar el token según la selección del checkbox
             if (checkbox.checked) {
                 localStorage.setItem('token', token);
             } else {
                 sessionStorage.setItem('token', token);
             }
-            window.location.href = 'administrador.html';
+
+            // Hacer una nueva solicitud para obtener el tipo de hospital y suscripción
+            const hospitalDataResponse = await fetch('http://localhost:3002/api/autenticacion/hospitalData', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const hospitalData = await hospitalDataResponse.json();
+
+            if (hospitalDataResponse.ok) {
+                // Verificar el tipo de hospital y suscripción
+                if (hospitalData.tipoHospital === 'Privado') {
+                    if (hospitalData.suscripcion) {
+                        window.location.href = 'admnistradorpriv.html';
+                    } else {
+                        window.location.href = 'membresias.html';
+                    }
+                } else {
+                    window.location.href = 'administrador.html';
+                }
+            } else {
+                errorMessageDiv.textContent = hospitalData.error;
+                errorMessageDiv.style.display = 'block';
+            }
         } else {
             errorMessageDiv.textContent = data.error;
             errorMessageDiv.style.display = 'block';
@@ -38,6 +63,21 @@ async function enviarCredenciales(usuario, contraseña) {
         errorMessageDiv.style.display = 'block';
     }
 }
+
+const togglePassword = document.getElementById('toggle-password');
+
+togglePassword.addEventListener('click', () => {
+    // Cambiar el tipo del input entre "password" y "text"
+    const type = passwordField.type === 'password' ? 'text' : 'password';
+    passwordField.type = type;
+
+    // Cambiar la imagen del ícono
+    if (type === 'password') {
+        togglePassword.src = "../images/esconder.png"; // Imagen para ojo cerrado
+    } else {
+        togglePassword.src = "../images/ojo.png"; // Imagen para ojo abierto
+    }
+});
 
 
 loginForm.addEventListener('submit', (event) => {

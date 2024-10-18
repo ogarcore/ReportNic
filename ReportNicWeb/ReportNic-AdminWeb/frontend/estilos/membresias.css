@@ -1,0 +1,121 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Montserrat, sans-serif;
+}
+
+body {
+    background-color: #222124;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.pricing-section h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #3480d8;
+}
+
+.pricing-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+}
+
+.pricing-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #3656c0;
+    border-radius: 15px;
+    padding: 30px 20px;
+    width: 300px;
+    text-align: center;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 5px #3480d8;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 10px #3480d8;
+
+}
+
+.featured {
+    background-color: #495bff;
+    position: relative;
+    top: -10px;
+    box-shadow: 0 6px 10px rgba(75, 78, 248, 0.5);
+}
+
+.card h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+}
+
+.price {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.card p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #dbcce7;
+}
+
+.card ul {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.card ul li {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #41b3ffad;
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #ff224d;
+}
+
+.logout{
+    display: flex;
+    justify-content: center;
+    background-color: #c5c0c9;
+    font-weight: 500;
+    font-size: 20px;
+    text-decoration: none;
+    padding: 7px;
+    color: #000000;
+    transition: background-color 0.3s;
+    width: 170px;
+    height: 40px;
+    border-radius: 5px ;
+}
+
+
+.logout:hover{
+    background-color: #9e97a3;
+    color: #01052e;
+}
+
+/* Oculta el contenedor del loading por defecto */
+

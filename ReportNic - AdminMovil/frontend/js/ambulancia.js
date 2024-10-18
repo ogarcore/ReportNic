@@ -1,502 +1,360 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, doc, addDoc, orderBy, query, where,serverTimestamp, deleteDoc} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-analytics.js";
+const API_BASE_URL = 'http://localhost:3001/api'; // Asegúrate de que esta URL apunte a tu backend
 
-// Configuración de Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyB07sR2b1NMI0lvJUYa6hHHDfAqIdhb5hI",
-    authDomain: "reportnicdb.firebaseapp.com",
-    projectId: "reportnicdb",
-    storageBucket: "reportnicdb.appspot.com",
-    messagingSenderId: "361642844511",
-    appId: "1:361642844511:web:0134bcb94209b1c65116ea",
-    measurementId: "G-7Z3Y1M2MP6"
-};
+document.addEventListener('DOMContentLoaded', () => {
+    const ambulanceList = document.getElementById('ambulanceList');
+    const addAmbulanciaBtn = document.getElementById('addAmbulancia');
+    const searchBtn = document.getElementById('searchBtn');
+    const viewAllBtn = document.getElementById('viewAllBtn');
+    const searchInput = document.getElementById('searchInput');
 
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const analytics = getAnalytics(app);
+    // Modales
+    const addModal = document.getElementById('addModal');
+    const closeAddModal = document.getElementById('closeAddModal');
+    const addAmbulanciaForm = document.getElementById('addAmbulanciaForm');
+    const addError = document.getElementById('addError');
 
+    const messageModal = document.getElementById('messageModal');
+    const closeMessageModal = document.getElementById('closeMessageModal');
+    const messageText = document.getElementById('messageText');
 
-const modal = document.getElementById('addModal');
-const btn = document.getElementById('addAmbulanceBtn');
-const closeModal = document.getElementById('closeModal');
+    const confirmModal = document.getElementById('confirmModal');
+    const confirmDeleteBtn = document.getElementById('confirm-delete');
+    const cancelDeleteBtn = document.getElementById('cancel-delete');
 
-btn.onclick = function() {
-    modal.style.display = 'block';
-}
+    let ambulancias = [];
+    let ambulanceToDelete = null;
 
-closeModal.onclick = function() {
-    modal.style.display = 'none';
-}
-
-window.addEventListener('click', (event) => {
-    if (event.target == modal) {
-        modal.style.display = 'none';
-    }
-});
-
-
-
-// Referencia a la colección
-const ambulanciasRef = collection(db, 'ambulancias');
-
-
-// Función para generar un código único (puedes mejorar la lógica si prefieres)
-function generarCodigoAmbulancia() {
-    return 'AMB-' + Math.floor(1000 + Math.random() * 9000); // Código tipo AMB-1234
-}
-
-
-// Manejar el envío del formulario para crear un nuevo usuario
-// Manejar el envío del formulario para crear una nueva ambulancia
-const createUserForm = document.getElementById('createUserForm');
-createUserForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Obtener los valores de los campos del formulario
-    const matricula = document.getElementById('matriculaInput').value;
-
-    // Elementos para mostrar mensajes de error
-    const submitError = document.getElementById('submitError');
-
-    // Limpiar los mensajes de error previos
-    submitError.textContent = '';
-
-    try {
-        // Verificar si ya existe una ambulancia con la misma matrícula
-        const matriculaQuery = query(ambulanciasRef, where("matricula", "==", matricula));
-        const matriculaSnapshot = await getDocs(matriculaQuery);
-
-        let hasError = false;
-
-        // Si ya existe una ambulancia con la misma matrícula, mostrar un mensaje de error
-        if (!matriculaSnapshot.empty) {
-            submitError.textContent = 'Esta matrícula ya está en uso.';
-            hasError = true;
+    // Función para obtener todas las ambulancias
+    const fetchAmbulancias = async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/ambulancias`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+            ambulancias = await response.json();
+            renderAmbulancias(ambulancias);
+        } catch (error) {
+            console.error("Error obteniendo ambulancias:", error);
+            // No mostrar modal de error; opcionalmente, podrías mostrar un mensaje en la interfaz
         }
+    };
 
-        // Si hay errores, no continuar con la creación de la ambulancia
-        if (hasError) {
-            return;
-        }
-
-        const codigo = generarCodigoAmbulancia();
-
-        // Crear un nuevo documento en la colección "ambulancias"
-        const ambulanciaDocRef = doc(ambulanciasRef, `ambulancia_${codigo}`);
-        await setDoc(ambulanciaDocRef, {
-            matricula: matricula,
-            codigo: codigo,
-            fechaCreacion: serverTimestamp()
-        });
-
-        // Limpiar el formulario
-        createUserForm.reset();
-
-        // Cerrar el modal de creación de ambulancia
-        modal.style.display = 'none';
-
-        // Mostrar un mensaje de éxito o realizar alguna acción posterior
-        alert('Ambulancia agregada correctamente.');
-    } catch (error) {
-        console.error("Error al agregar la ambulancia: ", error);
-        alert('Hubo un error al registrar la ambulancia.');
-    }
-});
-
-
-
-
-function loadUsersRealTime() {
-    const userTableBody = document.querySelector('.user-table tbody');
+    // Función para renderizar las ambulancias en el DOM
+    const renderAmbulancias = (data) => {
+        ambulanceList.innerHTML = '';
+        data.forEach(ambulancia => {
+            const paramedicos = ambulancia.paramedicos || { actual: 0, max: 0 };
     
-    // Consulta para ordenar usuarios por 'createdAt' de manera descendente (los más recientes primero)
-    const q = query(ambulanciasRef, orderBy('fechaCreacion', 'desc'));
-
-    // Escuchar los cambios en la colección en tiempo real
-    onSnapshot(q, (snapshot) => {
-        userTableBody.innerHTML = ''; // Limpiar la tabla antes de llenarla
-
-        // Recorrer los documentos en la colección
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-
-            // Crear una fila para cada usuario
-            const row = document.createElement('tr');
-
-            row.setAttribute('data-id', doc.id);
-            // Agregar las celdas con los datos del usuario
-            row.innerHTML = `
-            <td>${data.codigo}</td>
-            <td>${data.matricula}</td>
-            <td>
-                <div class="actions-container">
-                    <button class="actions-btn">●●●</button>
-                    <div class="actions-icons">
-                            <button class="btn-action" data-modal="editModal"><img src="../images/editar.png" alt="Editar"></button>
-                            <button class="btn-action" data-modal="deleteModal"><img src="../images/borrar.png" alt="Eliminar"></button>
+            const ambulanceRow = document.createElement('div');
+            ambulanceRow.classList.add('ambulance-row');
+            ambulanceRow.dataset.id = ambulancia.id;
+    
+            ambulanceRow.innerHTML = `
+                <button class="toggle-details-btn">Paramédicos</button>
+                <div class="ambulance-info">
+                    <div class="ambulance-code-matricula">
+                        <span class="ambulance-code">${ambulancia.codigo}</span>
+                        <span class="ambulance-matricula">${ambulancia.matricula}</span>
+                    </div>
+                    <div class="paramedic-status">
+                        <span class="status-circle ${ambulancia.capacidad ? 'green' : 'red'}"></span>
+                        <span class="paramedics-count">${paramedicos.actual}/${paramedicos.max}</span>
                     </div>
                 </div>
-            </td>
+                <div class="ambulance-actions">
+                    <div class="capacidad">
+                        <label class="switch">
+                            <input type="checkbox" class="capacidad-switch" ${ambulancia.disponibilidad ? 'checked' : ''}>
+                            <span class="slider"></span>
+                        </label>
+                        <span class="capacidad-label">Disponibilidad</span>
+                    </div>
+                    <button class="delete-btn">🗑️</button>
+                </div>
+                <div class="ambulance-details" style="display: none;">
+                    <!-- Información de paramédicos se mostrará aquí -->
+                    <div class="paramedic-info"></div>
+                </div>
             `;
-
-            // Agregar la fila a la tabla
-            userTableBody.appendChild(row);
+    
+            ambulanceList.appendChild(ambulanceRow);
         });
-    });
-}
-
-// Llamar a la función para cargar los usuarios en tiempo real cuando se cargue la página
-window.addEventListener('DOMContentLoaded', loadUsersRealTime);
-
-
-// Función para buscar ambulancias
-document.getElementById('searchBtn').addEventListener('click', async () => {
-    const searchInput = document.getElementById('searchInput').value.trim();
-    const userTableBody = document.querySelector('.user-table tbody');
-    userTableBody.innerHTML = ''; // Limpiar la tabla
-
-    if (!searchInput) {
-        alert("Por favor, ingrese un valor para buscar.");
-        return;
-    }
-
-    let foundAmbulancias = [];
-
-    // Crear consultas individuales
-    const qMatricula = query(ambulanciasRef, where('matricula', '==', searchInput));
-    const qCodigo = query(ambulanciasRef, where('codigo', '==', searchInput));
-
-    const [matriculaSnapshot, codigoSnapshot] = await Promise.all([
-        getDocs(qMatricula),
-        getDocs(qCodigo)
-    ]);
-
-    matriculaSnapshot.forEach(doc => foundAmbulancias.push({ id: doc.id, ...doc.data() }));
-    codigoSnapshot.forEach(doc => foundAmbulancias.push({ id: doc.id, ...doc.data() }));
-
-    // Eliminar duplicados por matrícula
-    foundAmbulancias = foundAmbulancias.filter((ambulancia, index, self) =>
-        index === self.findIndex(a => a.matricula === ambulancia.matricula)
-    );
-
-    if (foundAmbulancias.length === 0) {
-        userTableBody.innerHTML = `<tr><td colspan="3">No se encontraron coincidencias</td></tr>`;
-        return;
-    }
-
-    renderAmbulancias(foundAmbulancias, userTableBody);
-    searchInput.value = ''; // Limpiar el input de búsqueda
-});
-
-// Función para mostrar todas las ambulancias
-document.getElementById('viewAllBtn').addEventListener('click', async () => {
-    const userTableBody = document.querySelector('.user-table tbody');
-    userTableBody.innerHTML = ''; // Limpiar la tabla
-
-    const ambulanciasSnapshot = await getDocs(ambulanciasRef);
-    let allAmbulancias = [];
-    ambulanciasSnapshot.forEach(doc => allAmbulancias.push({ id: doc.id, ...doc.data() }));
-
-    renderAmbulancias(allAmbulancias, userTableBody);
-});
-
-// Función para renderizar ambulancias
-function renderAmbulancias(ambulancias, tableBody) {
-    if (ambulancias.length === 0) {
-        tableBody.innerHTML = `<tr><td colspan="3">No se encontraron ambulancias</td></tr>`;
-        return;
-    }
-
-    ambulancias.forEach(ambulancia => {
-        const row = document.createElement('tr');
-        row.setAttribute('data-id', ambulancia.id);
-
-        row.innerHTML = `
-            <td>${ambulancia.codigo}</td>
-            <td>${ambulancia.matricula}</td>
-            <td>
-                <div class="actions-container">
-                    <button class="actions-btn">●●●</button>
-                    <div class="actions-icons">
-                        <button class="btn-action edit-btn" data-id="${ambulancia.id}" data-modal="editModal"><img src="../images/editar.png" alt="Editar"></button>
-                        <button class="btn-action delete-btn" data-id="${ambulancia.id}" data-modal="deleteModal"><img src="../images/borrar.png" alt="Eliminar"></button>
-                    </div>
-                </div>
-            </td>
-        `;
-        tableBody.appendChild(row);
-    });
-
-    // Asignar eventos a los botones de edición y eliminación
-    document.querySelectorAll('.edit-btn').forEach(button => {
-        button.addEventListener('click', async (e) => {
-            const ambulanciaId = e.target.closest('button').getAttribute('data-id');
-            await handleEditAmbulancia(ambulanciaId);
-        });
-    });
-
-    document.querySelectorAll('.delete-btn').forEach(button => {
-        button.addEventListener('click', async (e) => {
-            const ambulanciaId = e.target.closest('button').getAttribute('data-id');
-            await handleDeleteAmbulancia(ambulanciaId);
-        });
-    });
-}
-
-//boton de menu 
-document.addEventListener("DOMContentLoaded", function() {
-    // Usamos event delegation para detectar los clicks en los botones que se generan dinámicamente
-    document.addEventListener('click', function(event) {
-        const button = event.target.closest('.actions-btn');
-        const actionContainers = document.querySelectorAll('.actions-container');
-
-        if (button) {
-            const container = button.parentElement;
-            // Activar el contenedor de acciones y mostrar los íconos
-            container.classList.add('active');
-            
-            // Evitar que el clic en el botón se propague y cierre los íconos inmediatamente
-            event.stopPropagation();
-        } else {
-            // Cerrar los contenedores de acciones si el clic fue fuera de ellos
-            actionContainers.forEach(container => {
-                if (!container.contains(event.target)) {
-                    container.classList.remove('active');
+    
+        addEventListeners();
+    };
+    // Función para agregar eventos a los elementos recién creados
+    const addEventListeners = () => {
+        // Toggle de detalles de paramédicos
+        const toggleBtns = document.querySelectorAll('.toggle-details-btn');
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const details = btn.parentElement.querySelector('.ambulance-details');
+                const paramedicInfoDiv = details.querySelector('.paramedic-info');
+                const ambulanceCode = btn.closest('.ambulance-row').querySelector('.ambulance-code').textContent;
+    
+                if (details.style.display === 'none' || details.style.display === '') {
+                    // Mostrar detalles
+                    details.style.display = 'block';
+                    // Llamar a la función para obtener la información del paramédico
+                    await fetchParamedicoInfo(ambulanceCode, paramedicInfoDiv);
+    
+                    // Aquí llamamos a updateParamedicoCount para incrementar el número de paramédicos si hay uno disponible
+                    await updateParamedicoCount(ambulanceCode, 1);
+                } else {
+                    // Ocultar detalles y disminuir el número de paramédicos
+                    details.style.display = 'none';
+                    // Aquí llamamos a handleTurnoFalse para disminuir el número de paramédicos
+                    await handleTurnoFalse(ambulanceCode, paramedicInfoDiv);
                 }
             });
-        }
-    });
-
-    // Esto asegura que los íconos desaparezcan y se muestren los tres puntos al hacer clic en cualquier otro lado
-    document.addEventListener('click', function(event) {
-        const actionContainers = document.querySelectorAll('.actions-container');
-
-        actionContainers.forEach(container => {
-            // Verifica que el clic no fue dentro de los contenedores de acciones ni en los botones
-            if (!container.contains(event.target)) {
-                container.classList.remove('active');  // Cierra las opciones y vuelve a los tres puntos
-            }
         });
-    });
-});
-
-
-
-
-//ventanas modales de editar,borrar, e historial de usuario
-
-// Obtener elementos del DOM
-const modals = document.querySelectorAll('.modales');
-const editModal = document.getElementById('editModal');
-const deleteModal = document.getElementById('deleteModal');
-const closeButtons = document.querySelectorAll('.close');
-
-// Usar event delegation para los botones generados dinámicamente
-document.addEventListener('click', function(e) {
-    const button = e.target.closest('.btn-action');
-    if (button) {
-        const modalId = button.getAttribute('data-modal');
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.style.display = 'flex';
-        }
-    }
-});
-
-// Cerrar los modales al hacer clic en los botones de cerrar
-closeButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        modals.forEach(modal => modal.style.display = 'none');
-    });
-});
-
-// Cerrar el modal cuando se hace clic fuera de su contenido
-window.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modales')) {
-        e.target.style.display = 'none';
-    }
-});
-
-// Cerrar el modal de eliminar al hacer clic en el botón de cancelar
-const btnCancel = document.querySelector('.btn-cancel');
-if (btnCancel) {
-    btnCancel.addEventListener('click', () => {
-        deleteModal.style.display = 'none';
-    });
-}
-
-// Asume que los usuarios se cargan en la tabla y cada fila tiene un botón de editar
-const table = document.querySelector('#userTable');
-let selectedUserId; // Guardará el ID del usuario seleccionado
-
-
-document.querySelectorAll('.edit-btn').forEach(button => {
-    button.addEventListener('click', function() {
-    const userId = this.getAttribute('data-user-id');
     
-    if (!userId) {
-        console.error('No se ha seleccionado un usuario');
-        return;
-    }
-    
-      // Lógica para obtener los datos del usuario a partir del userId
-      getUserData(userId);  // Asegúrate de tener esta función para obtener los datos del usuario seleccionado
-    });
-});
 
-//modal editar
+        // Switch de capacidad
+        const capacidadSwitches = document.querySelectorAll('.capacidad-switch');
+        capacidadSwitches.forEach(switchElement => {
+            switchElement.addEventListener(' change', async (event) => {
+                const isChecked = event.target.checked;
+                const ambulanceRow = event.target.closest('.ambulance-row');
+                const id = ambulanceRow.dataset.id;
 
-// No cargar automáticamente los datos en los inputs de usuario y contraseña al abrir el modal
-document.addEventListener('click', function (e) {
-    const button = e.target.closest('.btn-action[data-modal="editModal"]');
-    if (button) {
-        const row = button.closest('tr'); // Obtener la fila correspondiente
-        const userId = row.getAttribute('data-id'); // Obtener el ID del usuario
+                try {
+                    const response = await fetch(`${API_BASE_URL}/ambulancias/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ disponibilidad: isChecked }),
+                    });
 
-        // Limpiar los campos antes de cargar los datos
-        document.getElementById('editMatricula').value = '';
-        document.getElementById('editError').textContent = '';
+                    if (response.ok) {
+                        // Actualizar el color del indicador
+                        const statusCircle = ambulanceRow.querySelector('.status-circle');
+                        statusCircle.classList.toggle('green', isChecked);
+                        statusCircle.classList.toggle('red', !isChecked);
+                    } else {
+                        const errorData = await response.json();
+                        throw new Error(errorData.mensaje || 'Error actualizando capacidad');
+                    }
+                } catch (error) {
+                    console.error("Error actualizando capacidad:", error);
+                    // No mostrar modal de error
+                    // Opcional: Mostrar mensaje de error en un elemento de la interfaz
+                }
+            });
+        });
 
-        // Cargar datos del usuario en el modal
-        loadUserData(userId);
-    }
-});
+        // Botones de eliminar
+        const deleteBtns = document.querySelectorAll('.delete-btn');
+        deleteBtns.forEach(deleteBtn => {
+            deleteBtn.addEventListener('click', () => {
+                const ambulanceRow = deleteBtn.closest('.ambulance-row');
+                const id = ambulanceRow.dataset.id;
+                ambulanceToDelete = { id, element: ambulanceRow };
+                confirmModal.style.display = 'flex';
+            });
+        });
+    };
 
-// Cargar los datos del usuario seleccionado
-async function loadUserData(userId) {
-    const userDocRef = doc(db, 'ambulancias', userId);
-    const userDoc = await getDoc(userDocRef);
+    // Agregar una nueva ambulancia mediante el formulario
+    addAmbulanciaForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        addError.textContent = ''; // Limpiar mensajes de error
 
-    if (userDoc.exists()) {
-        const userData = userDoc.data();
-        
-        // No cargar automáticamente el username ni el password
-        // Esto asegura que se requiera ingresar estos datos manualmente al editar
+        const codigo = document.getElementById('code').value.trim();
+        const matricula = document.getElementById('matricula').value.trim();
+        const max = document.getElementById('max').value.trim();
 
-        // Mostrar el modal
-        editModal.style.display = 'flex';
-        selectedUserId = userId; // Guardar el ID del usuario seleccionado
-    } else {
-        console.error("No se encontró el usuario.");
-    }
-}
-
-// Manejar el formulario de edición
-const editUserForm = document.getElementById('editUserForm');
-editUserForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const matricula = document.getElementById('editMatricula').value.trim();
-
-    const matriculaError = document.getElementById('editError');
-
-    
-    matriculaError.textContent = '';
-
-    let hasError = false;
-
-
-    // Si ambos campos están vacíos, mostrar error
-    if (!matricula) {
-        matriculaError.textContent = 'Debe llenar el campo.';
-        hasError = true;
-    }
-
-    // Si hay errores, detener la ejecución
-    if (hasError) {
-        return;
-    }
-
-    // Verificar si ya existe un usuario con el mismo username (si se ingresó un username)
-    const usersCollection = collection(db, 'ambulancias');
-    if (matricula) {
-        const matriculaQuery = query(usersCollection, where("matricula", "==", matricula));
-        const matriculaSnapshot = await getDocs(matriculaQuery);
-
-        // Si el username ya existe en otro usuario, mostrar error
-        if (!matriculaSnapshot.empty && matriculaSnapshot.docs[0].id !== selectedUserId) {
-            editError.textContent = 'Este numero de matricula ya esta registrado';
+        if (!codigo || !matricula || !max) {
+            addError.textContent = 'Todos los campos son obligatorios.';
             return;
         }
-    }
-    
 
-    const userDocRef = doc(db, 'ambulancias', selectedUserId);
+        if (isNaN(max) || Number(max) <= 0) {
+            addError.textContent = 'La capacidad máxima debe ser un número positivo.';
+            return;
+        }
 
-    // Crear objeto con los campos a actualizar (solo los que están llenos)
-    const updatedData = {};
-    if (matricula) {
-        updatedData.matricula = matricula;
-    }
+        try {
+            const response = await fetch(`${API_BASE_URL}/ambulancias`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ codigo, matricula, max }),
+            });
 
-    updatedData.updatedAt = serverTimestamp(); // Actualizar la fecha de edición
-
-    try {
-        // Actualizar el documento en Firestore solo con los campos necesarios
-        await setDoc(userDocRef, updatedData, { merge: true }); // Merge para no sobrescribir campos no incluidos
-
-        // Cerrar el modal después de la actualización
-        editModal.style.display = 'none';
-        document.getElementById('successedit').style.display = 'block';
-    } catch (error) {
-        console.error("Error al actualizar el usuario: ", error);
-    }
-});
-
-const successeditCloseBtn = document.getElementById('successeditCloseBtn');
-successeditCloseBtn.addEventListener('click', () => {
-    document.getElementById('successedit').style.display = 'none';
-});
-
-
-//Eliminar Usuario
-
-let selectedUserToDelete; // Variable para almacenar el ID del usuario a eliminar
-const eliminateModal = document.getElementById('deleteModal');
-const successDeleteModal = document.getElementById('successDeleteModal');
-
-// Manejar el evento de clic en el botón de eliminar
-document.addEventListener('click', (e) => {
-    const button = e.target.closest('.btn-action[data-modal="deleteModal"]');
-    if (button) {
-        const row = button.closest('tr'); // Obtener la fila correspondiente
-        selectedUserToDelete = row.getAttribute('data-id'); // Guardar el ID del usuario
-        eliminateModal.style.display = 'flex'; // Mostrar el modal de eliminación
-    }
-});
-
-// Manejar el evento de clic en el botón de eliminar dentro del modal
-const btnDelete = document.querySelector('.btn-delete');
-if (btnDelete) {
-    btnDelete.addEventListener('click', async () => {
-        if (selectedUserToDelete) {
-            try {
-                // Referencia al documento del usuario a eliminar
-                const userDocRef = doc(db, 'ambulancias', selectedUserToDelete);
-                await deleteDoc(userDocRef); // Eliminar el documento
-
-                // Cerrar el modal de eliminación
-                deleteModal.style.display = 'none';
-                
-                // Mostrar modal de éxito
-                successDeleteModal.style.display = 'flex';
-            } catch (error) {
-                console.error("Error al eliminar el usuario: ", error);
-                alert('Hubo un error al eliminar el usuario.');
+            if (response.ok) {
+                const nuevaAmbulancia = await response.json();
+                ambulancias.push(nuevaAmbulancia);
+                renderAmbulancias(ambulancias);
+                addAmbulanciaForm.reset();
+                addModal.style.display = 'none';
+                showMessage('Ambulancia agregada correctamente.', true);
+            } else {
+                const errorData = await response.json();
+                addError.textContent = `Error: ${errorData.mensaje}`;
             }
+        } catch (error) {
+            console.error("Error agregando ambulancia:", error);
+            addError.textContent = `Error al agregar ambulancia: ${error.message}`;
         }
     });
-}
 
-// Cerrar el modal de éxito
-const btnCloseSuccessDelete = document.getElementById('btnCloseSuccessDelete');
-if (btnCloseSuccessDelete) {
-    btnCloseSuccessDelete.addEventListener('click', () => {
-        successDeleteModal.style.display = 'none';
+    // Mostrar el modal de agregar ambulancia
+    addAmbulanciaBtn.addEventListener('click', () => {
+        addModal.style.display = 'flex';
     });
-}
+
+    // Cerrar el modal de agregar ambulancia
+    closeAddModal.addEventListener('click', () => {
+        addModal.style.display = 'none';
+        addAmbulanciaForm.reset();
+        addError.textContent = '';
+    });
+
+    // Buscar ambulancias por matrícula
+    searchBtn.addEventListener('click', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        const resultados = ambulancias.filter(ambulancia => ambulancia.matricula.toLowerCase().includes(query));
+        renderAmbulancias(resultados);
+    });
+
+    // Ver todas las ambulancias
+    viewAllBtn.addEventListener('click', () => {
+        renderAmbulancias(ambulancias);
+    });
+
+    // Confirmar eliminación
+    confirmDeleteBtn.addEventListener('click', async () => {
+        if (!ambulanceToDelete) return;
+
+        const { id, element } = ambulanceToDelete;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/ambulancias/${id}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                ambulancias = ambulancias.filter(ambulancia => ambulancia.id !== id);
+                renderAmbulancias(ambulancias);
+                showMessage('Ambulancia eliminada correctamente.', true);
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.mensaje || 'Error al eliminar ambulancia');
+            }
+        } catch (error) {
+            console.error("Error eliminando ambulancia:", error);
+            // No mostrar modal de error
+        } finally {
+            confirmModal.style.display = 'none';
+            ambulanceToDelete = null;
+        }
+    });
+
+    const fetchParamedicoInfo = async (codigo, paramedicInfoDiv) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/turnos?codigo=${codigo}`);
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+    
+            const turnos = await response.json();
+            const turnoParamedico = turnos.find(turno => turno.enTurno === true);
+    
+            if (turnoParamedico) {
+                paramedicInfoDiv.innerHTML = `
+                    <p>Nombre: ${turnoParamedico.nombre} ${turnoParamedico.apellido}</p>
+                    <p>Inicio del Turno: ${turnoParamedico.fechaInicio}</p>
+                `;
+            } else {
+                paramedicInfoDiv.innerHTML = `<p>No hay paramédicos en turno para esta ambulancia.</p>`;
+            }
+        } catch (error) {
+            console.error("Error obteniendo la información del paramédico:", error);
+            paramedicInfoDiv.innerHTML = `<p>Error cargando la información del paramédico.</p>`;
+        }
+    };
+
+    const updateParamedicoCount = async (codigo, incremento) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/updateParamedicoCount/${codigo}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ incremento })
+            });
+    
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status} ${response.statusText}`);
+            }
+    
+            const result = await response.json();
+            console.log("Conteo de paramédicos actualizado:", result.mensaje);
+        } catch (error) {
+            console.error("Error actualizando el conteo de paramédicos:", error);
+        }
+    };
+
+    const handleTurnoFalse = async (codigo, paramedicInfoDiv) => {
+        try {
+            await fetch(`${API_BASE_URL}/updateParamedicoCount/${codigo}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ incremento: -1 }),
+            });
+    
+            // Remover la información del paramédico en la interfaz
+            paramedicInfoDiv.innerHTML = '';
+        } catch (error) {
+            console.error("Error removiendo paramédico:", error);
+        }
+    };
 
 
+    // Cancelar eliminación
+    cancelDeleteBtn.addEventListener('click', () => {
+        confirmModal.style.display = 'none';
+        ambulanceToDelete = null;
+    });
+
+    // Cerrar el modal de mensajes
+    closeMessageModal.addEventListener('click', () => {
+        messageModal.style.display = 'none';
+    });
+
+    // Mostrar mensajes de éxito o error
+    const showMessage = (msg, isSuccess) => {
+        messageText.textContent = msg;
+        messageModal.classList.remove('success', 'error');
+        if (isSuccess) {
+            messageModal.classList.add('success');
+        } else {
+            messageModal.classList.add('error');
+        }
+        messageModal.style.display = 'flex';
+    };
+
+    // Cerrar modales al hacer clic fuera de ellos
+    window.addEventListener('click', (event) => {
+        if (event.target == addModal) {
+            addModal.style.display = 'none';
+            addAmbulanciaForm.reset();
+            addError.textContent = '';
+        }
+        if (event.target == messageModal) {
+            messageModal.style.display = 'none';
+        }
+        if (event.target == confirmModal) {
+            confirmModal.style.display = 'none';
+            ambulanceToDelete = null;
+        }
+    });
+
+    // Inicializar obteniendo todas las ambulancias
+    fetchAmbulancias();
+});

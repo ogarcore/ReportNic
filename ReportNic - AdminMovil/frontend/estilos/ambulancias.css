@@ -1,15 +1,16 @@
+/* public/estilos/ambulancias.css */
 
-*{
+* {
     font-family: Montserrat, sans-serif;
 }
 
-body{
+body {
     margin: 0;
     padding: 0;
     color: #333;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
-    flex-direction: column;   
+    flex-direction: column;
     background-color: #555;
 }
 
@@ -27,7 +28,6 @@ body{
     border-radius: 5px;
     margin-bottom: 20px;
     background: #222;
-
 }
 
 .search-bar {
@@ -46,7 +46,7 @@ body{
     border-radius: 5px;
 }
 
-.search-bar input:focus{
+.search-bar input:focus {
     outline: none;
     border: 1px solid #777;
 }
@@ -64,407 +64,275 @@ body{
     background-color: #555;
 }
 
-/* Tabla de usuarios */
-.user-table {
+#addAmbulancia {
+    background: #FDC501;
+    color: #222;
+    font-weight: 500;
+}
+
+.ambulance-container {
     width: 100%;
-    border-collapse: collapse;
-    color: #fff;
 }
 
-.user-table th, .user-table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-}
-
-.user-table th {
-    background-color: #333;
-    color: #fff;
-    border: none;
-}
-
-.user-table td {
-    background-color: #444;
-    border: none;
-    border-bottom:1px solid #fff;
-    text-align: center;
-}
-
-.actions-container {
-    position: relative; /* Necesario para que el menú se posicione respecto al contenedor */
-    display: inline-block;
-    z-index: 1;
-}
-
-.actions-btn {
-    background: #333;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 15.5px;
-    cursor: pointer;
-    position: relative;
-    z-index: 1;
-}
-
-.actions-icons {
-    display: none;
-    gap: 8px;
-    justify-content: start;
-}
-
-.actions-icons button {
-    display: inline-block;
-    padding: 8.5px 0;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-.actions-icons img {
-    width: 20px;
-    height: 20px;
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-}
-
-.actions-container.active .actions-btn {
-    display: none;
-}
-
-.actions-container.active .actions-icons {
+.ambulance-row {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #222;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    position: relative;
 }
 
-/* Estilos para el modal */
-.modal {
-    display: none; 
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); 
-    width: 55%; 
-    height: 50%; /* Para ajustarse al contenido */
-    background: #111111e5; 
-    color: #fff;
-    border-radius: 15px;
-    z-index: 10; 
+.ambulance-info {
+    display: flex;
     align-items: center;
-    padding: 20x;
-    
+}
+
+.ambulance-code-matricula {
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+}
+
+.ambulance-code {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.ambulance-matricula {
+    font-size: 14px;
+    color: #aaa;
+    margin-left: 6px;
+}
+
+.paramedic-status {
+    display: flex;
+    align-items: center;
+}
+
+.status-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-circle.green {
+    background-color: green;
+}
+
+.status-circle.red {
+    background-color: red;
+}
+
+.paramedics-count {
+    color: #fff;
+    font-size: 14px;
+}
+
+.ambulance-actions {
+    display: flex;
+    align-items: center;
+}
+
+.availability {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 34px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: red;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.switch input:checked + .slider {
+    background-color: green;
+}
+
+.delete-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.toggle-details-btn {
+    background-color: #555;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.ambulance-details {
+    display: none;
+    background-color: #333;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.paramedic-info p {
+    margin: 5px 0;
+}
+
+.patient-info {
+    background-color: #aaa;
+    display: flex;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 3px;
+    color: #222;
+    justify-content: center;
+    gap: 220px;
+}
+
+/* Modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-content {
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    text-align: center;
-    height: 100%;
+    background-color: #444;
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+    width: 90%;
+    max-width: 400px;
 }
 
-#subtitleModal {
-margin-top:10px ;
-    font-size: 35px;
-    color: #F2B705; /* Mantener el color del título */
-}
-
-#saveAmbulanceBtn, 
-#addAmbulanceBtn {
-    padding: 12px;
-    width: 40%;
-    margin: auto;
-    background-color: #FDC501;
-    color: #141414;
-    font-size: 20px;
-    font-weight: 500;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-#addAmbulanceBtn{
-    width: 20%;
-    padding: 8px;
-    margin-bottom: 5px;
-}
-
-#saveAmbulanceBtn:hover,
-#saveAmbulanceBtn:focus {
-    color: rgb(114, 114, 114);
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.contenedor{
-    height: 100px;
-    text-align: left;
-    margin-top: 50px;
+.modal-content h3 {
+    margin-top: 0;
+    color: #fff;
 }
 
 .modal-content label {
-    font-size: 16px;
-    color: #ffffff;
-    margin-left: 150px;
+    display: block;
+    margin: 10px 0 5px;
+    color: #fff;
 }
 
 .modal-content input {
-    justify-content: center;
-    padding: 10px;
-    font-size: 14px;
-    width: 40%;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    border-bottom: 1px solid #E6B000;
-    color: #fff;
-}
-
-.modal-content input:hover{
-    border-bottom: 1px solid #ffc508;
-    background: #2b2b2bc4;
-}
-
-.modal-content input:focus{
-    background: #353535;
-    border-bottom: 1px solid #ffbf00;
-}
-
-
-
-.modales {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    background: #00000070;
-    justify-content: center;
-    align-items: center;
-    z-index: 101;
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
 }
 
-.modal-contentt {
-    background: #111111f6; 
-    padding: 25px;
-    padding-left: 40px;
-    border-radius: 20px;
-    width: 40%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+.modal-content button[type="submit"] {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #FDC501;
+    color: #222;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #e0c400;
 }
 
 .close {
-    float: right;
-    padding: 0;
-    height: 30px;
-    width: 25px;
-    text-align: center;
-    font-size: 26px;
-    cursor: pointer;
-    background-color: #e9af03;
-    color: #000;
-    border: 1px solid #333;
-    box-shadow: 1px 1px 1px #333;
-    border-radius: 2px;
-}
-
-.close:hover{
-    color: #b12c2c;
-    box-shadow: 2px 2px 1px #f3f3f3e7;
-    border-radius: 2px;
-}
-
-
-.modal-contentt form {
-    display: flex;
-    flex-direction: column;
-}
-
-.modal-contentt label {
-    margin-top: 10px;
-    font-size: 25px;
-    margin-bottom: 10px;
-    font-weight: 500;
-    color: #ffffff;
-}
-
-.modal-contentt input {
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    border-bottom: 1px solid #f1f1f1;
+    position: absolute;
+    top: 10px;
+    right: 15px;
     color: #fff;
-}
-
-.modal-contentt input:hover{
-    border-bottom: 1px solid #E6B000;
-    background: #111111d8;
-}
-
-.modal-contentt input:focus{
-    background: #1f1f1f;
-    border-bottom: 1px solid #ffbf00;
+    font-size: 24px;
+    cursor: pointer;
 }
 
 .error-message {
-    color: #d80d0d;
-    font-size: 12px;
-    margin-top: 5px;
-    display: block;
-}
-
-#editModal .password-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-#editModal .password-wrapper input {
-    width: 85%;
-}
-
-#toggleIcon1,#toggleIcon2 {
-    position: absolute;
-    right: 10px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
-}
-
-#successedit{
-    display: none; /* Oculto por defecto */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro */
-}
-
-#successedit .modal-contentt {
-    background-color: #fff;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 30%;
-    text-align: center;
-}
-
-#successedit .modal-contentt h2 {
-    margin-bottom: 20px;
-    color: #333;
-}
-
-#successedit .btn-submit {
-    padding: 10px 20px;
-    background-color: #e9af03;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#successedit .btn-submit:hover {
-    background-color: #F2B705;
-}
-
-#editModal img{
-    -webkit-filter: invert(100%);
-    filter: invert(100%);
-}
-
-/* Estilos para el modal de eliminación */
-#deleteModal .modal-contentt h2 {
-    color: #d42c2c;
-}
-
-#deleteModal p {
-    font-size: 18px;
-    margin-bottom: 40px;
-    color: #fff;
-}
-
-.btn-delete {
-    padding: 10px 20px;
-    background-color: #b12c2c;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.btn-cancel {
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    margin-left: 10px;
-    cursor: pointer;
-}
-
-.btn-delete:hover {
-    background-color: #a00;
-}
-
-.btn-cancel:hover {
-    background-color: #555;
-}
-
-#deleteModal, #successDeleteModal{
-    display: none; /* Oculto por defecto */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4); /* Fondo oscuro */
-}
-
-
-#successDeleteModal .modal-contentt h2{
-    margin-bottom: 20px;
-    background: transparent;
-    color: #d42c2c;
-}
-
-#successDeleteModal button {
-    padding: 10px 20px;
-    background-color: #e9af03;
-    color: #000000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-#successDeleteModal button:hover {
-    background-color: #ffc508;
-}
-
-
-.btn-submit{
+    color: #d9534f;
     margin-top: 10px;
-    padding: 9px;
-    background-color: #FDC501;
-    color: #141414;
-    font-size: 18px;
-    font-weight: 500;
+}
+
+#messageModal .modal-content {
+    text-align: center;
+    color: #fff;
+}
+
+#messageModal .modal-content p {
+    margin: 20px 0;
+}
+
+#messageModal .modal-content .close {
+    top: 15px;
+    right: 20px;
+}
+
+/* Estilos adicionales para el modal de confirmación */
+#confirmModal .modal-content p {
+    margin-bottom: 20px;
+}
+
+#confirmModal .modal-content button {
+    margin: 0 10px;
+    padding: 10px 20px;
     border: none;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-.btn-submit:hover{
-    background-color: #E6B000; 
+#confirm-delete {
+    background-color: #d9534f;
+    color: #fff;
+}
+
+#cancel-delete {
+    background-color: #5bc0de;
+    color: #fff;
+}
+
+#confirm-delete:hover {
+    background-color: #c9302c;
+}
+
+#cancel-delete:hover {
+    background-color: #31b0d5;
+}
+
+/* Estilos para el modal de mensajes */
+#messageModal.success .modal-content {
+    border: 2px solid green;
+}
+
+#messageModal.error .modal-content {
+    border: 2px solid red;
 }

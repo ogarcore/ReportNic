@@ -25,15 +25,12 @@ function decrypt(text) {
 
 // Ruta de login
 router.post('/login', async (req, res) => {
-    const { user, password, hospital } = req.body; // Asegúrate de recibir 'hospital' del frontend
+    const { user, password, hospital } = req.body;
 
     try {
-        // Crear el nombre de la colección dinámicamente
         const usersCollectionName = `usuarios_${hospital}`;
-        console.log(usersCollectionName);
         const usersCollectionRef = db.collection(usersCollectionName);
 
-        // Buscar el usuario en la colección correspondiente
         const snapshot = await usersCollectionRef.where('user', '==', user).get();
 
         if (snapshot.empty) {
@@ -43,28 +40,37 @@ router.post('/login', async (req, res) => {
         let validUser = false;
         let userData = {};
 
-        snapshot.forEach(doc => {
+        // Usamos un bucle for...of para esperar la verificación de cada documento
+        for (const doc of snapshot.docs) {
             const data = doc.data();
             const decryptedPassword = decrypt(data.password);
 
             if (decryptedPassword === password) {
                 validUser = true;
+
+                // Verificamos la suscripción antes de continuar
+                if (data.acceso !== true) {
+                    return res.status(403).json({
+                        error: 'No tiene permitido entrar a ReportNic-Web, por favor contacte a un administrador o mande un mensaje a support@reportnic.ni'
+                    }); // Enviamos la respuesta y salimos de la función
+                }
+
                 userData = {
                     user: data.user,
                     ubicacionHospital: {
                         lat: data.ubicacionHospital._latitude,
                         lng: data.ubicacionHospital._longitude
                     },
-                    hospital: hospital,  // Guardamos el hospital seleccionado
-                    notificaciones: []  // Inicializamos notificaciones vacías
+                    hospital: hospital,
+                    notificaciones: []
                 };
+
+                break; // Si encontramos un usuario válido, salimos del bucle
             }
-        });
+        }
 
         if (validUser) {
-            // Incluir toda la información en el JWT
             const token = jwt.sign(userData, JWT_SECRET);
-
             return res.status(200).json({ token });
         } else {
             return res.status(400).json({ error: 'Contraseña incorrecta' });
@@ -74,5 +80,6 @@ router.post('/login', async (req, res) => {
         return res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
 
 module.exports = router;
